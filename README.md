@@ -1,24 +1,24 @@
 # OSD-XMB
 This is a User Interface for the PS2 resembling the PS3/PSP XMB Style, 
-made on 'Athena Env' by DanielSant0s, and inspired by the 'XtremeEliteBoot+'
+made on [Athena Env'](https://github.com/DanielSant0s/AthenaEnv) by DanielSant0s, and inspired by the [XtremeEliteBoot+](http://www.hwc.nat.cu/ps2-vault/hwc-projects/xebplus/)
 dashboard by Howling Wolf & Chelsea.
 
-# Features
+## Features
 
--	Plugin System where you can make your own plugins to show items on the
+- Plugin System where you can make your own plugins to show items on the
 	dashboard.
 	Default Plugins are:
-	- User Category: 
+	- **User Category**: 
 		- Return to Browser: Goes to the OSDSYS Browser.
 		- Refresh Interface: Resets the OSDXMB Interface to update settings
-	- Settings Category.
+	- **Settings Category**.
 		- Game Settings: Adjust several POPS and Neutrino Global settings.
 		- System Settings: Set the Interface's language and confirm button.
 		- Theme Settings: Customize the XMB Colors, Fonts and Icons.
 		- Time Settings: Adjust the Clock display settings.
 		- Display Settings: Set the video mode and aspect ratio.
 		- Security Settings: Enable or Disable Parental Control.
-	- Game Category:
+	- **Game Category**:
 		- File Explorer: Explore files on the USB Drive or the default
 						 App folder. You can Execute ELF files from here.
 		- Memory Card Utility: View your game save data on your memory cards.
@@ -29,8 +29,8 @@ dashboard by Howling Wolf & Chelsea.
 		- Playstation 2: A Neutrino folder that lists all your games on your
 						 DVD or CD folders on your USB Drive.
 
-- Launch PS2 games from USB Drive:
-	The App will automatically list all ISO format games that are either
+- **Launch PS2 games from USB Drive**:
+    - The App will automatically list all ISO format games that are either
 	on a DVD or CD folder in the root of your USB Drive on the
 	"Playstation 2" folder. You can customize your preferred settings for
 	your games if you open the "Option" menu while highlighting the game
@@ -39,14 +39,14 @@ dashboard by Howling Wolf & Chelsea.
 	The "Show Logo" and "Show Debug Colors" can be set globally for all games
 	on the "Game Settings" section.
 
-- Launch PS2 games from Discs:
-	The App will automatically recognize if there is a PS2 DVD in the disctray
+- **Launch PS2 games from Discs**:
+    - The App will automatically recognize if there is a PS2 DVD in the disctray
 	and select it if you're idle on the Game category.
 	You can add ".cfg" files on the "CFG" folder with the Item "Title=Game Name"
 	to display Customized Game Titles on this Item.
 
-- Launch PS1 games from USB Drive:
-	The app will automatically scan your POPS folder on the root of your USB Drive
+- **Launch PS1 games from USB Drive**:
+    - The app will automatically scan your POPS folder on the root of your USB Drive
 	to list all the .VCD files on the "Playstation 1" folder.
 	The name of the VCD will be the game's name.
 	If no ELF for the VCD is found, it will be automatically created.
@@ -54,29 +54,29 @@ dashboard by Howling Wolf & Chelsea.
 	are set, by using the Options Menu for each game.
 	More global options are set on the "Game Settings" section.
 	
-- Execute ELFs:
-	You can execute custom ELFs by the use of Plugins, or using the File Explorer.
+- **Execute ELFs**:
+    - You can execute custom ELFs by the use of Plugins, or using the File Explorer.
 	The File Explorer will launch any ELF without arguments, but you can make custom
 	plugins to launch Elfs with custom arguments.
 
-# Instructions
+## Instructions
 
 -	Place the "neutrino" folder on Memory Card Slot 1 if you intend to use it
 	to launch games from USB using Neutrino.
 -	Place the OSDXMB folder at the root of your USB Drive or from whatever
 	device you intend to run it, personally I recommend you to auto-boot to it.
 
-# Credits and Special Thanks
+## Credits and Special Thanks
+Inspired by: XtremeEliteBoot by Howling Wolf & Chelsea.
 
-Inspired by: XtremeEliteBoot by Howling Wolf & Chelsea
 Based on: AthenaEnv by DanielSant0s.
 
-Localization contributors:
+<ins>Localization contributors</ins>:
 - nuno6573 (Portuguese)
 - PannaSalmone and Okeanos (Italian).
 - LOWbster (German).
 	
-Special thanks to:
+<ins>Special thanks to</ins>:
 - sync-on-luma for his original Neutrino Plugin for XtremeEliteBoot.
 - Pmp174 for the Boot sequence and general feedback.
 - You! Thanks for using the app.
