@@ -27,8 +27,6 @@
 
 */
 
-os.mkdir(`${System.boot_path}/CFG/`);
-
 DATA.CONFIG = {
 	
 	configPath: "./CFG/",
