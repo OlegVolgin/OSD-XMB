@@ -214,7 +214,7 @@ function InitDiscDashItem(discType)
 	// Get executable
 	let name = (discType === 9) ? "Playstation 2 CD" : "Playstation 2 DVD";
 	let ico = (() => { return dash_icons[26]; });
-	const files = os.readdir("cdfs:/")[0];
+    const files = os.readdir("cdfs:/")[0];
 	const index = files.findIndex(file => file.toLowerCase() === 'system.cnf');
 	const systemcnf = std.open(`cdfs:/${files[index]}`, "r");
 	const bootparam = systemcnf.getline();
@@ -223,10 +223,36 @@ function InitDiscDashItem(discType)
 	
 	// Do not add item if executable not found.
 	if (ELFName === "")	{ return; }
+
+    let ELFPath = `cdfs:/${ELFName}`;
+    let ELFArgs = [];
 	
 	// Get Game Title if available
 	const gmecfg = DATA.CONFIG.Get(`${ELFName.toUpperCase()}.cfg`);
 	if ("Title" in gmecfg) { name = gmecfg["Title"]; }
+
+    if (std.exists(`${System.boot_path}/APPS/neutrino/neutrino.elf`))
+    {
+        let cwd = "";
+        if (System.boot_path.substring(0,4) !== "host")
+        {
+	        let files = os.readdir("mc0:/")[0];
+	        let fileExist = files.includes("neutrino");
+            if (fileExist) { cwd = "mc0:/neutrino"; }
+            else
+            {
+                files = os.readdir("mc1:/")[0];
+	            fileExist = files.includes("neutrino");
+                if (fileExist) { cwd = "mc1:/neutrino"; }
+            }
+        }
+
+        if (cwd !== "")
+        {
+            ELFPath = `${System.boot_path}/APPS/neutrino/neutrino.elf`;
+            ELFArgs = [ `-cwd=${cwd}` ];
+        }
+    }
 
 	// Set new Item in Dashboard
 	DASH_CAT[5].Options[DASH_CAT[5].ItemCount] = 
@@ -236,7 +262,7 @@ function InitDiscDashItem(discType)
 		Description: ELFName.toUpperCase(),
 		Icon: -1,
 		Type: "ELF",
-		Value: { Path: `cdfs:/${ELFName}`, Args: [] },
+		Value: { Path: ELFPath, Args: ELFArgs },
 		Art: { ICO: ico },
 		get CustomIcon() 
 		{ 

@@ -23,6 +23,7 @@ const NeutrinoSettingNames =
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
+let cwd = "mc0:/neutrino";
 let gameList = [];
 let devices = [ "usb", "usb", "mx4sio", "ata", "udpbd" ];
 let roots = [ `${System.boot_path}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/" ];
@@ -64,8 +65,6 @@ function getISOGameCode(isoPath, isoSize)
         console.log(`Could not open file: ${isoPath}`);
         return RET;
     }
-	
-	console.log(`${getGameName(isoPath)} File Length: ${isoSize.toString()}`);
 
 	// Seek to the Primary Volume Descriptor (sector 16 in ISO 9660)
 	file.seek(16 * sectorSize, std.SEEK_SET);
@@ -82,12 +81,10 @@ function getISOGameCode(isoPath, isoSize)
 
 	// Extract the root directory offset and size
 	file.seek((16 * sectorSize) + 158, std.SEEK_SET);
-	const rootDirOffset = sectorSize * (file.getByte() | (file.getByte() << 8) | (file.getByte() << 16) | (file.getByte() << 24))
+	const rootDirOffset = sectorSize * (file.getByte() | (file.getByte() << 8) | (file.getByte() << 16) | (file.getByte() << 24));
 	
-	file.seek(4, std.SEEK_CUR)
-	const rootDirSize = (file.getByte() | (file.getByte() << 8) | (file.getByte() << 16) | (file.getByte() << 24))
-	console.log(`${getGameName(isoPath)} Root Dir Offset: ${rootDirOffset.toString()}`);
-	console.log(`${getGameName(isoPath)} Root Dir Size: ${rootDirSize.toString()}`);
+	file.seek(4, std.SEEK_CUR);
+	const rootDirSize = (file.getByte() | (file.getByte() << 8) | (file.getByte() << 16) | (file.getByte() << 24));
 	
 	// Read the root directory
 	if ((rootDirOffset > isoSize) || (rootDirSize > sectorSize))
@@ -269,10 +266,9 @@ function ParseDirectory(path, device, fs)
 			// Get Game Item Info
 			let title = getGameName(item.name);
 			let type = "ELF";
-			console.log(`PS2 Game Title: ${title}`);
 			
 			// Set Launch Settings
-			let args = [ `-cwd=mc0:/neutrino`, `-bsd=${device}`, `-bsdfs=${fs}`, `-dvd=${getRootName(path)}:${getPathWithoutRoot(path)}${item.name}`, `-mt=${getFolderNameFromPath(path).toLowerCase()}` ];
+			let args = [ `-cwd=${cwd}`, `-bsd=${device}`, `-bsdfs=${fs}`, `-dvd=${getRootName(path)}:${getPathWithoutRoot(path)}${item.name}`, `-mt=${getFolderNameFromPath(path).toLowerCase()}` ];
 			let value = { Path: elfPath, Args: args, Code: SaveLastPlayedAndGetExArgs };
 			
 			// Get Game Code
@@ -299,16 +295,10 @@ function ParseDirectory(path, device, fs)
 				}
 			}
 			
-			console.log(`PS2 Game Code: ${gameCode}`);
-			
 			// Add ART
 			let ico = (() => { return dash_icons[26]; });
 			const icoFile = findICO(gameCode);
-			if (icoFile !== "") 
-			{ 
-				console.log(`PS2 Game ${title} ICO file: ${icoFile}`);
-				ico = new Image(icoFile, RAM, async_list); 
-			}
+			if (icoFile !== "") { ico = new Image(icoFile, RAM, async_list); }
 			
 			gameList.push({ 
 				Name: title, 
@@ -331,12 +321,24 @@ function ParseDirectory(path, device, fs)
 function getGames()
 {
 	if (!std.exists(elfPath)) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+
+    if (System.boot_path.substring(0,4) !== "host")
+    {
+	    let files = os.readdir("mc0:/")[0];
+	    let fileExist = files.includes("neutrino");
+        if (!fileExist)
+        {
+            files = os.readdir("mc1:/")[0];
+	        fileExist = files.includes("neutrino");
+            if (!fileExist) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+            cwd = "mc1:/neutrino";
+        }
+    }
 	
 	let lastPlayed = 0;
 	
 	for (let i = 0; i < devices.length; i++)
 	{
-		console.log(`${roots[i]}DVD/`);
 		ParseDirectory(`${roots[i]}DVD/`, devices[i], fsmodes[i]);
 		ParseDirectory(`${roots[i]}CD/`, devices[i], fsmodes[i]);
 	}

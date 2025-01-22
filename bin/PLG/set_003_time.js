@@ -78,7 +78,7 @@ const DESC_SET2 =
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
-function GetDateFormatContextInfo(dateFormat)
+function GetDateFormatContextInfo()
 {
 	let ctx_options = [];
 	ctx_options.push({ Name: "DD-MM-YYYY", Icon: -1 });
@@ -93,10 +93,10 @@ function GetDateFormatContextInfo(dateFormat)
 		DATA.CONFIG.Push("main.cfg", config);
 	}
 	
-	return { Options: ctx_options, Default: dateFormat, ItemCount: ctx_options.length, Confirm: _a};
+	return { Options: ctx_options, Default: DATA.DATE_FORMAT, ItemCount: ctx_options.length, Confirm: _a};
 }
 
-function GetHourFormatContextInfo(hourFormat)
+function GetHourFormatContextInfo()
 {
 	let ctx_options = [];
 	ctx_options.push({ Name: "12-Hour", Icon: -1 });
@@ -111,7 +111,7 @@ function GetHourFormatContextInfo(hourFormat)
 		DATA.CONFIG.Push("main.cfg", config);
 	}
 	
-	return { Options: ctx_options, Default: hourFormat, ItemCount: ctx_options.length, Confirm: _a};
+	return { Options: ctx_options, Default: DATA.HOUR_FORMAT, ItemCount: ctx_options.length, Confirm: _a};
 }
 
 function getOptions()
@@ -123,7 +123,7 @@ function getOptions()
 		Description: DESC_SET1,
 		Icon: 15,
 		Type: "CONTEXT",
-		Value: GetDateFormatContextInfo(DATA.DATE_FORMAT),
+		Value: GetDateFormatContextInfo(),
 	});
 	
 	options.push({
@@ -131,7 +131,7 @@ function getOptions()
 		Description: DESC_SET2,
 		Icon: 15,
 		Type: "CONTEXT",
-		Value: GetHourFormatContextInfo(DATA.HOUR_FORMAT),
+		Value: GetHourFormatContextInfo(),
 	});
 	
 	return { Options: options, Default: 0, ItemCount: options.length };

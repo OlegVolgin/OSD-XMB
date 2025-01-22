@@ -289,7 +289,6 @@ function PopsParseDirectory(path)
 			
 			// Add ART
 			const icoFile = findICO(gameCode);
-			console.log(`POPS Game "${title} ICO file: ${icoFile}"`);
 			if (icoFile !== "") { gameList[gameList.length - 1].CustomIcon = new Image(icoFile, RAM, async_list); }
 		} 
 	});

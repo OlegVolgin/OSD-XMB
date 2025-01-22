@@ -822,7 +822,7 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
 	modColor.a = modColor.a + textAlphaMod;
 	
 	let dateText = `${pad(day)}/${pad(month)}`;
-	let hourText = (DATA.HOUR_FORMAT) ? `${pad(hours12)}:${pad(minutes)} ${amPm}` : `${pad(hours24)}:${pad(minutes)}`;
+	let hourText = (DATA.HOUR_FORMAT) ? `${pad(hours24)}:${pad(minutes)}` : `${pad(hours12)}:${pad(minutes)} ${amPm}`;
 	
 	switch(DATA.DATE_FORMAT)
 	{
