@@ -31,7 +31,7 @@ const Info = {
 	Icon: 20,
 	Category: 0,
 	Type: "ELF",
-	Value: { Path: (`${System.boot_path}/XMBOSD.ELF`), Args: [ "main.js", ]},
+	Value: { Path: (`${System.boot_path}/OSDXMB.ELF`), Args: [ "main.js", ]},
 };
 
 return Info;

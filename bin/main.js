@@ -15,6 +15,8 @@ std.loadScript("./XMB/js/bg.js");			// Manage Background and Overlay Screens
 std.loadScript("./XMB/js/dashboard.js");	// Manages the Dashboard Graphic logic.
 std.loadScript("./XMB/js/handlers.js");		// Main Handler functions.
 
+ParseMainCFG();
+
 console.log("INIT: ALL FINISHED");
 
 //////////////////////////////////////////////////////////////////////////

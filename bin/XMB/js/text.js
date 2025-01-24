@@ -268,6 +268,8 @@ const TextRender = {
 
 	// SetTextColor method to set the color for the main text line
 	SetTextColor: function(r, g, b, a) {
+        if (a < 0) { a = 0; }
+        if (a > 128) { a = 128; }
 		this.textColor = Color.new(r, g, b, a);
 	},
 
@@ -392,8 +394,6 @@ TextRender.SetFont(font_s);
 
 function TxtPrint(txt, clr, pos, align = "LEFT", font = font_s, glow = false)
 {
-	if (clr.a < 0) { clr.a = 0; } else if (clr.a > 128) { clr.a = 128; }
-	
 	if ((txt != "") && (clr.a > 0))
 	{
 		TextRender.SetFont(font);
@@ -414,7 +414,7 @@ function TxtPrint(txt, clr, pos, align = "LEFT", font = font_s, glow = false)
 }
 
 // Pre-Process Epilepsy Warning Text for fast rendering on screen
-const BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]);
+let BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]);
 
 // Function exclusively made to render the Boot Warning Text at Boot.
 function DisplayBootWarningText(alpha)

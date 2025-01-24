@@ -112,44 +112,64 @@ DATA.CONFIG = {
 
 // Get the main Configuration File of the App and Parse its configuration if it has them.
 
-const mainCFG = DATA.CONFIG.Get("main.cfg");
+function ParseMainCFG()
+{
+    const mainCFG = DATA.CONFIG.Get("main.cfg");
 
-// Get the user's preferred Video Mode.
-if ("vmode" in mainCFG) 
-{ 
-	if (DATA.CANVAS.mode != vmodes[Number(mainCFG["vmode"])].Value)
-	{
-		DATA.CANVAS.mode = vmodes[Number(mainCFG["vmode"])].Value; 
-		Screen.setMode(DATA.CANVAS); 
-		DATA.SCREEN_PREVMODE = DATA.CANVAS.mode; 
-	}
-}
+    // Get the user's preferred Video Mode.
+    if ("vmode" in mainCFG) 
+    { 
+	    if (DATA.CANVAS.mode != vmodes[Number(mainCFG["vmode"])].Value)
+	    {
+		    DATA.CANVAS.mode = vmodes[Number(mainCFG["vmode"])].Value; 
+		    Screen.setMode(DATA.CANVAS); 
+		    DATA.SCREEN_PREVMODE = DATA.CANVAS.mode; 
+	    }
+    }
 
-// Get the user's preferred Aspect Ratio.
-if ("aspect" in mainCFG) 
-{ 
-	DATA.WIDESCREEN = (mainCFG["aspect"].toLowerCase() === "true"); 
+    // Get the user's preferred Aspect Ratio.
+    if ("aspect" in mainCFG) 
+    { 
+	    DATA.WIDESCREEN = (mainCFG["aspect"].toLowerCase() === "true"); 
 	
-	if (DATA.WIDESCREEN) 
-	{
-		DATA.CANVAS.width = 736; 
-		Screen.setMode(DATA.CANVAS);
-	}
+	    if (DATA.WIDESCREEN) 
+	    {
+		    DATA.CANVAS.width = 736; 
+		    Screen.setMode(DATA.CANVAS);
+	    }
+    }
+
+    // Get the user's preferred Parental Settings.
+    if ("parental" in mainCFG) { DATA.PARENTAL = (mainCFG["parental"].toLowerCase() === "true"); }
+    if ("prntcode" in mainCFG) { DATA.PRNTCODE = JSON.parse(mainCFG["prntcode"]); }
+
+    // Get the user's preferred System Settings.
+    if ("lang" in mainCFG) { DATA.LANGUAGE = Number(mainCFG["lang"]); BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]); }
+    if ("btnType" in mainCFG) { DATA.BTNTYPE = Number(mainCFG["btnType"]); }
+
+    // Get the user's preferred Date and Hour Formats.
+    if ("dateFormat" in mainCFG) { DATA.DATE_FORMAT = Number(mainCFG["dateFormat"]); }
+    if ("hourFormat" in mainCFG) { DATA.HOUR_FORMAT = Number(mainCFG["hourFormat"]); }
+
+    // Get the user's preferred Theme.
+    if ("Theme" in mainCFG) { DATA.THEME_PATH = `THM/${mainCFG["Theme"]}/`; }
+
+    // Parse the user preferred background color.
+
+    if ("BgColor" in mainCFG)
+    {
+	    // If set to 0, use dynamic month based background color.
+	    // Else, use the custom background color.
+	
+	    DATA.BGVAL = Number(mainCFG["BgColor"]);
+	    DATA.BGTMP = DATA.BGVAL;
+	    DATA.BGCOL = (DATA.BGVAL == 0) ? DATA.BGCOL : DATA.BGVAL;
+        DATA.BGSWITCH = true;
+    }
+
+    // Parse the main Configuration file to set the display of background waves.
+
+    if ("waves" in mainCFG) { DATA.BGWAVES = (mainCFG["waves"].toLowerCase() === "true"); }
 }
-
-// Get the user's preferred Parental Settings.
-if ("parental" in mainCFG) { DATA.PARENTAL = (mainCFG["parental"].toLowerCase() === "true"); }
-if ("prntcode" in mainCFG) { DATA.PRNTCODE = JSON.parse(mainCFG["prntcode"]); }
-
-// Get the user's preferred System Settings.
-if ("lang" in mainCFG) { DATA.LANGUAGE = Number(mainCFG["lang"]); }
-if ("btnType" in mainCFG) { DATA.BTNTYPE = Number(mainCFG["btnType"]); }
-
-// Get the user's preferred Date and Hour Formats.
-if ("dateFormat" in mainCFG) { DATA.DATE_FORMAT = Number(mainCFG["dateFormat"]); }
-if ("hourFormat" in mainCFG) { DATA.HOUR_FORMAT = Number(mainCFG["hourFormat"]); }
-
-// Get the user's preferred Theme.
-if ("Theme" in mainCFG) { DATA.THEME_PATH = `THM/${mainCFG["Theme"]}/`; }
 
 console.log("INIT: CONFIG INIT COMPLETE");

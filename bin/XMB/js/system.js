@@ -622,7 +622,6 @@ function SelectItem()
 				DASH_SUB[DATA.DASH_CURSUB] = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value;
 				DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
 				DATA.DASH_CURSUBOPT = (DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value.ItemCount < 1) ? -1 : DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value.Default;
-				SetDashPadEvents(0);
 				break;
 			case "CONTEXT":
 				SetDashContext(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value, "MENU_CONTEXT_IN");
@@ -642,7 +641,6 @@ function SelectItem()
 				DATA.DASH_CURSUBOPT = (DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.ItemCount < 1) ? -1 : 0;
 				DATA.DASH_PRVSUB++;
 				DATA.DASH_CURSUB++;
-				SetDashPadEvents(0);
 				break;
 			case "CONTEXT":
 				SetDashContext(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value, "SUBMENU_CONTEXT_IN");

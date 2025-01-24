@@ -1097,9 +1097,6 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
 	let currentSelected = false;
 	if ((opt == DASH_CTX[DATA.DASH_CURCTXLVL].Selected) && a == 0)
 	{
-		if (glowText.Value == glowText.Max) { glowText.Dir = -1; }
-		if (glowText.Value == glowText.Min) { glowText.Dir = 1; }
-		glowText.Value = glowText.Value + glowText.Dir;
 		currentSelected = true;
 	}
 	
@@ -1122,9 +1119,6 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
 	{
 		let displayText = (Array.isArray(DASH_CTX[lvl].Options[opt].Name)) ? DASH_CTX[lvl].Options[opt].Name[DATA.LANGUAGE] : DASH_CTX[lvl].Options[opt].Name;
 		displayText = (displayText.length > 20) ? (displayText.substring(0, 20) + "...") : displayText;
-		TextRender.SetFont(font_ss);
-		TextRender.SetTextColor(255, 255, 255, TXTFULLA + a);
-		TextRender.SetPosition(x + xIcnMod, y);
 		
 		if (currentSelected)
 		{
@@ -1160,16 +1154,9 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
 					DATA.DASH_TXT_TIMER = false;
 				}
 			}
-			
-			TextRender.Print(displayText);
-			TextRender.SetTextColor(255, 255, 255, glowText.Value * 2);
-			TextRender.SetPosition(x + xIcnMod + 1, y);
-			TextRender.Print(displayText, "LEFT", false);
 		}
-		else
-		{
-			TextRender.Print(displayText);
-		}
+
+        TxtPrint(displayText, { r: 255, g: 255, b: 255, a: TXTFULLA + a }, {x: x + xIcnMod, y: y}, "LEFT", font_ss, currentSelected);
 	}
 }
 
@@ -1177,7 +1164,7 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
 
 function DrawContextArrows(aMod = 0, xMod = 0)
 {
-	let a = glowArr.Value;
+    let a = glowArr.Value;
 	
 	if (aMod != 0)
 	{
@@ -1192,6 +1179,8 @@ function DrawContextArrows(aMod = 0, xMod = 0)
 		else if (glowArr.Value == glowArr.Max) { glowArr.Dir = -1; }
 		glowArr.Value += glowArr.Dir;
 	}
+
+    if (a === 0) { return; }
 
 	dash_arrow.width = 16;
 	dash_arrow.height = 16;
@@ -1226,7 +1215,8 @@ function DrawContextOptions(aMod = 0, xMod = 0)
 		y+=20;
 	}
 	
-	DrawContextArrows(aMod, xMod);
+	if ((DATA.DASH_CURCTXITMFIRST > 0) || (DATA.DASH_CURCTXITMLAST < DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount))
+    { DrawContextArrows(aMod, xMod); }
 }
 
 // Executes a custom function (if available) on the Context Menu

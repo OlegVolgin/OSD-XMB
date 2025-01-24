@@ -54,24 +54,6 @@ const monthColors = {
 let OSDATE = new Date();
 DATA.BGCOL = OSDATE.getMonth() + 1;
 
-// Parse the main Configuration file to set the 
-// user preferred background color.
-
-if ("BgColor" in mainCFG)
-{
-	// If set to 0, use dynamic month based background color.
-	// Else, use the custom background color.
-	
-	DATA.BGVAL = Number(mainCFG["BgColor"]);
-	DATA.BGTMP = DATA.BGVAL;
-	DATA.BGCOL = (DATA.BGVAL == 0) ? DATA.BGCOL : DATA.BGVAL;
-}
-
-// Parse the main Configuration file to set
-// the display of background waves.
-
-if ("waves" in mainCFG) { DATA.BGWAVES = (mainCFG["waves"].toLowerCase() === "true"); }
-
 // Variables to hold temporary values to be
 // used when the background color changes.
 
@@ -115,9 +97,9 @@ const Waves = (() => {
 	
 	function setThemeColor(themeColor) 
 	{
-		const r = Math.min(Color.getR(themeColor) + 65, 255);
-		const g = Math.min(Color.getG(themeColor) + 65, 255);
-		const b = Math.min(Color.getB(themeColor) + 90, 255);
+		const r = Math.min(themeColor.r + 65, 255);
+		const g = Math.min(themeColor.g + 65, 255);
+		const b = Math.min(themeColor.b + 90, 255);
 
 		wave2ColorTop = Color.new(r, g, b, 127);
 		wave2ColorBottom = Color.new(r, g, b, 96);
@@ -155,7 +137,7 @@ const Waves = (() => {
 })();
 
 // Set the Waves' color.
-Waves.setThemeColor(themeColor);
+Waves.setThemeColor(currentBgColor);
 
 //////////////////////////////////////////////////////////////////////////
 ///*				   		    FUNCTIONS							  *///
@@ -490,7 +472,7 @@ function DrawMessageInfoScreen(txtColor, arrAlpha)
 function DrawMessageFadeIn()
 {
 	if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
-	let prevOvColor = { r: Color.getR(themeColor), g: Color.getG(themeColor), b: Color.getB(themeColor), a: 20 };
+	let prevOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
 	let ovAlpha = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
 	let tempColor = interpolateColorObj(prevOvColor, { r: 0, g: 0, b: 0, a: ovAlpha }, Math.fround(DATA.DASH_MOVE_FRAME / 20));
 	let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: DATA.DASH_MOVE_FRAME * 6 };
@@ -617,7 +599,7 @@ function DrawMessageIdle()
 
 function DrawMessageFadeOut()
 {
-	let newOvColor = { r: Color.getR(themeColor), g: Color.getG(themeColor), b: Color.getB(themeColor), a: 20 };
+	let newOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
 	let ovAlphaOut = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
 	let prevtempColor = interpolateColorObj({ r: 0, g: 0, b: 0, a: ovAlphaOut }, newOvColor, Math.fround(DATA.DASH_MOVE_FRAME / 20));
 	let txtFadeOutColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * 6) };
@@ -703,12 +685,13 @@ function drawBg()
 		
 		let tempColor = interpolateColorObj(prevColor, monthColors[DATA.BGCOL], DATA.BGFRAME);
 		themeColor = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
-		DATA.OVCOL = Color.new(Color.getR(themeColor), Color.getG(themeColor), Color.getB(themeColor), 20);
-		Waves.setThemeColor(themeColor);
+		DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, 20);
+		Waves.setThemeColor(tempColor);
 		
 		// If interpolation ended, update current parameters with new ones.
 		if (DATA.BGFRAME > 0.9f)
 		{
+            currentBgColor = monthColors[DATA.BGCOL];
 			prevColor = { r: monthColors[DATA.BGCOL].r, g: monthColors[DATA.BGCOL].g, b: monthColors[DATA.BGCOL].b, a: monthColors[DATA.BGCOL].a };
 			brightnessFrame = 0.0f;
 			DATA.BGFRAME = 0.0f;

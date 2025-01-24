@@ -29,33 +29,33 @@ function ClearPadEvents()
 {
 	// Clear all existing events if any
 	
-	if (PADEVENTS.ACCEPT != null) { Pads.deleteEvent(PADEVENTS.ACCEPT); }
-	if (PADEVENTS.CANCEL != null) { Pads.deleteEvent(PADEVENTS.CANCEL); }
-	if (PADEVENTS.TRIANGLE != null) { Pads.deleteEvent(PADEVENTS.TRIANGLE); }
-	if (PADEVENTS.LEFT != null) { Pads.deleteEvent(PADEVENTS.LEFT); }
-	if (PADEVENTS.RIGHT != null) { Pads.deleteEvent(PADEVENTS.RIGHT); }
-	if (PADEVENTS.UP != null) { Pads.deleteEvent(PADEVENTS.UP); }
-	if (PADEVENTS.DOWN != null) { Pads.deleteEvent(PADEVENTS.DOWN); }
-	if (PADEVENTS.L1 != null) { Pads.deleteEvent(PADEVENTS.L1); }
-	if (PADEVENTS.R1 != null) { Pads.deleteEvent(PADEVENTS.R1); }
-	if (PADEVENTS.L2 != null) { Pads.deleteEvent(PADEVENTS.L2); }
-	if (PADEVENTS.R2 != null) { Pads.deleteEvent(PADEVENTS.R2); }
+	if (PADEVENTS.ACCEPT) { Pads.deleteEvent(PADEVENTS.ACCEPT); }
+	if (PADEVENTS.CANCEL) { Pads.deleteEvent(PADEVENTS.CANCEL); }
+	if (PADEVENTS.TRIANGLE) { Pads.deleteEvent(PADEVENTS.TRIANGLE); }
+	if (PADEVENTS.LEFT) { Pads.deleteEvent(PADEVENTS.LEFT); }
+	if (PADEVENTS.RIGHT) { Pads.deleteEvent(PADEVENTS.RIGHT); }
+	if (PADEVENTS.UP) { Pads.deleteEvent(PADEVENTS.UP); }
+	if (PADEVENTS.DOWN) { Pads.deleteEvent(PADEVENTS.DOWN); }
+	if (PADEVENTS.L1) { Pads.deleteEvent(PADEVENTS.L1); }
+	if (PADEVENTS.R1) { Pads.deleteEvent(PADEVENTS.R1); }
+	if (PADEVENTS.L2) { Pads.deleteEvent(PADEVENTS.L2); }
+	if (PADEVENTS.R2) { Pads.deleteEvent(PADEVENTS.R2); }
 	
 	// Reset the Object.
 	
 	PADEVENTS = 
 	{
-		ACCEPT: null,
-		CANCEL: null,
-		TRIANGLE: null,
-		LEFT: null,
-		RIGHT: null,
-		UP: null,
-		DOWN: null,
-		L1: null,
-		R1: null,
-		L2: null,
-		R2: null,
+		ACCEPT: false,
+		CANCEL: false,
+		TRIANGLE: false,
+		LEFT: false,
+		RIGHT: false,
+		UP: false,
+		DOWN: false,
+		L1: false,
+		R1: false,
+		L2: false,
+		R2: false,
 		START: Pads.newEvent(Pads.START, Pads.JUST_PRESSED, () => {SetDashPadEvents(DATA.DASH_PADMODE)}),
 	}
 }

@@ -16,7 +16,6 @@ function dashboard()
 	switch(DATA.DASH_STATE)
 	{
 		case "IDLE":
-			
 			if (DATA.DASH_PADMODE != 1) { SetDashPadEvents(1); }
 			DrawSelectedItem();
 			DrawUnselectedItems();
@@ -98,7 +97,10 @@ function dashboard()
 			}
 			else if (!DATA.MESSAGE_INFO.BG)
 			{
-				DrawInterfaceFade(DATA.DASH_MOVE_FRAME, -1);
+				if (!("SKIP_INTRO" in DATA.MESSAGE_INFO) || (!DATA.MESSAGE_INFO.SKIP_INTRO))
+                {
+				    DrawInterfaceFade(DATA.DASH_MOVE_FRAME, -1);
+                }
 			}
 			else
 			{
@@ -134,7 +136,7 @@ function dashboard()
 			}
 			else if (!DATA.MESSAGE_INFO.BG)
 			{
-				DrawInterfaceFade(DATA.DASH_MOVE_FRAME, 1);
+                DrawInterfaceFade(DATA.DASH_MOVE_FRAME, 1);
 			}
 			else
 			{
@@ -165,11 +167,14 @@ function dashboard()
 			DASH_UPDATE_FRAME("IDLE");
 			if (DATA.DASH_MOVE_FRAME > 19) 
 			{ 
+                delete DASH_CTX[DATA.DASH_CURCTXLVL];
 				DATA.DASH_CURCTXLVL--;
 				Timer.destroy(DATA.DASH_CTX_TIMER);
+                DATA.DASH_CTX_TIMER = false;
 			};
 			break;
 		case "SUBMENU_IN":
+			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
 			DrawInitialSubMenuFade(1);
 			DASH_UPDATE_FRAME("SUBMENU_IDLE"); 
 			break;
@@ -199,15 +204,18 @@ function dashboard()
 			DASH_UPDATE_FRAME(NEXT_STATE_DOWN); 
 			break;
 		case "SUBMENU_OUT":
+			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
 			DrawInitialSubMenuFade(-1);
 			DASH_UPDATE_FRAME("IDLE"); 
 			if (DATA.DASH_MOVE_FRAME > 19) 
 			{ 
+                delete DASH_SUB[DATA.DASH_CURSUB];
 				DATA.DASH_PRVSUB--;
 				DATA.DASH_CURSUB--;
 			};
 			break;
 		case "NEW_SUBMENU_IN":
+			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
 			DrawNewSubMenuFade(1);
 			DASH_UPDATE_FRAME("NEW_SUBMENU_IDLE"); 
 			break;
@@ -217,17 +225,20 @@ function dashboard()
 			DrawSubMenuOptions();
 			break;
 		case "NEW_SUBMENU_OUT":
+			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
 			DrawNewSubMenuFade(-1);
 			let NEXT_STATE_OUT = (DATA.DASH_CURSUB > 1) ? "NEW_SUBMENU_IDLE" : "SUBMENU_IDLE"; 
 			DASH_UPDATE_FRAME(NEXT_STATE_OUT);
 			if (DATA.DASH_MOVE_FRAME > 19) 
 			{ 
+                delete DASH_SUB[DATA.DASH_CURSUB];
 				DATA.DASH_CURSUBOPT = DASH_SUB[DATA.DASH_PRVSUB].Selected; 
 				DATA.DASH_PRVSUB--;
 				DATA.DASH_CURSUB--;
 			};
 			break;
 		case "SUBMENU_CONTEXT_IN":
+			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
 			DrawContextSubMenuAnimation(1);
 			DASH_UPDATE_FRAME("SUBMENU_CONTEXT");
 			break;
@@ -239,13 +250,16 @@ function dashboard()
 			ExecutePreviewFunc();
 			break;
 		case "SUBMENU_CONTEXT_OUT":
+			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
 			DrawContextSubMenuAnimation(-1);
 			let NEXT_STATE_CONTEXT_OUT = (DATA.DASH_CURSUB > 1) ? "NEW_SUBMENU_IDLE" : "SUBMENU_IDLE"; 
 			DASH_UPDATE_FRAME(NEXT_STATE_CONTEXT_OUT);
 			if (DATA.DASH_MOVE_FRAME > 19) 
-			{ 
+			{
+                delete DASH_CTX[DATA.DASH_CURCTXLVL];
 				DATA.DASH_CURCTXLVL--;
 				Timer.destroy(DATA.DASH_CTX_TIMER);
+                DATA.DASH_CTX_TIMER = false;
 			};
 			break;
 		case "SUBMENU_CONTEXT_MESSAGE_FADE_OUT":
@@ -292,11 +306,23 @@ function exit()
 				}
 				else
 				{
-					// PENDING SHOW ERROR MESSAGE
-					console.log("exit: Option Function Code is NULL.");
+                    // Show Error Message
+                    DATA.DASH_MOVE_FRAME = 0;
+                    DATA.DASH_STATE = "IDLE_MESSAGE_FADE_IN";
+				    DATA.OVSTATE = "MESSAGE_IN";
+				    DATA.MESSAGE_INFO = 
+				    {
+					    Icon: -1,
+					    Title: "",
+					    BG: false,
+                        SKIP_INTRO: true,
+					    Type: "TEXT",
+                        Text: "Option Function Code is empty.",
+					    BACK_BTN: true,
+					    ENTER_BTN: false,
+				    };
+					console.log("exit: Option Function Code is empty.");
 					DATA.CURRENT_STATE = 1;
-					DATA.OVSTATE = "IN";
-					DATA.DASH_STATE = "FADE_IN";
 				}
 			}
 			else if (DASH_SEL.Type == "ELF")
@@ -309,20 +335,46 @@ function exit()
 				}
 				else
 				{
-					// PENDING SHOW ERROR MESSAGE
+                    // Show Error Message
+                    DATA.DASH_MOVE_FRAME = 0;
+                    DATA.DASH_STATE = "IDLE_MESSAGE_FADE_IN";
+				    DATA.OVSTATE = "MESSAGE_IN";
+				    DATA.MESSAGE_INFO = 
+				    {
+					    Icon: -1,
+					    Title: "",
+					    BG: false,
+                        SKIP_INTRO: true,
+					    Type: "TEXT",
+                        Text: "ELF file not found.",
+					    BACK_BTN: true,
+					    ENTER_BTN: false,
+				    };
+
 					console.log("exit: ELF File not found.");
 					DATA.CURRENT_STATE = 1;
-					DATA.OVSTATE = "IN";
-					DATA.DASH_STATE = "FADE_IN";
 				}
 			}
 			else
 			{
-				// PENDING SHOW ERROR MESSAGE
+                // Show Error Message
+                DATA.DASH_MOVE_FRAME = 0;
+                DATA.DASH_STATE = "IDLE_MESSAGE_FADE_IN";
+				DATA.OVSTATE = "MESSAGE_IN";
+				DATA.MESSAGE_INFO = 
+				{
+					Icon: -1,
+					Title: "",
+					BG: false,
+                    SKIP_INTRO: true,
+					Type: "TEXT",
+                    Text: "Unknown Object Type.",
+					BACK_BTN: true,
+					ENTER_BTN: false,
+				};
+
 				console.log("exit: Unknown Object Type.");
 				DATA.CURRENT_STATE = 1;
-				DATA.OVSTATE = "IN";
-				DATA.DASH_STATE = "FADE_IN";
 			}
 			break;
 		case 1: // Screen Fade Out to Black
