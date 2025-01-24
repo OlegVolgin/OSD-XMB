@@ -229,73 +229,7 @@ function InitVModeMessageSettings()
 		}
 	}
 
-	// Move Back
-	PADEVENTS.LEFT = Pads.newEvent(Pads.LEFT, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE == "MESSAGE_IDLE")
-		{
-			DATA.MESSAGE_INFO.Selected--;
-			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected < 0) ? 0 : DATA.MESSAGE_INFO.Selected;
-		}
-	});
-	
-	// Move Forward
-	PADEVENTS.RIGHT = Pads.newEvent(Pads.RIGHT, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE == "MESSAGE_IDLE")
-		{
-			DATA.MESSAGE_INFO.Selected++;
-			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected > 1) ? 1 : DATA.MESSAGE_INFO.Selected;
-		}
-	});
-}
-
-// Initializes the special Parental Code Screen Pad Events.
-
-function SetParentalPadEvents()
-{
-	DATA.MESSAGE_INFO.Selected = 0;
-	DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
-
-	// Move Back
-	PADEVENTS.LEFT = Pads.newEvent(Pads.LEFT, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE == "MESSAGE_IDLE")
-		{
-			DATA.MESSAGE_INFO.Selected--;
-			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected < 0) ? 0 : DATA.MESSAGE_INFO.Selected;
-		}
-	});
-	
-	// Move Forward
-	PADEVENTS.RIGHT = Pads.newEvent(Pads.RIGHT, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE == "MESSAGE_IDLE")
-		{
-			DATA.MESSAGE_INFO.Selected++;
-			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected > 3) ? 3 : DATA.MESSAGE_INFO.Selected;
-		}
-	});
-
-	// Move Down
-	PADEVENTS.DOWN = Pads.newEvent(Pads.DOWN, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE == "MESSAGE_IDLE")
-		{
-			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected]--;
-			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] = (DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] < 0) ? 9 : DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected];
-		}
-	});
-	
-	// Move Up
-	PADEVENTS.UP = Pads.newEvent(Pads.UP, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE == "MESSAGE_IDLE")
-		{
-			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected]++;
-			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] = (DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] > 9) ? 0 : DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected];
-		}
-	});
+    SetPadEvents_Vmode();
 }
 
 // Initializes the special 'Set Parental Code' Screen Message Object.
@@ -303,7 +237,9 @@ function SetParentalPadEvents()
 function InitParentalSetMessageSettings()
 {
 	DATA.MESSAGE_INFO.Processed = TXT_ENTER_NEW_PASS[DATA.LANGUAGE];
-	SetParentalPadEvents();
+	DATA.MESSAGE_INFO.Selected = 0;
+	DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
+    SetPadEvents_Parental();
 	
 	DATA.MESSAGE_INFO.Confirm = function()
 	{
@@ -319,7 +255,9 @@ function InitParentalSetMessageSettings()
 function InitParentalCheckMessageSettings()
 {
 	DATA.MESSAGE_INFO.Processed = TXT_ENTER_CUR_PASS[DATA.LANGUAGE];
-	SetParentalPadEvents();
+	DATA.MESSAGE_INFO.Selected = 0;
+	DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
+    SetPadEvents_Parental();
 	
 	DATA.MESSAGE_INFO.Confirm = function()
 	{
@@ -365,6 +303,7 @@ function InitMessageInfoScreenSettings()
 {
 	DATA.MESSAGE_INFO.Processed = true;
 	DATA.MESSAGE_INFO.Selected = -1;
+    SetPadEvents_Information();
 	
 	for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
 	{
@@ -374,62 +313,6 @@ function InitMessageInfoScreenSettings()
 			break;
 		}
 	}
-
-	// Move Back
-	PADEVENTS.LEFT = Pads.newEvent(Pads.LEFT, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
-		
-		let obj = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected]
-		if (obj.Selectable)
-		{
-			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected--;
-			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected = (DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected < 0) ? 0 : DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected;
-		}
-	});
-	
-	// Move Forward
-	PADEVENTS.RIGHT = Pads.newEvent(Pads.RIGHT, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
-		
-		let obj = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected]
-		if (obj.Selectable)
-		{
-			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected++;
-			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected = (DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected >= obj.Count) ? (obj.Count - 1) : DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected;
-		}
-	});
-
-	// Move Down
-	PADEVENTS.DOWN = Pads.newEvent(Pads.DOWN, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
-		
-		for (let i = DATA.MESSAGE_INFO.Selected + 1; i < DATA.MESSAGE_INFO.Data.length; i++)
-		{
-			if (DATA.MESSAGE_INFO.Data[i].Selectable)
-			{
-				DATA.MESSAGE_INFO.Selected = i;
-				break;
-			}
-		}
-	});
-	
-	// Move Up
-	PADEVENTS.UP = Pads.newEvent(Pads.UP, Pads.JUST_PRESSED, () => 
-	{ 
-		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
-		
-		for (let i = DATA.MESSAGE_INFO.Selected - 1; i > -1; i--)
-		{
-			if (DATA.MESSAGE_INFO.Data[i].Selectable)
-			{
-				DATA.MESSAGE_INFO.Selected = i;
-				break;
-			}
-		}
-	});
 }
 
 // Draws the elements for the 'Information' Screen.
@@ -519,6 +402,7 @@ function DrawMessageFadeIn()
 
 function DrawMessageIdle()
 {
+    DATA.DASH_MOVE_FRAME = 0;
 	DrawMessageLines(128);
 	DrawMessageTop(128);
 	DrawMessageBottom(128);
@@ -761,7 +645,7 @@ function drawOv()
 function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
 {
     // Helper function to pad single-digit numbers with leading zeros
-    const pad = (num) => num.toString().padStart(2, '0');
+    const padnum = (num) => num.toString().padStart(2, '0');
 	
 	if ((ICOFULLA + boxAlphaMod) > ICOFULLA) { boxAlphaMod = 0; }
 	if ((ICOFULLA + boxAlphaMod) < 0) { boxAlphaMod = -ICOFULLA; }
@@ -804,12 +688,12 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
 	if ((modColor.a + textAlphaMod) < 0) { textAlphaMod = -modColor.a; }
 	modColor.a = modColor.a + textAlphaMod;
 	
-	let dateText = `${pad(day)}/${pad(month)}`;
-	let hourText = (DATA.HOUR_FORMAT) ? `${pad(hours24)}:${pad(minutes)}` : `${pad(hours12)}:${pad(minutes)} ${amPm}`;
+	let dateText = `${padnum(day)}/${padnum(month)}`;
+	let hourText = (DATA.HOUR_FORMAT) ? `${padnum(hours24)}:${padnum(minutes)}` : `${padnum(hours12)}:${padnum(minutes)} ${amPm}`;
 	
 	switch(DATA.DATE_FORMAT)
 	{
-		case 1: dateText = `${pad(month)}/${pad(day)}`; break;
+		case 1: dateText = `${padnum(month)}/${padnum(day)}`; break;
 	}
 	
 	TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 145, y:32 })

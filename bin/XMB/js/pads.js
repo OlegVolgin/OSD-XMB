@@ -6,21 +6,59 @@
 /// 				   		  										   ///
 //////////////////////////////////////////////////////////////////////////
 
-const pad = Pads.get(); // Main pad handler for Slot 1
-pad.setEventHandler(); 	// Start the Event Handler 
 let PADEVENTS = {};		// Object with Pad Events for each button.
+const pad = Pads.get(0);
 
-// Generic Function to open a Sub Menu if Triangle was Pressed.
-
-function OpenSubMenu(obj, state)
+function padHandler()
 {
-	// Only Enter if there is a valid "Option" Object on the Current Item Selected.
-	if ((obj) && ("Option" in obj))
-	{
-		// Set Dash Context Menu Object Information and change State.
-		SetDashContext(obj.Option, state);
-		optBoxA = 419; // Set Max visibility to start dissapearing.
-	}
+    pad.update();
+    let accbtn = (DATA.BTNTYPE) ? Pads.CIRCLE : Pads.CROSS;
+    let cnlbtn = (DATA.BTNTYPE) ? Pads.CROSS : Pads.CIRCLE;
+
+    if ((PADEVENTS.ACCEPT) && (pad.justPressed(accbtn)))
+    {
+        PADEVENTS.ACCEPT();
+    }
+    else if ((PADEVENTS.CANCEL) && (pad.justPressed(cnlbtn)))
+    {
+        PADEVENTS.CANCEL();
+    }
+    else if ((PADEVENTS.TRIANGLE) && (pad.justPressed(Pads.TRIANGLE)))
+    {
+        PADEVENTS.TRIANGLE();
+    }
+    else if ((PADEVENTS.LEFT) && (pad.justPressed(Pads.LEFT)))
+    {
+        PADEVENTS.LEFT();
+    }
+    else if ((PADEVENTS.LEFT) && (pad.pressed(Pads.LEFT)) && (DATA.DASH_MOVE_FRAME > 8))
+    {
+        PADEVENTS.LEFT();
+    }
+    else if ((PADEVENTS.RIGHT) && (pad.justPressed(Pads.RIGHT)))
+    {
+        PADEVENTS.RIGHT();
+    }
+    else if ((PADEVENTS.RIGHT) && (pad.pressed(Pads.RIGHT)) && (DATA.DASH_MOVE_FRAME > 8))
+    {
+        PADEVENTS.RIGHT();
+    }
+    else if ((PADEVENTS.UP) && (pad.justPressed(Pads.UP)))
+    {
+        PADEVENTS.UP();
+    }
+    else if ((PADEVENTS.UP) && (pad.pressed(Pads.UP)) && (DATA.DASH_MOVE_FRAME > 8))
+    {
+        PADEVENTS.UP();
+    }
+    else if ((PADEVENTS.DOWN) && (pad.justPressed(Pads.DOWN)))
+    {
+        PADEVENTS.DOWN();
+    }
+    else if ((PADEVENTS.DOWN) && (pad.pressed(Pads.DOWN)) && (DATA.DASH_MOVE_FRAME > 8))
+    {
+        PADEVENTS.DOWN();
+    }
 }
 
 // This will reset all pad events to avoid the user from doing an input when shouldn't.
@@ -28,7 +66,9 @@ function OpenSubMenu(obj, state)
 function ClearPadEvents()
 {
 	// Clear all existing events if any
-	
+
+    /* This should be used if PadEvents is active.
+
 	if (PADEVENTS.ACCEPT) { Pads.deleteEvent(PADEVENTS.ACCEPT); }
 	if (PADEVENTS.CANCEL) { Pads.deleteEvent(PADEVENTS.CANCEL); }
 	if (PADEVENTS.TRIANGLE) { Pads.deleteEvent(PADEVENTS.TRIANGLE); }
@@ -40,7 +80,9 @@ function ClearPadEvents()
 	if (PADEVENTS.R1) { Pads.deleteEvent(PADEVENTS.R1); }
 	if (PADEVENTS.L2) { Pads.deleteEvent(PADEVENTS.L2); }
 	if (PADEVENTS.R2) { Pads.deleteEvent(PADEVENTS.R2); }
-	
+
+    */
+
 	// Reset the Object.
 	
 	PADEVENTS = 
@@ -56,7 +98,7 @@ function ClearPadEvents()
 		R1: false,
 		L2: false,
 		R2: false,
-		START: Pads.newEvent(Pads.START, Pads.JUST_PRESSED, () => {SetDashPadEvents(DATA.DASH_PADMODE)}),
+		START: false,
 	}
 }
 
@@ -65,7 +107,6 @@ function ClearPadEvents()
 function SetDashPadEvents(MODE)
 {
 	DATA.DASH_PADMODE = MODE; // Update the current Pad Event Mode.
-	
 	switch(DATA.DASH_PADMODE)
 	{
 		case 0: ClearPadEvents(); break;			// Mode 0: No Pad Events.
@@ -73,6 +114,19 @@ function SetDashPadEvents(MODE)
 		case 2: SetPadEvents_Sub();	break;			// Mode 2: Pad Events for Sub Menus.
 		case 3: SetPadEvents_Context(); break;		// Mode 3: Pad Events for Context Menus.
 		case 4: SetPadEvents_Message(); break;		// Mode 4: Pad Events for Overlay Messages.
+	}
+}
+
+// Generic Function to open a Sub Menu if Triangle was Pressed.
+
+function OpenSubMenu(obj, state)
+{
+	// Only Enter if there is a valid "Option" Object on the Current Item Selected.
+	if ((obj) && ("Option" in obj))
+	{
+		// Set Dash Context Menu Object Information and change State.
+		SetDashContext(obj.Option, state);
+		optBoxA = 419; // Set Max visibility to start dissapearing.
 	}
 }
 
@@ -113,10 +167,10 @@ function SetPadEvents_Main()
 	
 	// Enter Item Selected
 	let AcceptBtn = (DATA.BTNTYPE) ? Pads.CIRCLE : Pads.CROSS;
-	PADEVENTS.ACCEPT = Pads.newEvent(AcceptBtn, Pads.JUST_PRESSED, () => 
+	PADEVENTS.ACCEPT = () => 
 	{ 
 		// Only execute if on a Idle state and there is a valid selected option.
-		if ((DATA.DASH_STATE == "IDLE") && (DATA.DASH_CUROPT > -1))
+		if (((DATA.DASH_STATE == "IDLE") || DATA.DASH_MOVE_FRAME > 12) && (DATA.DASH_CUROPT > -1))
 		{ 
 			DATA.DASH_MOVE_FRAME = 0; // Reset the Animation Frame
 			playCursorSFX();
@@ -141,50 +195,50 @@ function SetPadEvents_Main()
 				};
 			}
 		}
-	});
+	};
 	
 	// Move Back
-	PADEVENTS.LEFT = Pads.newEvent(Pads.LEFT, Pads.JUST_PRESSED, () => 
+	PADEVENTS.LEFT = () => 
 	{ 
 		// Check if previous Category is valid ID and current State is IDLE, or Moving back or forward.
 		if ((DATA.DASH_CURCAT - 1) > -1 && (DATA.DASH_STATE == "IDLE" || (DATA.DASH_STATE == "MOVE_BACK" || DATA.DASH_STATE == "MOVE_FORWARD"))) 
 		{ 
 			DashMovementLR(-1);
 		}
-	});
+	};
 	
 	// Move Forward
-	PADEVENTS.RIGHT = Pads.newEvent(Pads.RIGHT, Pads.JUST_PRESSED, () => 
+	PADEVENTS.RIGHT = () => 
 	{ 
 		if ((DATA.DASH_CURCAT + 1) < 7 && (DATA.DASH_STATE == "IDLE" || (DATA.DASH_STATE == "MOVE_BACK" || DATA.DASH_STATE == "MOVE_FORWARD"))) 
 		{ 
 			DashMovementLR(1);
 		}
-	});
+	};
 	
 	// Move Up
-	PADEVENTS.UP = Pads.newEvent(Pads.UP, Pads.JUST_PRESSED, () => 
+	PADEVENTS.UP = () => 
 	{ 
 		if (((DATA.DASH_CUROPT - 1) > -1) && (DATA.DASH_STATE == "IDLE" || (DATA.DASH_STATE != "MOVE_BACK" && DATA.DASH_STATE != "MOVE_FORWARD")))
 		{ 
 			DashMovementUD(-1);
 		}
-	});
+	};
 	
 	// Move Down
-	PADEVENTS.DOWN = Pads.newEvent(Pads.DOWN, Pads.JUST_PRESSED, () => 
+	PADEVENTS.DOWN = () => 
 	{ 
 		if (((DATA.DASH_CUROPT + 1) < DASH_CAT[DATA.DASH_CURCAT].ItemCount) && (DATA.DASH_STATE == "IDLE" || (DATA.DASH_STATE != "MOVE_BACK" && DATA.DASH_STATE != "MOVE_FORWARD"))) 
 		{ 
 			DashMovementUD(1);	
 		}
-	});
+	};
 	
 	// Open Option Context Menu
-	PADEVENTS.TRIANGLE = Pads.newEvent(Pads.TRIANGLE, Pads.JUST_PRESSED, () => 
+	PADEVENTS.TRIANGLE = () => 
 	{
 		OpenSubMenu(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT], "MENU_CONTEXT_IN");
-	});
+	};
 	
 }
 
@@ -197,7 +251,7 @@ function SetPadEvents_Sub()
 	const DashSubMoveBack = function()
 	{
 		// Only go back if on an IDLE state.
-		if ((DATA.DASH_STATE == "SUBMENU_IDLE") || (DATA.DASH_STATE == "NEW_SUBMENU_IDLE"))
+		if ((DATA.DASH_STATE == "SUBMENU_IDLE") || (DATA.DASH_STATE == "NEW_SUBMENU_IDLE") || (DATA.DASH_MOVE_FRAME > 12))
 		{
 			playCancelSFX();
 			
@@ -223,10 +277,10 @@ function SetPadEvents_Sub()
 	
 	// Enter Selected Item.
 	let AcceptBtn = (DATA.BTNTYPE) ? Pads.CIRCLE : Pads.CROSS;
-	PADEVENTS.ACCEPT = Pads.newEvent(AcceptBtn, Pads.JUST_PRESSED, () =>
+	PADEVENTS.ACCEPT = () =>
 	{
 		// Only enter if State is IDLE and there is a valid Item Selected.
-		if (((DATA.DASH_STATE == "SUBMENU_IDLE") || (DATA.DASH_STATE == "NEW_SUBMENU_IDLE")) && (DATA.DASH_CURSUBOPT > -1))
+		if (((DATA.DASH_STATE == "SUBMENU_IDLE") || (DATA.DASH_STATE == "NEW_SUBMENU_IDLE") || (DATA.DASH_MOVE_FRAME > 12)) && (DATA.DASH_CURSUBOPT > -1))
 		{
 			DATA.DASH_MOVE_FRAME = 0; // Reset the Animation Frame.
 			playCursorSFX();
@@ -236,22 +290,22 @@ function SetPadEvents_Sub()
 			
 			SelectItem();  
 		}
-	});
+	};
 	
 	// Set the Go Back Event to both Cancel button and Left Pad.
 	let CancelBtn = (DATA.BTNTYPE) ? Pads.CROSS : Pads.CIRCLE;
-	PADEVENTS.CANCEL = Pads.newEvent(CancelBtn, Pads.JUST_PRESSED, DashSubMoveBack);
-	PADEVENTS.LEFT = Pads.newEvent(Pads.LEFT, Pads.JUST_PRESSED, DashSubMoveBack);
+	PADEVENTS.CANCEL = DashSubMoveBack;
+	PADEVENTS.LEFT = DashSubMoveBack;
 	
 	// Move Up and Down
-	PADEVENTS.UP = Pads.newEvent(Pads.UP, Pads.JUST_PRESSED, () => { if (((DATA.DASH_CURSUBOPT - 1) > -1)) { DashSubMoveUD(-1); } });
-	PADEVENTS.DOWN = Pads.newEvent(Pads.DOWN, Pads.JUST_PRESSED, () => { if (((DATA.DASH_CURSUBOPT + 1) < DASH_SUB[DATA.DASH_CURSUB].ItemCount)) { DashSubMoveUD(1); } });
+	PADEVENTS.UP = () => { if (((DATA.DASH_CURSUBOPT - 1) > -1)) { DashSubMoveUD(-1); } };
+	PADEVENTS.DOWN = () => { if (((DATA.DASH_CURSUBOPT + 1) < DASH_SUB[DATA.DASH_CURSUB].ItemCount)) { DashSubMoveUD(1); } };
 	
 	// Open Option Context Menu
-	PADEVENTS.TRIANGLE = Pads.newEvent(Pads.TRIANGLE, Pads.JUST_PRESSED, () => 
+	PADEVENTS.TRIANGLE = () => 
 	{
 		OpenSubMenu(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT], "SUBMENU_CONTEXT_IN");
-	});
+	};
 }
 
 // Sets the Pad Events for Context (Option) Menus.
@@ -260,7 +314,7 @@ function SetPadEvents_Context()
 {
 	// Go Back
 	let CancelBtn = (DATA.BTNTYPE) ? Pads.CROSS : Pads.CIRCLE;
-	PADEVENTS.CANCEL = Pads.newEvent(CancelBtn, Pads.JUST_PRESSED, () => 
+	PADEVENTS.CANCEL = () => 
 	{ 
 		if ((DATA.DASH_STATE == "SUBMENU_CONTEXT") || (DATA.DASH_STATE == "MENU_CONTEXT"))
 		{
@@ -276,11 +330,11 @@ function SetPadEvents_Context()
 			DATA.DASH_MOVE_FRAME = 0;
 			SetDashPadEvents(0);
 		}
-	});
+	};
 	
 	// Select Option
 	let AcceptBtn = (DATA.BTNTYPE) ? Pads.CIRCLE : Pads.CROSS;
-	PADEVENTS.ACCEPT = Pads.newEvent(AcceptBtn, Pads.JUST_PRESSED, () => 
+	PADEVENTS.ACCEPT = () => 
 	{ 
 		if ((DATA.DASH_STATE == "SUBMENU_CONTEXT") || (DATA.DASH_STATE == "MENU_CONTEXT"))
 		{
@@ -297,10 +351,10 @@ function SetPadEvents_Context()
 			
 			DASH_CTX[DATA.DASH_CURCTXLVL].Default = DASH_CTX[DATA.DASH_CURCTXLVL].Selected;
 		}
-	});
+	};
 	
 	// Move Up
-	PADEVENTS.UP = Pads.newEvent(Pads.UP, Pads.JUST_PRESSED, () => 
+	PADEVENTS.UP = () => 
 	{ 
 		if ((DASH_CTX[DATA.DASH_CURCTXLVL].Selected - 1) > -1)
 		{
@@ -315,10 +369,10 @@ function SetPadEvents_Context()
 				DATA.DASH_CURCTXITMLAST--;
 			}
 		}
-	});
+	};
 	
 	// Move Down
-	PADEVENTS.DOWN = Pads.newEvent(Pads.DOWN, Pads.JUST_PRESSED, () => 
+	PADEVENTS.DOWN = () => 
 	{ 
 		if ((DASH_CTX[DATA.DASH_CURCTXLVL].Selected + 1) < DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount)
 		{
@@ -333,7 +387,7 @@ function SetPadEvents_Context()
 				DATA.DASH_CURCTXITMLAST++;
 			}
 		}
-	});
+	};
 }
 
 // Set the Pad Events for Generic Overlay Messages.
@@ -346,7 +400,7 @@ function SetPadEvents_Message()
 	{
 		// Go Back
 		let CancelBtn = (DATA.BTNTYPE) ? Pads.CROSS : Pads.CIRCLE;
-		PADEVENTS.CANCEL = Pads.newEvent(CancelBtn, Pads.JUST_PRESSED, () => 
+		PADEVENTS.CANCEL = () => 
 		{ 
 			if (DATA.OVSTATE == "MESSAGE_IDLE")
 			{
@@ -359,14 +413,14 @@ function SetPadEvents_Message()
 					DATA.MESSAGE_INFO.Cancel();
 				}
 			}
-		});
+		};
 	}
 	
 	if (("ENTER_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.ENTER_BTN))
 	{
 		// Select Option
 		let AcceptBtn = (DATA.BTNTYPE) ? Pads.CIRCLE : Pads.CROSS;
-		PADEVENTS.ACCEPT = Pads.newEvent(AcceptBtn, Pads.JUST_PRESSED, () => 
+		PADEVENTS.ACCEPT = () => 
 		{ 
 			if (DATA.OVSTATE == "MESSAGE_IDLE")
 			{
@@ -381,8 +435,139 @@ function SetPadEvents_Message()
 				}
 				console.log(`PADEVENT: Completed Message Confirm Function.`);
 			}
-		});
+		};
 	}
+}
+
+// Set the Special Pad Events for the Video Mode Message Screen.
+
+function SetPadEvents_Vmode()
+{
+	// Move Back
+	PADEVENTS.LEFT = () => 
+	{ 
+		if (DATA.OVSTATE == "MESSAGE_IDLE")
+		{
+			DATA.MESSAGE_INFO.Selected--;
+			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected < 0) ? 0 : DATA.MESSAGE_INFO.Selected;
+		}
+	};
+	
+	// Move Forward
+	PADEVENTS.RIGHT = () => 
+	{ 
+		if (DATA.OVSTATE == "MESSAGE_IDLE")
+		{
+			DATA.MESSAGE_INFO.Selected++;
+			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected > 1) ? 1 : DATA.MESSAGE_INFO.Selected;
+		}
+	};
+}
+
+// Set Special Pad Events for Parental Control Code Screen
+
+function SetPadEvents_Parental()
+{
+	// Move Back
+	PADEVENTS.LEFT = () => 
+	{ 
+		if (DATA.OVSTATE == "MESSAGE_IDLE")
+		{
+			DATA.MESSAGE_INFO.Selected--;
+			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected < 0) ? 0 : DATA.MESSAGE_INFO.Selected;
+		}
+	};
+	
+	// Move Forward
+	PADEVENTS.RIGHT = () => 
+	{ 
+		if (DATA.OVSTATE == "MESSAGE_IDLE")
+		{
+			DATA.MESSAGE_INFO.Selected++;
+			DATA.MESSAGE_INFO.Selected = (DATA.MESSAGE_INFO.Selected > 3) ? 3 : DATA.MESSAGE_INFO.Selected;
+		}
+	};
+
+	// Move Down
+	PADEVENTS.DOWN = () => 
+	{ 
+		if (DATA.OVSTATE == "MESSAGE_IDLE")
+		{
+			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected]--;
+			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] = (DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] < 0) ? 9 : DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected];
+		}
+	};
+	
+	// Move Up
+	PADEVENTS.UP = () => 
+	{ 
+		if (DATA.OVSTATE == "MESSAGE_IDLE")
+		{
+			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected]++;
+			DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] = (DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected] > 9) ? 0 : DATA.MESSAGE_INFO.TMPCODE[DATA.MESSAGE_INFO.Selected];
+		}
+	};
+}
+
+// Set Special Pad Events for a Generic Information Message Screen
+
+function SetPadEvents_Information()
+{
+	// Move Back
+	PADEVENTS.LEFT = () => 
+	{ 
+		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
+		
+		let obj = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected]
+		if (obj.Selectable)
+		{
+			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected--;
+			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected = (DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected < 0) ? 0 : DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected;
+		}
+	};
+	
+	// Move Forward
+	PADEVENTS.RIGHT = () => 
+	{ 
+		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
+		
+		let obj = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected]
+		if (obj.Selectable)
+		{
+			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected++;
+			DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected = (DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected >= obj.Count) ? (obj.Count - 1) : DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Selected;
+		}
+	};
+
+	// Move Down
+	PADEVENTS.DOWN = () => 
+	{ 
+		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
+		
+		for (let i = DATA.MESSAGE_INFO.Selected + 1; i < DATA.MESSAGE_INFO.Data.length; i++)
+		{
+			if (DATA.MESSAGE_INFO.Data[i].Selectable)
+			{
+				DATA.MESSAGE_INFO.Selected = i;
+				break;
+			}
+		}
+	};
+	
+	// Move Up
+	PADEVENTS.UP = () => 
+	{ 
+		if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
+		
+		for (let i = DATA.MESSAGE_INFO.Selected - 1; i > -1; i--)
+		{
+			if (DATA.MESSAGE_INFO.Data[i].Selectable)
+			{
+				DATA.MESSAGE_INFO.Selected = i;
+				break;
+			}
+		}
+	};
 }
 
 console.log("INIT: PADS INIT COMPLETE");

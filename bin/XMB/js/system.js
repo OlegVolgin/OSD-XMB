@@ -609,7 +609,7 @@ function SetDashContext(CONTEXT, STATE)
 
 function SelectItem()
 {
-	if (DATA.DASH_STATE == "IDLE")
+	if (DATA.DASH_CURSUB < 0)
 	{	
 		switch(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Type)
 		{
@@ -628,7 +628,7 @@ function SelectItem()
 				break;
 		}
 	}
-	else if ((DATA.DASH_STATE == "SUBMENU_IDLE") || (DATA.DASH_STATE == "NEW_SUBMENU_IDLE"))
+	else
 	{
 		switch(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Type)
 		{

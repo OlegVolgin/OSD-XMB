@@ -443,7 +443,8 @@ function boot()
 
 function main()
 {
-	drawBg(); // Handles all Background elements.
+    padHandler();   // Updates Pads and triggers events.
+	drawBg();       // Handles all Background elements.
 	
 	// Handle the current state of the app.
 	// State numbers are completely arbitrary and do not mean anything.
