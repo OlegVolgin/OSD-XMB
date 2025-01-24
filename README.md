@@ -61,7 +61,7 @@ dashboard by Howling Wolf & Chelsea.
 
 ## Instructions
 
--	Place the "neutrino" folder on Memory Card Slot 1 if you intend to use it
+-	Place the "neutrino" folder on either Memory Card Slot 1 or 2 if you intend to use it
 	to launch games from USB using Neutrino.
 -	Place the OSDXMB folder at the root of your USB Drive or from whatever
 	device you intend to run it, personally I recommend you to auto-boot to it.
