@@ -77,6 +77,8 @@ Based on: AthenaEnv by DanielSant0s.
 - LOWbster (German).
 	
 <ins>Special thanks to</ins>:
-- sync-on-luma for his original Neutrino Plugin for XtremeEliteBoot.
-- Pmp174 for the Boot sequence and general feedback.
+- sync-on-luma for his original Neutrino Plugin for XtremeEliteBoot and general feedback.
+- xGamereqPL for testing and general feedback.
+- BlackNinja for testing and general feedback.
+- Pmp174 for the Boot sequence feedback.
 - You! Thanks for using the app.
