@@ -339,8 +339,6 @@ function InitDashboard()
 }
 
 InitDashboard();
-Sound.play(AudioPlaying, 0);
-Sound.repeat(false, 0);
 
 /*	Info:	
 
@@ -357,9 +355,11 @@ function boot()
 	switch(DATA.BOOT_STATE)
 	{
 		case 0: // BLACK SCREEN
-			Sound.setVolume(50 + Math.round(DATA.FADE_FRAME / 3));
 			DATA.OVCOL = Color.new(0, 0, 0, 128);
-			if (DATA.FADE_FRAME > 128) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; }
+            Sound.play(AudioPlaying, 0);
+            Sound.repeat(false, 0);
+            DATA.FADE_FRAME = 0;
+            DATA.BOOT_STATE++;
 			break;
 		case 1: // FADE IN BACKGROUND
 			Sound.setVolume(100);
@@ -392,10 +392,9 @@ function boot()
 			DATA.BOOT_STATE = (DATA.FADE_FRAME > 127) ? (DATA.BOOT_STATE + 1) : DATA.BOOT_STATE;
 			break;
 		case 6: // DISPLAY WARNING TEXT
-			let fadeInColorB = Color.new(0, 0, 0, 64);
-			Draw.rect(0, 0, DATA.CANVAS.width, DATA.CANVAS.height, fadeInColorB);
+			Draw.rect(0, 0, DATA.CANVAS.width, DATA.CANVAS.height, Color.new(0, 0, 0, 64));
 			DisplayBootWarningText(128);
-			if (DATA.FADE_FRAME > 512) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; }
+			if (DATA.FADE_FRAME > 256) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; }
 			break;
 		case 7: // FADE OUT WARNING TEXT
 			let fadeInAlphaB = (DATA.FADE_FRAME > 63) ? 64 : DATA.FADE_FRAME;
@@ -468,7 +467,7 @@ function main()
 			break;
 	}
 	
-	PrintDebugInfo(); 		// Prints FPS and current RAM usage at the bottom of the screen.
+	//PrintDebugInfo(); 		// Prints FPS and current RAM usage at the bottom of the screen.
 	SoundStopProcess(); 	// If not present, after sound finishes playing the app freezes.
 	processThreadCopy();	// This will process a thread Copy operation if it has been queued.
 	

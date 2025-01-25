@@ -63,6 +63,10 @@ let brightnessFrame = 0.0f;
 let themeColor = Color.new(currentBgColor.r, currentBgColor.g, currentBgColor.b, currentBgColor.a);
 let prevColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: currentBgColor.a };
 
+//////////////////////////////////////////////////////////////////////////
+///*				   		       WAVES    						  *///
+//////////////////////////////////////////////////////////////////////////
+
 // Main Wave Object, which will handle the
 // two moving backgound waves.
 
@@ -71,7 +75,7 @@ const Waves = (() => {
 	let screenWidth = 640;
 	let screenHeight = 448;
 	let time = 0;
-	const step = 4;
+	const step = 6;
 
 	// Wave constants
 	const wave1ColorBottom = Color.new(0, 0, 0, 36);
@@ -128,7 +132,8 @@ const Waves = (() => {
 			Draw.rect(x, currentY2, step, screenHeight, wave2ColorBottom);
 		}
 		
-		time = (time + 1) % 10363;
+		time++;
+        if (time < 0) { time = 0; }
 	}
 
 	return {
@@ -140,7 +145,7 @@ const Waves = (() => {
 Waves.setThemeColor(currentBgColor);
 
 //////////////////////////////////////////////////////////////////////////
-///*				   		    FUNCTIONS							  *///
+///*				   		 MESSAGE FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
 // This draws the two horizontal lines for the Message Screen.
@@ -273,7 +278,7 @@ function InitParentalCheckMessageSettings()
 
 function DrawParentalCodeMessage(txtColor, arrAlpha)
 {
-	let baseX = Math.round(DATA.CANVAS.width / 2) - 50;
+	let baseX = Math.round(DATA.CANVAS.width / 2) - 50 - (DATA.WIDESCREEN * 32);
 	let baseY = Math.round(DATA.CANVAS.height / 2) + 20;
 	
 	for (let i = 0; i < 4; i++)
@@ -289,12 +294,12 @@ function DrawParentalCodeMessage(txtColor, arrAlpha)
 	dash_arrow.color = Color.new(255,255,255,arrAlpha);
 
 	dash_arrow.angle = -0.5f;
-	dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2, baseY + 5);
+	dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2 + (DATA.WIDESCREEN * 32), baseY + 5);
 	dash_arrow.angle = 0.5f;
-	dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2, baseY + 31);
+	dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2 + (DATA.WIDESCREEN * 32), baseY + 31);
 	dash_arrow.angle = 0.0f;
 	
-	TxtPrint(DATA.MESSAGE_INFO.Processed, txtColor, { x: 5 + (DATA.WIDESCREEN * 32), y: -20}, "CENTER");
+	TxtPrint(DATA.MESSAGE_INFO.Processed, txtColor, { x: (DATA.WIDESCREEN * 32) + 12, y: -20}, "CENTER");
 }
 
 // Initializes a Generic 'Information' Screen Message Object. 
@@ -319,8 +324,8 @@ function InitMessageInfoScreenSettings()
 
 function DrawMessageInfoScreen(txtColor, arrAlpha)
 {
-	const nameX = (DATA.WIDESCREEN * 32) - Math.round(DATA.CANVAS.width / 2) - 40;
-	const descX = (DATA.WIDESCREEN * 32) + Math.round(DATA.CANVAS.width / 2) - 40;
+	const nameX = -(Math.round(DATA.CANVAS.width / 2) + 16 - (DATA.WIDESCREEN * 96));
+	const descX = (Math.round(DATA.CANVAS.width / 2) - 24);
 	const baseY = Math.round(DATA.CANVAS.height / 2) - (DATA.MESSAGE_INFO.Data.length * 8)
 	for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
 	{
@@ -502,6 +507,10 @@ function DrawMessageFadeOut()
 	
 	if (DATA.DASH_MOVE_FRAME > 19) { DATA.OVSTATE = "IDLE" }
 }
+
+//////////////////////////////////////////////////////////////////////////
+///*				   		  MAIN FUNCTIONS						  *///
+//////////////////////////////////////////////////////////////////////////
 
 // This will parse the current time to get the automatic background brightness.
 

@@ -154,6 +154,7 @@ function dashboard()
 			break;
 		case "MENU_CONTEXT":
 			if (DATA.DASH_PADMODE != 3) { SetDashPadEvents(3); }
+            DATA.DASH_MOVE_FRAME = 0;
 			DrawSelectedItem(DATA.DASH_CURCAT, DATA.DASH_CUROPT, 20, -10, -10, 0, -105, 20, 0, -105);
 			DrawUnselectedItemsInsideSub(0, 0, -8, 8, -60, -128);
 			DrawSelectedCat(DATA.DASH_CURCAT, 0, 0, 0, 0, -128);
@@ -244,6 +245,7 @@ function dashboard()
 			break;
 		case "SUBMENU_CONTEXT":
 			if (DATA.DASH_PADMODE != 3) { SetDashPadEvents(3); }
+            DATA.DASH_MOVE_FRAME = 0;
 			DrawContextSubMenuContent();
 			DrawContextMenu();
 			DrawContextOptions();
