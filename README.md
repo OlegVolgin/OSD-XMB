@@ -77,7 +77,9 @@ Based on: AthenaEnv by DanielSant0s.
 - LOWbster (German).
 	
 <ins>Special thanks to</ins>:
-- sync-on-luma for his original Neutrino Plugin for XtremeEliteBoot and general feedback.
+- krHACKen for his [POPStarter](https://bitbucket.org/ShaolinAssassin/popstarter-documentation-stuff/wiki/Home) project.
+- rickgaiser for his [neutrino](https://github.com/rickgaiser/neutrino) app.
+- sync-on-luma for his original [Neutrino Plugin](https://github.com/sync-on-luma/xebplus-neutrino-loader-plugin) for XtremeEliteBoot and general feedback.
 - xGamereqPL for testing and general feedback.
 - BlackNinja for testing and general feedback.
 - Pmp174 for the Boot sequence feedback.
