@@ -72,8 +72,7 @@ let prevColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b,
 
 const Waves = (() => {
 	// Wave constants
-	let screenWidth = 640;
-	let screenHeight = 448;
+	let screenWidth = DATA.CANVAS.width;
 	let time = 0;
 	const step = 6;
 
@@ -84,7 +83,7 @@ const Waves = (() => {
 	const wave2Amplitude = 32.0f;
 	const waveLength = 0.005f;
 	const wave2Speed = 0.021f;
-	const baseYStart = 320;
+	const baseYStart = DATA.CANVAS.height - 128;
 
 	// Precompute x-wave values
 	const precomputedXWave = [];
@@ -112,6 +111,7 @@ const Waves = (() => {
 	function renderWaves() 
 	{
 		const width = Screen.getMode().width;
+        const height = Screen.getMode().height;
 		
 		if (width !== screenWidth) { screenWidth = width; precomputeValues(); }
 		
@@ -127,9 +127,9 @@ const Waves = (() => {
 			const currentY2 = baseYStart + (y2 + 1);
 
 			// Draw wave 1 bottom
-			Draw.rect(x, currentY1, step, screenHeight, wave1ColorBottom);
+			Draw.rect(x, currentY1, step, height, wave1ColorBottom);
 			Draw.rect(x, currentY2 - 1, step, 2, wave2ColorTop);
-			Draw.rect(x, currentY2, step, screenHeight, wave2ColorBottom);
+			Draw.rect(x, currentY2, step, height, wave2ColorBottom);
 		}
 		
 		time++;
@@ -153,7 +153,7 @@ Waves.setThemeColor(currentBgColor);
 function DrawMessageLines(a)
 {
 	Draw.line((DATA.WIDESCREEN * 32), 80, DATA.CANVAS.width - (DATA.WIDESCREEN * 32), 80, Color.new(196,196,196, a));
-	Draw.line((DATA.WIDESCREEN * 32), 375, DATA.CANVAS.width - (DATA.WIDESCREEN * 32), 375, Color.new(196,196,196, a));
+	Draw.line((DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), DATA.CANVAS.width - (DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), Color.new(196,196,196, a));
 }
 
 // This draws the Icon and Title for the Message Screen if there are any.
@@ -182,13 +182,13 @@ function DrawMessageBottom(alpha)
 	if (("BACK_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.BACK_BTN))
 	{
 		let backBtnString = (DATA.BTNTYPE) ? `X  ${TXT_MESSAGE_BACK[DATA.LANGUAGE]}` : `O  ${TXT_MESSAGE_BACK[DATA.LANGUAGE]}`;
-		TxtPrint(backBtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 80 + (DATA.WIDESCREEN * 32), y:151 }, "CENTER");
+		TxtPrint(backBtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 80 + (DATA.WIDESCREEN * 32), y:(DATA.CANVAS.height - 297) }, "CENTER");
 	}
 	
 	if (("ENTER_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.ENTER_BTN))
 	{
 		let BtnString = (DATA.BTNTYPE) ? `O  ${TXT_MESSAGE_ENTER[DATA.LANGUAGE]}` : `X  ${TXT_MESSAGE_ENTER[DATA.LANGUAGE]}`;
-		TxtPrint(BtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: -70 + (DATA.WIDESCREEN * 32), y:151 }, "CENTER");
+		TxtPrint(BtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: -70 + (DATA.WIDESCREEN * 32), y:(DATA.CANVAS.height - 297) }, "CENTER");
 	}
 }
 

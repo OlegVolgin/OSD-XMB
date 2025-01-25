@@ -417,7 +417,8 @@ function DrawInterfaceFade(frm, direction = 1)
 function DrawSelectedCat(cat = DATA.DASH_CURCAT, sizeMod = 0, xMod = 0, yMod = 0, aMod = 0, txtAmod = 0)
 {	
 	DrawDashElementIcon(DASH_CAT[cat], 72 + sizeMod, 142 + xMod, 104 + yMod, aMod);
-	TxtPrint(DASH_CAT[cat].Name[DATA.LANGUAGE], { r:255, g: 255, b: 255, a: TXTFULLA + txtAmod }, { x: (-142 + xMod), y: -60 }, "CENTER");
+    const yPos = (Math.round((DATA.CANVAS.height - 328) / 2));
+	TxtPrint(DASH_CAT[cat].Name[DATA.LANGUAGE], { r:255, g: 255, b: 255, a: TXTFULLA + txtAmod }, { x: (-142 + xMod), y: -yPos }, "CENTER");
 }
 
 // Draws an Unselected Category Icon.
