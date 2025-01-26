@@ -356,15 +356,18 @@ function boot()
 	{
 		case 0: // BLACK SCREEN
 			DATA.OVCOL = Color.new(0, 0, 0, 128);
-            Sound.play(AudioPlaying, 0);
-            Sound.repeat(false, 0);
             DATA.FADE_FRAME = 0;
             DATA.BOOT_STATE++;
 			break;
 		case 1: // FADE IN BACKGROUND
-			Sound.setVolume(100);
 			DATA.OVCOL = Color.new(0, 0, 0,  128 - DATA.FADE_FRAME);
 			DATA.BOOT_STATE = (DATA.FADE_FRAME > 63) ? (DATA.BOOT_STATE + 1) : DATA.BOOT_STATE;
+            if (DATA.FADE_FRAME === 12)
+            {
+                Sound.play(AudioPlaying, 0);
+                Sound.repeat(false, 0);
+			    Sound.setVolume(100);
+            }
 			break;
 		case 2: // FADE IN BG + LOGO
 			DATA.OVCOL = Color.new(0, 0, 0,  128 - DATA.FADE_FRAME);

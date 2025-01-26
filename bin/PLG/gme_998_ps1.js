@@ -33,8 +33,8 @@ const TXT_VMCMODE = [ "Default", "Slot 2 Only", "Slot 1 Only" ];
 
 let gameList = [];
 let popsPaths = [];
-popsPaths.push(`mass:/POPS/`);
-popsPaths.push(`${System.boot_path}/POPS/`);
+popsPaths.push(`mass:/`);
+popsPaths.push(`${System.boot_path}/`);
 
 const cfgPath = "pops.cfg";
 const cfg = DATA.CONFIG.Get(cfgPath);
@@ -358,10 +358,23 @@ function findICO(baseFilename)
 function getGames()
 {
 	let lastPlayed = 0;
+    const scannedPaths = [];
 	
 	for (let i = 0; i < popsPaths.length; i++)
 	{
-		PopsParseDirectory(popsPaths[i]);
+		if (popsPaths[i].endsWith("//")) 
+		{
+		  popsPaths[i] = popsPaths[i].slice(0, -1);
+		}
+		
+		if ((scannedPaths.length > 0) && (scannedPaths.includes(popsPaths[i])))
+		{
+			continue;
+		}
+		
+		PopsParseDirectory(`${popsPaths[i]}POPS/`);
+
+        scannedPaths.push(popsPaths[i]);
 	}
 
 	gameList.sort((a, b) => a.Name.localeCompare(b.Name));

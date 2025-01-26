@@ -97,6 +97,8 @@ function TryAddMC(path, slot, name)
 			});
 		}
 	});
+
+	directories.sort((a, b) => a.Name.localeCompare(b.Name));
 	
 	if (directories.length > 0)
 	{

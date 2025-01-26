@@ -14,13 +14,13 @@ const sfx_boot = (std.exists(`${DATA.THEME_PATH}sound/snd_boot.wav`)) ? `${DATA.
 let currAudioDuration = calculateWavValue(sfx_boot);
 let AudioPlaying = Sound.load(sfx_boot);
 
-//const sfx_cursor = (std.exists(`${DATA.THEME_PATH}sound/snd_cursor.wav`)) ? `${DATA.THEME_PATH}sound/snd_cursor.wav` : `./THM/Original/sound/snd_cursor.wav`;
-//const cursorSFX_AudioDuration = calculateWavValue(sfx_cursor);
-const cursorSFX = null; //Sound.load(sfx_cursor);
+const sfx_cursor = (std.exists(`${DATA.THEME_PATH}sound/snd_cursor.wav`)) ? `${DATA.THEME_PATH}sound/snd_cursor.wav` : `./THM/Original/sound/snd_cursor.wav`;
+const cursorSFX_AudioDuration = 0; //calculateWavValue(sfx_cursor);
+const cursorSFX = false; //Sound.load(sfx_cursor);
 
-//const sfx_cancel = (std.exists(`${DATA.THEME_PATH}sound/snd_cancel.wav`)) ? `${DATA.THEME_PATH}sound/snd_cancel.wav` : `./THM/Original/sound/snd_cancel.wav`;
-//const cancelSFX_AudioDuration = calculateWavValue(sfx_cancel);
-const cancelSFX = null; //Sound.load(sfx_cancel);
+const sfx_cancel = (std.exists(`${DATA.THEME_PATH}sound/snd_cancel.wav`)) ? `${DATA.THEME_PATH}sound/snd_cancel.wav` : `./THM/Original/sound/snd_cancel.wav`;
+const cancelSFX_AudioDuration = 0; //calculateWavValue(sfx_cancel);
+const cancelSFX = false; //Sound.load(sfx_cancel);
 
 /*	Manual Sound Stop process to avoid the audio to finish (and crash the app)  */
 
@@ -74,7 +74,6 @@ function calculateWavValue(filePath)
 
 function playSound(path)
 {
-	if (disableSound) { return; }
 	if (!path.endsWith(".wav")) { return; }
 	
 	Sound.pause(AudioPlaying);
@@ -110,7 +109,7 @@ function playCursorSFX()
 		Sound.restart(AudioPlaying);
 		Sound.play(AudioPlaying);
 	}
-	*/
+	//*/
 }
 
 /*	Play the XMB's Cancel SFX  */
@@ -132,7 +131,7 @@ function playCancelSFX()
 		Sound.restart(AudioPlaying);
 		Sound.play(AudioPlaying);
 	}
-	*/
+	//*/
 }
 
 console.log("INIT: SOUND INIT COMPLETE");

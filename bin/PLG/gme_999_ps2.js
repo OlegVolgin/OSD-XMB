@@ -29,7 +29,15 @@ let devices = [ "usb", "usb", "mx4sio", "ata", "udpbd" ];
 let roots = [ `${System.boot_path}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/" ];
 let fsmodes = [ "exfat", "exfat", "exfat", "hdl", "bd" ];
 
-const elfPath = `${System.boot_path}/APPS/neutrino/neutrino.elf`;
+// For cases when the executable is placed directly at root.
+let basepath = `${System.boot_path}/`;
+
+if (basepath.endsWith("//")) 
+{
+    basepath = basepath.slice(0, -1);
+}
+
+const elfPath = `${basepath}APPS/neutrino/neutrino.elf`;
 const cfgPath = "neutrino.cfg";
 const cfg = DATA.CONFIG.Get(cfgPath);
 
@@ -336,11 +344,25 @@ function getGames()
     }
 	
 	let lastPlayed = 0;
-	
+    let scannedPaths = [];
+
 	for (let i = 0; i < devices.length; i++)
 	{
+        // If ends with double slashes, trim.
+		if (roots[i].endsWith("//")) 
+		{
+			roots[i] = roots[i].slice(0, -1);
+		}
+		
+		if ((scannedPaths.length > 0) && (scannedPaths.includes(roots[i])))
+		{
+			continue;
+		}
+
 		ParseDirectory(`${roots[i]}DVD/`, devices[i], fsmodes[i]);
 		ParseDirectory(`${roots[i]}CD/`, devices[i], fsmodes[i]);
+
+        scannedPaths.push(roots[i]);
 	}
 
 	gameList.sort((a, b) => a.Name.localeCompare(b.Name));
