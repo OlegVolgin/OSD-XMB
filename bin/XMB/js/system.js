@@ -162,6 +162,74 @@ function logl(line)
 	file.close();
 }
 
+/* Decode a byte array into a UTF-8 string */
+
+function utf8Decode(byteArray) {
+    let result = '';
+    let i = 0;
+
+    while (i < byteArray.length) {
+        const byte1 = byteArray[i++];
+
+        if (byte1 <= 0x7F) {
+            // 1-byte character (ASCII)
+            if (byte1 === 0x0) { result += String.fromCharCode(0xA); }
+            else { result += String.fromCharCode(byte1); }
+        } else if (byte1 >= 0xC0 && byte1 <= 0xDF) {
+            // 2-byte character
+            const byte2 = byteArray[i++];
+            const charCode = ((byte1 & 0x1F) << 6) | (byte2 & 0x3F);
+            result += String.fromCharCode(charCode);
+        } else if (byte1 >= 0xE0 && byte1 <= 0xEF) {
+            // 3-byte character
+            const byte2 = byteArray[i++];
+            const byte3 = byteArray[i++];
+            const charCode = ((byte1 & 0x0F) << 12) |
+                             ((byte2 & 0x3F) << 6) |
+                             (byte3 & 0x3F);
+            result += String.fromCharCode(charCode);
+        } else if (byte1 >= 0xF0 && byte1 <= 0xF7) {
+            // 4-byte character (rare, for supplementary planes)
+            const byte2 = byteArray[i++];
+            const byte3 = byteArray[i++];
+            const byte4 = byteArray[i++];
+            const charCode = ((byte1 & 0x07) << 18) |
+                             ((byte2 & 0x3F) << 12) |
+                             ((byte3 & 0x3F) << 6) |
+                             (byte4 & 0x3F);
+            result += String.fromCodePoint(charCode);
+        }
+    }
+
+    return result;
+}
+
+function readFileAsUtf8(filepath)
+{
+	const file = os.open(filepath, os.O_RDONLY);
+
+    if (file < 0)
+    {
+        return "Could not Open File: " + filepath;
+    }
+
+    const flen = os.seek(file, 0, std.SEEK_END);
+
+    if (flen > 0)
+    {
+        const array = new Uint8Array(flen);
+		os.seek(file, 0, std.SEEK_SET);
+		os.read(file, array.buffer, 0, flen);
+        os.close(file);
+
+        return utf8Decode(array);
+    }
+    else
+    {
+        return `Invalid File Length for ${filepath} : ${flen.toString()}`;
+    }
+}
+
 /* Get the root of a path */
 
 function getRootName(path) 

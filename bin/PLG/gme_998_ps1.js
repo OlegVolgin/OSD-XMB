@@ -364,7 +364,7 @@ function getGames()
 	{
 		if (popsPaths[i].endsWith("//")) 
 		{
-		  popsPaths[i] = popsPaths[i].slice(0, -1);
+		    popsPaths[i] = popsPaths[i].slice(0, -1);
 		}
 		
 		if ((scannedPaths.length > 0) && (scannedPaths.includes(popsPaths[i])))
