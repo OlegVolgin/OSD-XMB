@@ -25,13 +25,17 @@ const NAME_MAIN =
 /// 	Here is the main info that will be retrieved by the App.   	   ///
 //////////////////////////////////////////////////////////////////////////
 
+let elfPath = `${System.boot_path}/OSDXMB.ELF`;
+
+if (`${System.boot_path}/`.endsWith("//")) { elfPath = `${System.boot_path}OSDXMB.ELF`; }
+
 const Info = {
 	Name: NAME_MAIN,
 	Description: "",
 	Icon: 20,
 	Category: 0,
 	Type: "ELF",
-	Value: { Path: (`${System.boot_path}/OSDXMB.ELF`), Args: [ "main.js", ]},
+	Value: { Path: elfPath, Args: [ "main.js" ] },
 };
 
 return Info;

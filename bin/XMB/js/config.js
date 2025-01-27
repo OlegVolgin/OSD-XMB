@@ -29,7 +29,7 @@
 
 DATA.CONFIG = {
 	
-	configPath: "./CFG/",
+	configPath: `${System.boot_path}/CFG/`,
 	queue: [],
 	
 	Get: function(path)
@@ -66,15 +66,18 @@ DATA.CONFIG = {
 	Set: function(path, config)
 	{
 		path = `${this.configPath}${path}`;
-		
 		const file = std.open(path, "w");
-		// Iterate through the table and write each key-value pair
-		for (const key in config) {
-			const line = `${key.toString()}=${config[key].toString()}\n`; // Format as KEY=VALUE
-			file.puts(line); // Write to file
-		}
-		file.flush();
-		file.close();
+
+        if (file)
+        {
+		    // Iterate through the table and write each key-value pair
+		    for (const key in config) {
+			    const line = `${key.toString()}=${config[key].toString()}\n`; // Format as KEY=VALUE
+			    file.puts(line); // Write to file
+		    }
+		    file.flush();
+		    file.close();
+        }
 	},
 	
 	Push: function (path, newConfig) 
@@ -108,7 +111,17 @@ DATA.CONFIG = {
 			this.Set(path, config); // Call the Set function for processing
 		}
 	},
+
+    SetConfigPath: function(path)
+    {
+        this.configPath = path;
+    },
 };
+
+if (`${System.boot_path}/`.endsWith("//")) 
+{
+	DATA.CONFIG.SetConfigPath(`${System.boot_path}CFG/`);
+}
 
 // Get the main Configuration File of the App and Parse its configuration if it has them.
 
