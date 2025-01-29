@@ -567,45 +567,56 @@ function updateBGBrightness()
 // and changes made by the user or time of day.
 
 function drawBg()
-{	
-	// Update the automatic or user defined brightness.
-	DATA.BGBRIGHTNESS = updateBGBrightness();
-	
-	// If there was a change on the background color, interpolate it with the current one.
-	if (DATA.BGSWITCH)
-	{
-		DATA.BGFRAME += 0.02f;
-		
-		let tempColor = interpolateColorObj(prevColor, monthColors[DATA.BGCOL], DATA.BGFRAME);
-		themeColor = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
-		DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, 20);
-		Waves.setThemeColor(tempColor);
-		
-		// If interpolation ended, update current parameters with new ones.
-		if (DATA.BGFRAME > 0.9f)
-		{
-            currentBgColor = monthColors[DATA.BGCOL];
-			prevColor = { r: monthColors[DATA.BGCOL].r, g: monthColors[DATA.BGCOL].g, b: monthColors[DATA.BGCOL].b, a: monthColors[DATA.BGCOL].a };
-			brightnessFrame = 0.0f;
-			DATA.BGFRAME = 0.0f;
-			DATA.BGSWITCH = false;
-		}
-	}
-	
-	// Main Background color element. A single rectangle with the theme color.
-	Draw.rect((DATA.WIDESCREEN * 32),0,DATA.CANVAS.width - (DATA.WIDESCREEN * 64), DATA.CANVAS.height, themeColor);
-    
-	// Above the color draw the Waves.
-	if (DATA.BGWAVES) { Waves.renderWaves(); }
-	
-	// Then overlay the background Texture.
-	bg.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
-	bg.draw((DATA.WIDESCREEN * 32),0);
-	
-	// Finally, set the background brightness with the gradient texture.
-	bg_daily.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
-	bg_daily.color = Color.new(190,190,190,DATA.BGBRIGHTNESS);
-	bg_daily.draw((DATA.WIDESCREEN * 32),0);
+{
+    if ((!DATA.DISPLAYBG) || (!DATA.BGIMG) || (DATA.BGIMGA < 128))
+    {
+        // Update the automatic or user defined brightness.
+        DATA.BGBRIGHTNESS = updateBGBrightness();
+
+        // If there was a change on the background color, interpolate it with the current one.
+        if (DATA.BGSWITCH) {
+            DATA.BGFRAME += 0.02f;
+
+            let tempColor = interpolateColorObj(prevColor, monthColors[DATA.BGCOL], DATA.BGFRAME);
+            themeColor = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+            DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, 20);
+            Waves.setThemeColor(tempColor);
+
+            // If interpolation ended, update current parameters with new ones.
+            if (DATA.BGFRAME > 0.9f)
+            {
+                currentBgColor = monthColors[DATA.BGCOL];
+                prevColor = { r: monthColors[DATA.BGCOL].r, g: monthColors[DATA.BGCOL].g, b: monthColors[DATA.BGCOL].b, a: monthColors[DATA.BGCOL].a };
+                brightnessFrame = 0.0f;
+                DATA.BGFRAME = 0.0f;
+                DATA.BGSWITCH = false;
+            }
+        }
+
+        // Main Background color element. A single rectangle with the theme color.
+        Draw.rect((DATA.WIDESCREEN * 32), 0, DATA.CANVAS.width - (DATA.WIDESCREEN * 64), DATA.CANVAS.height, themeColor);
+
+        // Above the color draw the Waves.
+        if (DATA.BGWAVES) { Waves.renderWaves(); }
+
+        // Then overlay the background Texture.
+        bg.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+        bg.draw((DATA.WIDESCREEN * 32), 0);
+
+        // Finally, set the background brightness with the gradient texture.
+        bg_daily.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+        bg_daily.color = Color.new(190, 190, 190, DATA.BGBRIGHTNESS);
+        bg_daily.draw((DATA.WIDESCREEN * 32), 0);
+    }
+
+    if ((DATA.DISPLAYBG) && (DATA.BGIMG) && (DATA.BOOT_STATE > 7))
+    {
+        const col = neutralizeOverlayWithAlpha();
+        DATA.BGIMG.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+        DATA.BGIMG.height = DATA.CANVAS.height;
+        DATA.BGIMG.color = Color.new(col.r, col.g, col.b, DATA.BGIMGA);
+        DATA.BGIMG.draw((DATA.WIDESCREEN * 32), 0);
+    }
 }
 
 // This is the main Overlay function.

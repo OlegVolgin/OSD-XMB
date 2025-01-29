@@ -223,7 +223,8 @@ function dashboard()
 		case "NEW_SUBMENU_IDLE":
 			if (DATA.DASH_PADMODE != 2) { SetDashPadEvents(2); }
 			DrawSubMenuContent();
-			DrawSubMenuOptions();
+            DrawSubMenuOptions();
+            DrawOptionBox();
 			break;
 		case "NEW_SUBMENU_OUT":
 			if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }

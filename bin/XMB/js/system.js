@@ -94,14 +94,17 @@ const DATA =
 	HOUR_FORMAT: 1,
 	ASSETS_PATH: "XMB/",
 	THEME_PATH: "THM/Original/",
-	BGBRIGHTNESS: 0,
+    CUSTOMBG_PATH: "",
+    BGBRIGHTNESS: 0,
 	BGCUSTOMBRIGHT: 0,
 	BGSWITCH: false,
 	BGFRAME: 0,
 	BGVAL: 0,
 	BGTMP: 0,
-	BGCOL: 0,
-	BGIMG: null,
+    BGCOL: 0,
+    BGIMG: false,
+    BGIMGA: 0,
+    DISPLAYBG: false,
 	BGWAVES: true,
 	OVCOL: Color.new(0, 0, 0, 0),
 	OVSTATE: "BOOT",
@@ -203,6 +206,8 @@ function utf8Decode(byteArray) {
 
     return result;
 }
+
+/* Read an Entire File and get all its contents as a utf-8 string */
 
 function readFileAsUtf8(filepath)
 {
@@ -426,6 +431,26 @@ function interpolateColorObj(color1, color2, t)
         b: Math.round(color1.b + (color2.b - color1.b) * t),
         a: Math.round(color1.a + (color2.a - color1.a) * t),
     };
+}
+
+// Neutralizes the overlay tint color.
+// Used in case a custom loaded image needs to display in full color.
+
+function neutralizeOverlayWithAlpha() {
+    const overlayEffect = Color.getA(DATA.OVCOL) / 128; // Scale the alpha to a range of 0 to 1
+
+    const neutralizedColor = {
+        r: 128 - overlayEffect * (Color.getR(DATA.OVCOL) - 128),
+        g: 128 - overlayEffect * (Color.getG(DATA.OVCOL) - 128),
+        b: 128 - overlayEffect * (Color.getB(DATA.OVCOL) - 128),
+    };
+
+    // Clamp the values to stay within the valid RGBA range (0-255)
+    neutralizedColor.r = Math.max(0, Math.min(128, neutralizedColor.r));
+    neutralizedColor.g = Math.max(0, Math.min(128, neutralizedColor.g));
+    neutralizedColor.b = Math.max(0, Math.min(128, neutralizedColor.b));
+
+    return neutralizedColor;
 }
 
 /*	Set a new Copy Item to the thread copy queue	*/

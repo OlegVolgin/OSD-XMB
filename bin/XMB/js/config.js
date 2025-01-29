@@ -183,6 +183,17 @@ function ParseMainCFG()
     // Parse the main Configuration file to set the display of background waves.
 
     if ("waves" in mainCFG) { DATA.BGWAVES = (mainCFG["waves"].toLowerCase() === "true"); }
+
+    // Set the Background Image if any
+
+    if ("customBg" in mainCFG) {
+        DATA.CUSTOMBG_PATH = mainCFG["customBg"];
+        DATA.BGIMG = new Image(DATA.CUSTOMBG_PATH);
+    }
+
+    if ("displayBg" in mainCFG) {
+        DATA.DISPLAYBG = (mainCFG["displayBg"] === "true");
+    }
 }
 
 console.log("INIT: CONFIG INIT COMPLETE");

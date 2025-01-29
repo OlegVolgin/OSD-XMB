@@ -257,28 +257,44 @@ function GetThemeBackgroundContextInfo()
 	{
 		console.log(`THMSET: Background Image Function.`);
 		
-		if ((val == 1) && (!DATA.BGIMG))
-		{
-			console.log(`THMSET: Background Image not set. Showing Message.`);
-			
-			DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
-			DATA.OVSTATE = "MESSAGE_IN";
-			DATA.MESSAGE_INFO = 
-			{
-				Icon: 9,
-				Title: setting2,
-				BG: true,
-				Type: "TEXT",
-				Text: thmSett_NoWpSet,
-				BACK_BTN: true,
-				ENTER_BTN: false,
-			};
-			
-			return false;
-		}
+        if ((val == 1) && (!DATA.BGIMG)) {
+
+            DATA.DISPLAYBG = false;
+            DATA.BGIMGA = 0;
+
+            console.log(`THMSET: Background Image not set. Showing Message.`);
+
+            DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
+            DATA.OVSTATE = "MESSAGE_IN";
+            DATA.MESSAGE_INFO =
+            {
+                Icon: 9,
+                Title: setting2,
+                BG: true,
+                Type: "TEXT",
+                Text: thmSett_NoWpSet,
+                BACK_BTN: true,
+                ENTER_BTN: false,
+            };
+
+            return false;
+        }
+        else if ((val == 1) && (DATA.BGIMG))
+        {
+            DATA.DISPLAYBG = true;
+            DATA.BGIMGA = 128;
+        }
+        else if (val == 0) {
+            DATA.DISPLAYBG = false;
+            DATA.BGIMGA = 0;
+        }
+
+        let config = DATA.CONFIG.Get("main.cfg");
+        config["displayBg"] = DATA.DISPLAYBG.toString();
+        DATA.CONFIG.Push("main.cfg", config);
 	}
-	
-	return { Options: dir_options, Default: 0, ItemCount: dir_options.length, Confirm: _a, };
+
+    return { Options: dir_options, Default: ((!DATA.DISPLAYBG) ? 0 : 1), ItemCount: dir_options.length, Confirm: _a, };
 }
 
 function GetThemeWaveContextInfo()

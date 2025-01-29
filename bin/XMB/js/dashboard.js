@@ -138,27 +138,6 @@ function getDashFrameEasedMovement(direction)
 	return { easedProgress, reverseEased };
 }
 
-// Neutralizes the overlay tint color.
-// Used in case a custom loaded image needs to display in full color.
-
-function neutralizeOverlayWithAlpha() 
-{
-    const overlayEffect = Color.getA(DATA.OVCOL) / 128; // Scale the alpha to a range of 0 to 1
-
-    const neutralizedColor = {
-        r: 255 - overlayEffect * (Color.getR(DATA.OVCOL) - 255),
-        g: 255 - overlayEffect * (Color.getG(DATA.OVCOL) - 255),
-        b: 255 - overlayEffect * (Color.getB(DATA.OVCOL) - 255),
-    };
-
-    // Clamp the values to stay within the valid RGBA range (0-255)
-    neutralizedColor.r = Math.max(0, Math.min(200, neutralizedColor.r));
-    neutralizedColor.g = Math.max(0, Math.min(200, neutralizedColor.g));
-    neutralizedColor.b = Math.max(0, Math.min(200, neutralizedColor.b));
-
-    return neutralizedColor;
-}
-
 /*	Info:
 	
 	Draws a dashboard icon to the screen with the settings given.
@@ -409,7 +388,14 @@ function DrawInterfaceFade(frm, direction = 1)
 		if (yPos > 500) { break; }
 		DrawUnselectedItem(DATA.DASH_CURCAT, i, 155 + xMod, yPos - yMod, aMod, aMod)
 		itemID++;
-	}
+    }
+
+    if ((DATA.BGIMG) && (direction > 0) && (DATA.BGIMGA < 128))
+    {
+        console.log(DATA.BGIMGA);
+        DATA.BGIMGA = frm * 12;
+        if (DATA.BGIMGA > 128) { DATA.BGIMGA = 128; }
+    }
 }
 
 // Draws the Interface selected Category Icon and Text.
