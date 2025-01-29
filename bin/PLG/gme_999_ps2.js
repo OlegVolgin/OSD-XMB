@@ -39,26 +39,21 @@ if (basepath.endsWith("//"))
 
 const elfPath = `${basepath}APPS/neutrino/neutrino.elf`;
 const cfgPath = "neutrino.cfg";
-const cfg = DATA.CONFIG.Get(cfgPath);
 
 function SaveLastPlayedAndGetExArgs()
 {
-	console.log(`NEUTRINO: Set Global Args.`);
-	if (DATA.GAMESETS.LOGO) { DASH_SEL.Value.Args.push(`-logo`); }
-	if (DATA.GAMESETS.DBC) { DASH_SEL.Value.Args.push(`-dbc`); }
-	
-	console.log(`NEUTRINO: Set Per Game Args for ${DASH_SEL.Description}`);
+	if (DATA.GAMESETS.LOGO) { DASH_SEL.Value.Args.push('-logo'); }
+	if (DATA.GAMESETS.DBC) { DASH_SEL.Value.Args.push('-dbc'); }
 	const config = DATA.CONFIG.Get(`${DASH_SEL.Description}.cfg`);
 	
 	if (("gc" in config) && (config["gc"] !== "")) { DASH_SEL.Value.Args.push(`-gc=${config["gc"]}`); }
-	if (("VMC0" in config) && (config["VMC0"] === "true")) { DASH_SEL.Value.Args.push(`-mc0=${System.boot_path}/VMC/${DASH_SEL.Description}_0.vmc`); }	
-	if (("VMC1" in config) && (config["VMC1"] === "true")) { DASH_SEL.Value.Args.push(`-mc1=${System.boot_path}/VMC/${DASH_SEL.Description}_1.vmc`); }
+    if (("VMC0" in config) && (config["VMC0"] === "true")) { DASH_SEL.Value.Args.push(`-mc0=${basepath}VMC/${DASH_SEL.Description}_0.vmc`); }
+    if (("VMC1" in config) && (config["VMC1"] === "true")) { DASH_SEL.Value.Args.push(`-mc1=${basepath}VMC/${DASH_SEL.Description}_1.vmc`); }
 	
 	// Save Last Played
-	console.log(`NEUTRINO: Save Last Played.`);
-	let maincfg = DATA.CONFIG.Get(cfgPath);
-	maincfg["lastPlayed"] = DASH_SEL.Name;
-	DATA.CONFIG.Set(cfgPath, maincfg);
+	const cfg = DATA.CONFIG.Get(cfgPath);
+    cfg["lastPlayed"] = DASH_SEL.Name;
+    DATA.CONFIG.Set(cfgPath, cfg);
 }
 
 function getISOGameCode(isoPath, isoSize) 
@@ -202,20 +197,20 @@ function getOptionContextInfo()
 			let setCopyMessage = false;
 			if (DATA.MESSAGE_INFO.Data[1].Selected === 1)
 			{
-				let VMCPath = `${System.boot_path}/VMC/${code}_0.vmc`;
+                let VMCPath = `${basepath}VMC/${code}_0.vmc`;
 				if (!std.exists(VMCPath))
 				{
-					threadCopyPush(`${System.boot_path}/VMC/blank.vmc`, VMCPath);
+                    threadCopyPush(`${basepath}VMC/blank.vmc`, VMCPath);
 					setCopyMessage = true;
 				}
 			}
 			
 			if (DATA.MESSAGE_INFO.Data[2].Selected === 1)
 			{
-				let VMCPath = `${System.boot_path}/VMC/${code}_1.vmc`;
+                let VMCPath = `${basepath}VMC/${code}_1.vmc`;
 				if (!std.exists(VMCPath))
 				{
-					threadCopyPush(`${System.boot_path}/VMC/blank.vmc`, VMCPath);
+                    threadCopyPush(`${basepath}VMC/blank.vmc`, VMCPath);
 					setCopyMessage = true;
 				}
 			}
@@ -266,10 +261,14 @@ function getOptionContextInfo()
 function ParseDirectory(path, device, fs)
 {
 	let dir = System.listDir(path);
-	
+
+    if (dir.length < 1) { return; }
+
+    const cfg = DATA.CONFIG.Get(cfgPath);
+
 	dir.forEach((item) => 
 	{
-		if (item.name.toLowerCase().endsWith(".iso")) 
+		if ((!item.dir) && (item.name.toLowerCase().endsWith(".iso")))
 		{
 			// Get Game Item Info
 			let title = getGameName(item.name);
@@ -332,13 +331,13 @@ function getGames()
 
     if (System.boot_path.substring(0,4) !== "host")
     {
-	    let files = os.readdir("mc0:/")[0];
-	    let fileExist = files.includes("neutrino");
-        if (!fileExist)
+        // Scan MC0 for neutrino folder
+        if (!os.readdir("mc0:/")[0].includes("neutrino"))
         {
-            files = os.readdir("mc1:/")[0];
-	        fileExist = files.includes("neutrino");
-            if (!fileExist) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+            // Scan MC1 for neutrino folder
+            if (!os.readdir("mc1:/")[0].includes("neutrino")) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+
+            // Update assets folder
             cwd = "mc1:/neutrino";
         }
     }
@@ -353,19 +352,32 @@ function getGames()
 		{
 			roots[i] = roots[i].slice(0, -1);
 		}
-		
+
+        // if Path was already scanned, skip it
 		if ((scannedPaths.length > 0) && (scannedPaths.includes(roots[i])))
 		{
 			continue;
 		}
 
-		ParseDirectory(`${roots[i]}DVD/`, devices[i], fsmodes[i]);
-		ParseDirectory(`${roots[i]}CD/`, devices[i], fsmodes[i]);
-
+        // Scan DVD directory if it exists
+        if (os.readdir(roots[i])[0].includes("DVD"))
+        {
+		    ParseDirectory(`${roots[i]}DVD/`, devices[i], fsmodes[i]);
+        }
+        
+        // Scan CD directory if it exists
+        if (os.readdir(roots[i])[0].includes("CD"))
+        {
+		    ParseDirectory(`${roots[i]}CD/`, devices[i], fsmodes[i]);
+        }
+        
+        // Add path to scanned Paths
         scannedPaths.push(roots[i]);
 	}
 
-	gameList.sort((a, b) => a.Name.localeCompare(b.Name));
+	if (gameList.length > 1) { gameList.sort((a, b) => a.Name.localeCompare(b.Name)); }
+
+    const cfg = DATA.CONFIG.Get(cfgPath);
 
 	if ("lastPlayed" in cfg) 
 	{ 
@@ -377,7 +389,7 @@ function getGames()
 	return { Options: gameList, Default: lastPlayed, ItemCount: gameList.length };
 }
 
-function getDesc()
+function getDesc() 
 {
 	const titleString = gameList.length.toString();
 	const DESC_MAIN = new Array
@@ -409,6 +421,8 @@ const Info = {
 	Description: getDesc(),
 	Safe: true,
 };
+
+if (Info.Value.ItemCount < 1) { return {}; }
 
 return Info;
 

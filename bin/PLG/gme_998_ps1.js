@@ -376,8 +376,8 @@ function getGames()
 
         scannedPaths.push(popsPaths[i]);
 	}
-
-	gameList.sort((a, b) => a.Name.localeCompare(b.Name));
+    
+	if (gameList.length > 1) { gameList.sort((a, b) => a.Name.localeCompare(b.Name)); }
 
 	if ("lastPlayed" in cfg) 
 	{ 
@@ -421,6 +421,8 @@ const Info = {
 	Description: getDesc(),
 	Safe: true // It can be accesed without asking for parental control code.
 };
+
+if (Info.Value.ItemCount < 1) { return {}; }
 
 return Info;
 

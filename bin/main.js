@@ -82,7 +82,7 @@ function InitializePluginTable()
 			if (plg)
 			{
 				const { Plugin } = plg;
-				
+
 				if (validatePlugin(Plugin))
 				{
 					const item = DASH_CAT[Plugin.Category].ItemCount;
