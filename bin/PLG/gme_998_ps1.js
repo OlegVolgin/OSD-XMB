@@ -88,9 +88,16 @@ function getGameSettings(path)
 
 function getOptionContextInfo(path)
 {
-	os.mkdir(path);
+    const getPreviousPath = p => p.replace(/[^\/]+\/?$/, '') || './';
+    const title = getFolderNameFromPath(path);
+
+    if (!os.readdir(path)[0].includes(title))
+    {
+        os.mkdir(path);
+    }
+
 	let dir_options = [];
-	dir_options.push({ Name: TXT_INFO, Icon: -1, Title: getFolderNameFromPath(path) });
+    dir_options.push({ Name: TXT_INFO, Icon: -1, Title: title });
 	
 	let _a = function(DATA, val)
 	{

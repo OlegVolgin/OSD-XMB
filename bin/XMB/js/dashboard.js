@@ -1104,29 +1104,28 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
 	
 	if ((DASH_CTX[lvl].Options[opt].Name != "") && (TXTFULLA + a > 0))
 	{
-		let displayText = (Array.isArray(DASH_CTX[lvl].Options[opt].Name)) ? DASH_CTX[lvl].Options[opt].Name[DATA.LANGUAGE] : DASH_CTX[lvl].Options[opt].Name;
-		displayText = (displayText.length > 20) ? (displayText.substring(0, 20) + "...") : displayText;
+		let nameText = (Array.isArray(DASH_CTX[lvl].Options[opt].Name)) ? DASH_CTX[lvl].Options[opt].Name[DATA.LANGUAGE] : DASH_CTX[lvl].Options[opt].Name;
+        let displayText = (nameText.length > 24) ? (nameText.substring(0, 24) + "...") : nameText;
 		
 		if (currentSelected)
-		{
-			if (DASH_CTX[lvl].Options[opt].Name.length > 20)
+        {
+            if (nameText.length > 24)
 			{
 				if ((scrollIndex == 0) && (!DATA.DASH_TXT_TIMER))
 				{
 					DATA.DASH_TXT_TIMER = Timer.new();
-				}
-			
-				let text = DASH_CTX[lvl].Options[opt].Name;
-				const endIndex = scrollIndex + 20;
+                }
+
+				const endIndex = scrollIndex + 24;
 				if (scrollIndex === 0) {
-					displayText = text.substring(0, 20) + "..";
-				} else if (endIndex >= text.length) {
-					displayText = ".." + text.substring(scrollIndex);
+                    displayText = nameText.substring(0, 24) + "..";
+                } else if (endIndex >= nameText.length) {
+                    displayText = ".." + nameText.substring(scrollIndex);
 				} else {
-					displayText = ".." + text.substring(scrollIndex, endIndex) + "..";
+                    displayText = ".." + nameText.substring(scrollIndex, endIndex) + "..";
 				}
 				
-				if (endIndex < DASH_CTX[lvl].Options[opt].Name.length)
+                if (endIndex < nameText.length)
 				{
 					let time = Math.round(Timer.getTime(DATA.DASH_TXT_TIMER) / 100000);
 					if (time > 1) 
@@ -1135,7 +1134,7 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
 						Timer.reset(DATA.DASH_TXT_TIMER);
 					}
 				}
-				else if (endIndex > DASH_CTX[lvl].Options[opt].Name.length)
+                else if (endIndex > nameText.length)
 				{
 					Timer.destroy(DATA.DASH_TXT_TIMER);
 					DATA.DASH_TXT_TIMER = false;

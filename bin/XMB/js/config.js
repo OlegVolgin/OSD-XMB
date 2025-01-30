@@ -105,8 +105,7 @@ DATA.CONFIG = {
 	Process: function()
 	{
 		while (this.queue.length > 0) 
-		{
-			console.log(`Processing Queue Item: ${this.queue.length}`);
+        {
 			const { path, config } = this.queue.shift(); // Remove and get the first item in the queue
 			this.Set(path, config); // Call the Set function for processing
 		}

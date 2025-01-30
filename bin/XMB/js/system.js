@@ -159,10 +159,20 @@ function ftxtWrite(path, txt)
 
 function logl(line)
 {
-	const file = std.open(`${System.boot_path}/log.txt`, "a+");
-	file.puts(`${line}\n`); // Write to file
-	file.flush();
-	file.close();
+    const basepath = `${System.boot_path}/`;
+    if (`${System.boot_path}/`.endsWith("//"))
+    {
+        basepath = `${System.boot_path}`
+    }
+
+    const file = std.open(`${basepath}log.txt`, "a+");
+
+    if (file)
+    {
+        file.puts(`${line}\n`); // Write to file
+        file.flush();
+        file.close();
+    }
 }
 
 /* Decode a byte array into a UTF-8 string */

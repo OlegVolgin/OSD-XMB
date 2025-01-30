@@ -8,73 +8,67 @@ export const Plugin = (() => { 	// DO NOT REMOVE, Encloses plugin on a local sco
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
-let options = [];
-
 function parseTitleCfg(path)
 {
-    if (std.exists(`${path}title.cfg`))
+    // Scan directory for title.cfg
+    if (os.readdir(path)[0].includes("title.cfg"))
     {
         // Parse the Title CFG file.
         let data = {};
         const file = std.open(`${path}title.cfg`, "r");
-		
-		while (!file.eof()) {
-			let line = file.getline();
-			if (line && line.includes('=')) { // Ensure the line is not empty and contains an '='
-				line = line.trim(); // Read and trim whitespace
-				const [key, value] = line.split('='); // Split into key and value
-				data[key.trim()] = value.trim(); // Trim and store in the data object
-			}
-		}
-		
-		file.close();
 
-        let AppName = "";
-        let Desc = "";
-        let ELFPath = "";
+        if (file)
+        {
+            while (!file.eof()) {
+                let line = file.getline();
+                if (line && line.includes('=')) { // Ensure the line is not empty and contains an '='
+                    line = line.trim(); // Read and trim whitespace
+                    const [key, value] = line.split('='); // Split into key and value
+                    data[key.trim()] = value.trim(); // Trim and store in the data object
+                }
+            }
 
-        // Get Title
-        if ('Title' in data)
-        {
-            AppName = data['Title'];
-        }
-        else if ('title' in data)
-        {
-            AppName = data['title'];
-        }
+            file.close();
 
-        // Get ELF Path
-        if ('boot' in data)
-        {
-            ELFPath = `${path}${data['boot']}`;
-        }
+            let AppName = "";
+            let Desc = "";
+            let ELFPath = "";
 
-        // Get Version for Description
-        if ('Version' in data)
-        {
-            Desc = "Version " + data['Version'];
-        }
+            // Get Title
+            if ('Title' in data) {
+                AppName = data['Title'];
+            }
+            else if ('title' in data) {
+                AppName = data['title'];
+            }
 
-        if ((AppName !== "") && (ELFPath != ""))
-        {
-            // Return the App object
-            return {
-                Name: AppName,
-                Description: Desc,
-                Icon: 27,
-                Type: "ELF",
-                Value: { Path: ELFPath, Args: [], }
-            };
+            // Get ELF Path
+            if ('boot' in data) {
+                ELFPath = `${path}${data['boot']}`;
+            }
+
+            // Get Version for Description
+            if ('Version' in data) {
+                Desc = "Version " + data['Version'];
+            }
+
+            if ((AppName !== "") && (ELFPath != "")) {
+                // Return the App object
+                return {
+                    Name: AppName,
+                    Description: Desc,
+                    Icon: 27,
+                    Type: "ELF",
+                    Value: { Path: ELFPath, Args: [], }
+                };
+            }
         }
-        else { return {}; }
     }
-    else
-    {
-        return {};
-    }
+
+    return {};
 }
 
-function TryAddMCApps(path)
+function TryAddMCApps(options, path)
 {
 	const dir = System.listDir(path);
 	
@@ -88,13 +82,16 @@ function TryAddMCApps(path)
                 options.push(app);
             }
 		}
-	});
+    });
+
+    return options;
 }
 
 function GetMcOptions()
-{	
-	TryAddMCApps("mc0:/");
-	TryAddMCApps("mc1:/");
+{
+    let options = [];
+    options = TryAddMCApps(options, "mc0:/");
+    options = TryAddMCApps(options, "mc1:/");
 
     options.sort((a, b) => a.Name.localeCompare(b.Name));
 
@@ -116,7 +113,9 @@ const Info = {
 	Value: GetMcOptions(),
 };
 
-return Info;
+if (Info.Value.ItemCount < 1) { return {}; }
+
+return {};
 
 //////////////////////////////////////////////////////////////////////////
 ///*				   		   ENCLOSE END							  *///
