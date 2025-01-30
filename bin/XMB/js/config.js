@@ -47,18 +47,20 @@ DATA.CONFIG = {
 		// Read each line for config.
 		let config = {};
 
-		const file = std.open(path, "r");
-		
-		while (!file.eof()) {
-			let line = file.getline();
-			if (line && line.includes('=')) { // Ensure the line is not empty and contains an '='
-				line = line.trim(); // Read and trim whitespace
-				const [key, value] = line.split('='); // Split into key and value
-				config[key.trim()] = value.trim(); // Trim and store in the config object
-			}
-		}
-		
-		file.close();
+        const file = std.open(path, "r");
+
+        if (file) {
+            while (!file.eof()) {
+                let line = file.getline();
+                if (line && line.includes('=')) { // Ensure the line is not empty and contains an '='
+                    line = line.trim(); // Read and trim whitespace
+                    const [key, value] = line.split('='); // Split into key and value
+                    config[key.trim()] = value.trim(); // Trim and store in the config object
+                }
+            }
+
+            file.close();
+        }
 		
 		return config;
 	},
