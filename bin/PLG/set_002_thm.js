@@ -260,7 +260,6 @@ function GetThemeBackgroundContextInfo()
         if ((val == 1) && (!DATA.BGIMG)) {
 
             DATA.DISPLAYBG = false;
-            DATA.BGIMGA = 0;
 
             console.log(`THMSET: Background Image not set. Showing Message.`);
 
@@ -282,11 +281,9 @@ function GetThemeBackgroundContextInfo()
         else if ((val == 1) && (DATA.BGIMG))
         {
             DATA.DISPLAYBG = true;
-            DATA.BGIMGA = 128;
         }
         else if (val == 0) {
             DATA.DISPLAYBG = false;
-            DATA.BGIMGA = 0;
         }
 
         let config = DATA.CONFIG.Get("main.cfg");

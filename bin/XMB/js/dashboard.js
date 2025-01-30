@@ -390,7 +390,7 @@ function DrawInterfaceFade(frm, direction = 1)
 		itemID++;
     }
 
-    if ((DATA.BGIMG) && (direction > 0) && (DATA.BGIMGA < 128))
+    if ((DATA.DISPLAYBG) && (DATA.BGIMG) && (direction > 0) && (DATA.BGIMGA < 128))
     {
         console.log(DATA.BGIMGA);
         DATA.BGIMGA = frm * 12;
@@ -1051,7 +1051,21 @@ function DrawContextSubMenuAnimation(direction, fadeFull = false)
 	
 	const fadeIn = (direction < 0) ? (-12 * DATA.DASH_MOVE_FRAME) : (-6 * (20 - DATA.DASH_MOVE_FRAME));
 	DrawContextMenu(fadeIn, 60 * reverseEased);
-	DrawContextOptions(fadeIn, 60 * reverseEased);
+    DrawContextOptions(fadeIn, 60 * reverseEased);
+
+    if (direction < 0)
+    {
+        if ((DATA.DISPLAYBG) && (DATA.BGIMG) && (DATA.BGIMGA < 128))
+        {
+            DATA.BGIMGA = (12 * DATA.DASH_MOVE_FRAME);
+            if (DATA.BGIMGA > 128) { DATA.BGIMGA = 128; }
+        }
+        else if ((!DATA.DISPLAYBG) && (DATA.BGIMGA > 0))
+        {
+            DATA.BGIMGA = 128 - (12 * DATA.DASH_MOVE_FRAME);
+            if (DATA.BGIMGA < 0) { DATA.BGIMGA = 0; }
+        }
+    }
 }
 
 // Draws the background content of a Context (Option) Menu from a Sub Menu.

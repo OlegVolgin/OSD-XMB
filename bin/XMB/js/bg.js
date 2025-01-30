@@ -568,7 +568,7 @@ function updateBGBrightness()
 
 function drawBg()
 {
-    if ((!DATA.DISPLAYBG) || (!DATA.BGIMG) || (DATA.BGIMGA < 128))
+    if ((!DATA.BGIMG) || (DATA.BGIMGA < 128))
     {
         // Update the automatic or user defined brightness.
         DATA.BGBRIGHTNESS = updateBGBrightness();
@@ -609,7 +609,7 @@ function drawBg()
         bg_daily.draw((DATA.WIDESCREEN * 32), 0);
     }
 
-    if ((DATA.DISPLAYBG) && (DATA.BGIMG) && (DATA.BOOT_STATE > 7))
+    if ((DATA.BGIMGA > 0) && (DATA.BGIMG) && (DATA.BOOT_STATE > 7))
     {
         const col = neutralizeOverlayWithAlpha();
         DATA.BGIMG.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);

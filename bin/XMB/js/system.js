@@ -102,6 +102,7 @@ const DATA =
 	BGVAL: 0,
 	BGTMP: 0,
     BGCOL: 0,
+    BGIMGTMP: false,
     BGIMG: false,
     BGIMGA: 0,
     DISPLAYBG: false,

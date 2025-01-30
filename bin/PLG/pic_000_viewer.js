@@ -65,6 +65,8 @@ function getOptionContextInfo(fullpath)
     {
         DATA.CUSTOMBG_PATH = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.FullPath;
         DATA.BGIMG = new Image(DATA.CUSTOMBG_PATH);
+        DATA.BGIMG.optimize();
+        DATA.BGIMG.filter = LINEAR;
         let config = DATA.CONFIG.Get("main.cfg");
         config["customBg"] = DATA.CUSTOMBG_PATH;
         DATA.CONFIG.Push("main.cfg", config);

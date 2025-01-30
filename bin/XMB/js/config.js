@@ -187,7 +187,11 @@ function ParseMainCFG()
 
     if ("customBg" in mainCFG) {
         DATA.CUSTOMBG_PATH = mainCFG["customBg"];
-        DATA.BGIMG = new Image(DATA.CUSTOMBG_PATH);
+        if (std.exists(DATA.CUSTOMBG_PATH)) {
+            DATA.BGIMG = new Image(DATA.CUSTOMBG_PATH);
+            DATA.BGIMG.optimize();
+            DATA.BGIMG.filter = LINEAR;
+        }
     }
 
     if ("displayBg" in mainCFG) {
