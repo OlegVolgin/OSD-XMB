@@ -71,8 +71,8 @@ function parseTitleCfg(path)
 function TryAddMCApps(options, path)
 {
 	const dir = System.listDir(path);
-	
-	dir.forEach((item) => 
+
+	dir.forEach((item) =>
 	{
 		if ((item.dir) && (item.name !== ".") && (item.name !== "..") && (item.name.includes('_')))
 		{
@@ -103,7 +103,7 @@ function GetMcOptions()
 ///																	   ///
 /// 	Here is the main info that will be retrieved by the App.   	   ///
 //////////////////////////////////////////////////////////////////////////
-	
+
 const Info = {
 	Name: "Apps",
 	Description: "",
@@ -120,5 +120,5 @@ return {};
 //////////////////////////////////////////////////////////////////////////
 ///*				   		   ENCLOSE END							  *///
 //////////////////////////////////////////////////////////////////////////
-	
+
 })(); // DO NOT REMOVE, Encloses plugin on a local scope //
