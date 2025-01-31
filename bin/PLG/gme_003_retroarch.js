@@ -10,14 +10,14 @@ export const Plugin = (() => { 	// DO NOT REMOVE, Encloses plugin on a local sco
 
 function getELFPath()
 {
-	// Default to Path on APPS folder.
-	let elfPath = `${System.boot_path}/APPS/retroarch/raboot.elf`;
+    // Default to Path on APPS folder.
+    let elfPath = `${System.boot_path}/APPS/retroarch/raboot.elf`;
 
-	// Scan all possible Open PS2 Loader Paths
+    // Scan all possible Open PS2 Loader Paths
 
-	// PENDING //
+    // PENDING //
 
-	return { Path: elfPath, Args: [] }
+    return { Path: elfPath, Args: [] }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,12 +27,12 @@ function getELFPath()
 //////////////////////////////////////////////////////////////////////////
 
 const Info = {
-	Name: "Retroarch",
-	Description: "",
-	Icon: 22,
-	Category: 5,
-	Type: "ELF",
-	Value: getELFPath(),
+    Name: "Retroarch",
+    Description: "",
+    Icon: 22,
+    Category: 5,
+    Type: "ELF",
+    Value: getELFPath(),
 };
 
 // Set a Custom Icon for the plugin if it exists.

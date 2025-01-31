@@ -8,44 +8,44 @@
 
 /*	Info:
 
-	This is the main Configuration Object to
-	handle getting, setting, pushing or Processing
-	configurations.
+    This is the main Configuration Object to
+    handle getting, setting, pushing or Processing
+    configurations.
 
     Get:		Get a Configuration Item from a file path or memory
-				if it has been already pushed.
+                if it has been already pushed.
 
-	Set:		Write a Configuration Item directly to a file.
-				This should not be used directly and it is better to
-				let the Process function do it when exiting the app.
+    Set:		Write a Configuration Item directly to a file.
+                This should not be used directly and it is better to
+                let the Process function do it when exiting the app.
 
-	Push:		Push a Configuration Item to a queue that will be
-				executed when the app is exiting.
+    Push:		Push a Configuration Item to a queue that will be
+                executed when the app is exiting.
 
-	Process:	Processes all queued configuration items before
-				exiting the app.
+    Process:	Processes all queued configuration items before
+                exiting the app.
 
 */
 
 DATA.CONFIG = {
 
-	configPath: `${System.boot_path}/CFG/`,
-	queue: [],
+    configPath: `${System.boot_path}/CFG/`,
+    queue: [],
 
-	Get: function(path)
-	{
-		// Check if an item with the same path already exists in the queue list
-		const existingItem = this.queue.find(item => item.path === path);
+    Get: function(path)
+    {
+        // Check if an item with the same path already exists in the queue list
+        const existingItem = this.queue.find(item => item.path === path);
 
-		if (existingItem) { return existingItem.config; }
+        if (existingItem) { return existingItem.config; }
 
-		path = `${this.configPath}${path}`;
+        path = `${this.configPath}${path}`;
 
-		const hasfile = std.exists(path);
-		if (!hasfile) { return {}; } // Return Empty Table if not found
+        const hasfile = std.exists(path);
+        if (!hasfile) { return {}; } // Return Empty Table if not found
 
-		// Read each line for config.
-		let config = {};
+        // Read each line for config.
+        let config = {};
 
         const file = std.open(path, "r");
 
@@ -62,56 +62,56 @@ DATA.CONFIG = {
             file.close();
         }
 
-		return config;
-	},
+        return config;
+    },
 
-	Set: function(path, config)
-	{
-		path = `${this.configPath}${path}`;
-		const file = std.open(path, "w");
+    Set: function(path, config)
+    {
+        path = `${this.configPath}${path}`;
+        const file = std.open(path, "w");
 
         if (file)
         {
-		    // Iterate through the table and write each key-value pair
-		    for (const key in config) {
-			    const line = `${key.toString()}=${config[key].toString()}\n`; // Format as KEY=VALUE
-			    file.puts(line); // Write to file
-		    }
-		    file.flush();
-		    file.close();
+            // Iterate through the table and write each key-value pair
+            for (const key in config) {
+                const line = `${key.toString()}=${config[key].toString()}\n`; // Format as KEY=VALUE
+                file.puts(line); // Write to file
+            }
+            file.flush();
+            file.close();
         }
-	},
+    },
 
-	Push: function (path, newConfig)
-	{
-		// Check if an item with the same path already exists
-		const existingItem = this.queue.find(item => item.path === path);
+    Push: function (path, newConfig)
+    {
+        // Check if an item with the same path already exists
+        const existingItem = this.queue.find(item => item.path === path);
 
-		// Update the config of the existing item by merging
-		if (existingItem)
-		{
-			// Merge existing config with the newConfig
-			existingItem.config =
-			{
-				...existingItem.config, // Retain existing keys and values
-				...newConfig // Overwrite or add new keys from newConfig
-			};
-		}
-		else
-		{
-			// Add a new item to the queue
-			this.queue.push({ path, config: newConfig });
-		}
-	},
-
-	Process: function()
-	{
-		while (this.queue.length > 0)
+        // Update the config of the existing item by merging
+        if (existingItem)
         {
-			const { path, config } = this.queue.shift(); // Remove and get the first item in the queue
-			this.Set(path, config); // Call the Set function for processing
-		}
-	},
+            // Merge existing config with the newConfig
+            existingItem.config =
+            {
+                ...existingItem.config, // Retain existing keys and values
+                ...newConfig // Overwrite or add new keys from newConfig
+            };
+        }
+        else
+        {
+            // Add a new item to the queue
+            this.queue.push({ path, config: newConfig });
+        }
+    },
+
+    Process: function()
+    {
+        while (this.queue.length > 0)
+        {
+            const { path, config } = this.queue.shift(); // Remove and get the first item in the queue
+            this.Set(path, config); // Call the Set function for processing
+        }
+    },
 
     SetConfigPath: function(path)
     {
@@ -121,7 +121,7 @@ DATA.CONFIG = {
 
 if (`${System.boot_path}/`.endsWith("//"))
 {
-	DATA.CONFIG.SetConfigPath(`${System.boot_path}CFG/`);
+    DATA.CONFIG.SetConfigPath(`${System.boot_path}CFG/`);
 }
 
 // Get the main Configuration File of the App and Parse its configuration if it has them.
@@ -133,24 +133,24 @@ function ParseMainCFG()
     // Get the user's preferred Video Mode.
     if ("vmode" in mainCFG)
     {
-	    if (DATA.CANVAS.mode != vmodes[Number(mainCFG["vmode"])].Value)
-	    {
-		    DATA.CANVAS.mode = vmodes[Number(mainCFG["vmode"])].Value;
-		    Screen.setMode(DATA.CANVAS);
-		    DATA.SCREEN_PREVMODE = DATA.CANVAS.mode;
-	    }
+        if (DATA.CANVAS.mode != vmodes[Number(mainCFG["vmode"])].Value)
+        {
+            DATA.CANVAS.mode = vmodes[Number(mainCFG["vmode"])].Value;
+            Screen.setMode(DATA.CANVAS);
+            DATA.SCREEN_PREVMODE = DATA.CANVAS.mode;
+        }
     }
 
     // Get the user's preferred Aspect Ratio.
     if ("aspect" in mainCFG)
     {
-	    DATA.WIDESCREEN = (mainCFG["aspect"].toLowerCase() === "true");
+        DATA.WIDESCREEN = (mainCFG["aspect"].toLowerCase() === "true");
 
-	    if (DATA.WIDESCREEN)
-	    {
-		    DATA.CANVAS.width = 736;
-		    Screen.setMode(DATA.CANVAS);
-	    }
+        if (DATA.WIDESCREEN)
+        {
+            DATA.CANVAS.width = 736;
+            Screen.setMode(DATA.CANVAS);
+        }
     }
 
     // Get the user's preferred Parental Settings.
@@ -172,12 +172,12 @@ function ParseMainCFG()
 
     if ("BgColor" in mainCFG)
     {
-	    // If set to 0, use dynamic month based background color.
-	    // Else, use the custom background color.
+        // If set to 0, use dynamic month based background color.
+        // Else, use the custom background color.
 
-	    DATA.BGVAL = Number(mainCFG["BgColor"]);
-	    DATA.BGTMP = DATA.BGVAL;
-	    DATA.BGCOL = (DATA.BGVAL == 0) ? DATA.BGCOL : DATA.BGVAL;
+        DATA.BGVAL = Number(mainCFG["BgColor"]);
+        DATA.BGTMP = DATA.BGVAL;
+        DATA.BGCOL = (DATA.BGVAL == 0) ? DATA.BGCOL : DATA.BGVAL;
         DATA.BGSWITCH = true;
     }
 

@@ -26,14 +26,14 @@ const cancelSFX = false; //Sound.load(sfx_cancel);
 
 function SoundStopProcess()
 {
-	let audLength = ((currAudioDuration - 500) < 0) ? 0 : currAudioDuration - 500;
-	let audCurPos = Sound.getPosition(AudioPlaying);
+    let audLength = ((currAudioDuration - 500) < 0) ? 0 : currAudioDuration - 500;
+    let audCurPos = Sound.getPosition(AudioPlaying);
 
-	if (Sound.isPlaying() && (audLength <= audCurPos))
-	{
-		Sound.setPosition(AudioPlaying, 0);
-		Sound.pause(AudioPlaying);
-	}
+    if (Sound.isPlaying() && (audLength <= audCurPos))
+    {
+        Sound.setPosition(AudioPlaying, 0);
+        Sound.pause(AudioPlaying);
+    }
 }
 
 /*	Manual WAV Length calculation value to avoid using 'getDuration' method  */
@@ -41,10 +41,10 @@ function SoundStopProcess()
 
 function calculateWavValue(filePath)
 {
-	// Open the file
-	const file = std.open(filePath, "rb");
+    // Open the file
+    const file = std.open(filePath, "rb");
 
-	// Helper to read 4 bytes as a 32-bit little-endian integer
+    // Helper to read 4 bytes as a 32-bit little-endian integer
     const readUInt32LE = (buffer) => {
       return (buffer[0]) |
              (buffer[1] << 8) |
@@ -54,84 +54,84 @@ function calculateWavValue(filePath)
 
     // Read Data Size (4 bytes from position 4)
     const dataSizeBuffer = new Uint8Array(4); // Allocate a 4-byte buffer
-	file.seek(4, std.SEEK_SET);
+    file.seek(4, std.SEEK_SET);
     file.read(dataSizeBuffer.buffer, 0, 4);   // Read 4 bytes starting at position 4
     const dataSize = readUInt32LE(dataSizeBuffer);
 
     // Read Samples Per Second (4 bytes from position 24)
     const samplesPerSecondBuffer = new Uint8Array(4); // Allocate a 4-byte buffer
-	file.seek(28, std.SEEK_SET);
+    file.seek(28, std.SEEK_SET);
     file.read(samplesPerSecondBuffer.buffer, 0, 4);   // Read 4 bytes starting at position 24
     const samplesPerSecond = readUInt32LE(samplesPerSecondBuffer);
 
-	file.close();
+    file.close();
 
-	// Compute the result
-	return Math.round((dataSize / samplesPerSecond) * 1000);
+    // Compute the result
+    return Math.round((dataSize / samplesPerSecond) * 1000);
 }
 
 /*	Play a Sound file from 'path'  */
 
 function playSound(path)
 {
-	if (!path.endsWith(".wav")) { return; }
+    if (!path.endsWith(".wav")) { return; }
 
-	Sound.pause(AudioPlaying);
-	currAudioDuration = calculateWavValue(path);
-	let audioToPlay = Sound.load(path);
-	Sound.play(audioToPlay, 0);
-	Sound.repeat(false);
-	let audioPrevious = AudioPlaying;
-	AudioPlaying = audioToPlay;
+    Sound.pause(AudioPlaying);
+    currAudioDuration = calculateWavValue(path);
+    let audioToPlay = Sound.load(path);
+    Sound.play(audioToPlay, 0);
+    Sound.repeat(false);
+    let audioPrevious = AudioPlaying;
+    AudioPlaying = audioToPlay;
 
-	if (AudioPlaying != cursorSFX && AudioPlaying != cancelSFX)
-	{
-		Sound.free(audioPrevious);
-	}
+    if (AudioPlaying != cursorSFX && AudioPlaying != cancelSFX)
+    {
+        Sound.free(audioPrevious);
+    }
 }
 
 /*	Play the XMB's Cursor movement SFX  */
 
 function playCursorSFX()
 {
-	/*
-	if (AudioPlaying != cursorSFX && AudioPlaying != cancelSFX)
-	{
-		Sound.pause(AudioPlaying);
-		currAudioDuration = cursorSFX_AudioDuration;
-		let audioPrevious = AudioPlaying;
-		AudioPlaying = cursorSFX;
-		Sound.play(AudioPlaying, 0);
-		Sound.free(audioPrevious);
-	}
-	else
-	{
-		Sound.restart(AudioPlaying);
-		Sound.play(AudioPlaying);
-	}
-	//*/
+    /*
+    if (AudioPlaying != cursorSFX && AudioPlaying != cancelSFX)
+    {
+        Sound.pause(AudioPlaying);
+        currAudioDuration = cursorSFX_AudioDuration;
+        let audioPrevious = AudioPlaying;
+        AudioPlaying = cursorSFX;
+        Sound.play(AudioPlaying, 0);
+        Sound.free(audioPrevious);
+    }
+    else
+    {
+        Sound.restart(AudioPlaying);
+        Sound.play(AudioPlaying);
+    }
+    //*/
 }
 
 /*	Play the XMB's Cancel SFX  */
 
 function playCancelSFX()
 {
-	/*
-	if (AudioPlaying != cancelSFX && AudioPlaying != cursorSFX)
-	{
-		Sound.pause(AudioPlaying);
-		currAudioDuration = cancelSFX_AudioDuration;
-		let audioPrevious = AudioPlaying;
-		AudioPlaying = cancelSFX;
-		Sound.play(AudioPlaying, 0);
-		Sound.free(audioPrevious);
-	}
-	else
-	{
-		Sound.restart(AudioPlaying);
-		Sound.play(AudioPlaying);
-	}
-	//*/
+    /*
+    if (AudioPlaying != cancelSFX && AudioPlaying != cursorSFX)
+    {
+        Sound.pause(AudioPlaying);
+        currAudioDuration = cancelSFX_AudioDuration;
+        let audioPrevious = AudioPlaying;
+        AudioPlaying = cancelSFX;
+        Sound.play(AudioPlaying, 0);
+        Sound.free(audioPrevious);
+    }
+    else
+    {
+        Sound.restart(AudioPlaying);
+        Sound.play(AudioPlaying);
+    }
+    //*/
 }
 
 console.log("INIT: SOUND INIT COMPLETE");

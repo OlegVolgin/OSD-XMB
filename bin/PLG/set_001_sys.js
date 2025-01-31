@@ -10,145 +10,145 @@ export const Plugin = (() => { 	// DO NOT REMOVE, Encloses plugin on a local sco
 
 const NAME_MAIN =
 [
-	"System settings",
-	"Paramètres système",
-	"Ajustes de Sistema",
-	"System-Einstellungen",
-	"Impostazioni del sistema",
-	"Systeeminstellingen",
-	"Definições de Sistema",
+    "System settings",
+    "Paramètres système",
+    "Ajustes de Sistema",
+    "System-Einstellungen",
+    "Impostazioni del sistema",
+    "Systeeminstellingen",
+    "Definições de Sistema",
 ];
 
 const DESC_MAIN =
 [
-	"Adjusts settings for this PS2 system.",
-	"Réglez les paramètres de ce système PS2.",
-	"Ajusta la configuración de este sistema PS2.",
-	"Einstellungen für dieses PS2-System anpassen.",
-	"Regola le impostazioni di questo sistema PS2.",
-	"Pas de instellingen van dit PS2-systeem aan.",
-	"Ajuste as configurações deste sistema PS2.",
+    "Adjusts settings for this PS2 system.",
+    "Réglez les paramètres de ce système PS2.",
+    "Ajusta la configuración de este sistema PS2.",
+    "Einstellungen für dieses PS2-System anpassen.",
+    "Regola le impostazioni di questo sistema PS2.",
+    "Pas de instellingen van dit PS2-systeem aan.",
+    "Ajuste as configurações deste sistema PS2.",
 ];
 
 const NAME_SET1 =
 [
-	"Language",
-	"Langue",
-	"Idioma",
-	"Sprache",
-	"Lingua",
-	"Taal",
-	"Idioma",
+    "Language",
+    "Langue",
+    "Idioma",
+    "Sprache",
+    "Lingua",
+    "Taal",
+    "Idioma",
 ];
 
 const DESC_SET1 =
 [
-	"Set the system Language.",
-	"Définir la langue du système",
-	"Establecer el idioma del sistema.",
-	"Systemsprache festlegen",
-	"Seleziona la lingua del sistema",
-	"Stel de systeemtaal in",
-	"Definir o idioma do sistema",
+    "Set the system Language.",
+    "Définir la langue du système",
+    "Establecer el idioma del sistema.",
+    "Systemsprache festlegen",
+    "Seleziona la lingua del sistema",
+    "Stel de systeemtaal in",
+    "Definir o idioma do sistema",
 ];
 
 const NAME_SET2 =
 [
-	"Confirmation Button",
-	"Bouton de confirmation",
-	"Botón de confirmación",
-	"Bestätigungstaste",
-	"Pulsante di conferma",
-	"Bevestigingsknop",
-	"Botão de Confirmação",
+    "Confirmation Button",
+    "Bouton de confirmation",
+    "Botón de confirmación",
+    "Bestätigungstaste",
+    "Pulsante di conferma",
+    "Bevestigingsknop",
+    "Botão de Confirmação",
 ];
 
 const DESC_SET2 =
 [
-	"Sets the confirmation button type.",
-	"Définit le type de bouton de confirmation",
-	"Establece el tipo de botón de confirmación.",
-	"Legt den Typ der Bestätigungstaste.",
-	"Imposta il tipo di pulsante di conferma.",
-	"Stelt het type bevestigingsknop.",
-	"Define o tipo de botão de confirmação.",
+    "Sets the confirmation button type.",
+    "Définit le type de bouton de confirmation",
+    "Establece el tipo de botón de confirmación.",
+    "Legt den Typ der Bestätigungstaste.",
+    "Imposta il tipo di pulsante di conferma.",
+    "Stelt het type bevestigingsknop.",
+    "Define o tipo de botão de confirmação.",
 ];
 
 const NAME_SET3 =
 [
-	"System Information",
-	"System Information",
-	"Información del Sistema",
-	"System Information",
-	"System Information",
-	"System Information",
-	"System Information",
+    "System Information",
+    "System Information",
+    "Información del Sistema",
+    "System Information",
+    "System Information",
+    "System Information",
+    "System Information",
 ];
 
 const TYPE_1 =
 [
-	"Occidental",
-	"Occidental",
-	"Occidental",
-	"Westlich",
-	"Occidentale",
-	"Westers",
-	"Ocidental",
+    "Occidental",
+    "Occidental",
+    "Occidental",
+    "Westlich",
+    "Occidentale",
+    "Westers",
+    "Ocidental",
 ];
 
 const TYPE_2 =
 [
-	"Asian",
-	"Asiatique",
-	"Asiático",
-	"Asiatisch",
-	"Asiatico",
-	"Aziatisch",
-	"Asiático",
+    "Asian",
+    "Asiatique",
+    "Asiático",
+    "Asiatisch",
+    "Asiatico",
+    "Aziatisch",
+    "Asiático",
 ];
 
 const SYSINFO_BDATE =
 [
-	"Build Date",
-	"Build Date",
-	"Fecha",
-	"Build Date",
-	"Build Date",
-	"Build Date",
-	"Build Date",
+    "Build Date",
+    "Build Date",
+    "Fecha",
+    "Build Date",
+    "Build Date",
+    "Build Date",
+    "Build Date",
 ];
 
 const SYSINFO_TYPE =
 [
-	"Console Type",
-	"Console Type",
-	"Tipo de Consola",
-	"Console Type",
-	"Console Type",
-	"Console Type",
-	"Console Type",
+    "Console Type",
+    "Console Type",
+    "Tipo de Consola",
+    "Console Type",
+    "Console Type",
+    "Console Type",
+    "Console Type",
 ];
 
 const SYSINFO_TYPE_C =
 [
-	"Retail",
-	"Retail",
-	"Retail",
-	"Retail",
-	"Retail",
-	"Retail",
-	"Retail",
+    "Retail",
+    "Retail",
+    "Retail",
+    "Retail",
+    "Retail",
+    "Retail",
+    "Retail",
 ];
 
 const SYSINFO_TYPE_D =
 [
-	"Development Kit",
-	"Development Kit",
-	"Kit de Desarrollo",
-	"Development Kit",
-	"Development Kit",
-	"Development Kit",
-	"Development Kit",
+    "Development Kit",
+    "Development Kit",
+    "Kit de Desarrollo",
+    "Development Kit",
+    "Development Kit",
+    "Development Kit",
+    "Development Kit",
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -157,48 +157,48 @@ const SYSINFO_TYPE_D =
 
 function getLanguagetContextInfo()
 {
-	let ctx_options = [];
-	ctx_options.push({ Name: "English", Icon: -1 });
-	ctx_options.push({ Name: "Français", Icon: -1 });
-	ctx_options.push({ Name: "Español", Icon: -1 });
-	ctx_options.push({ Name: "Deutsch", Icon: -1 });
-	ctx_options.push({ Name: "Italiano", Icon: -1 });
-	ctx_options.push({ Name: "Nederlands", Icon: -1 });
-	ctx_options.push({ Name: "Português", Icon: -1 });
+    let ctx_options = [];
+    ctx_options.push({ Name: "English", Icon: -1 });
+    ctx_options.push({ Name: "Français", Icon: -1 });
+    ctx_options.push({ Name: "Español", Icon: -1 });
+    ctx_options.push({ Name: "Deutsch", Icon: -1 });
+    ctx_options.push({ Name: "Italiano", Icon: -1 });
+    ctx_options.push({ Name: "Nederlands", Icon: -1 });
+    ctx_options.push({ Name: "Português", Icon: -1 });
 
-	// Accept Changes Function
-	let _a = function(DATA, val)
-	{
-		DATA.LANGUAGE = val;
-		let config = DATA.CONFIG.Get("main.cfg");
-		config["lang"] = val.toString();
-		DATA.CONFIG.Push("main.cfg", config);
-	}
+    // Accept Changes Function
+    let _a = function(DATA, val)
+    {
+        DATA.LANGUAGE = val;
+        let config = DATA.CONFIG.Get("main.cfg");
+        config["lang"] = val.toString();
+        DATA.CONFIG.Push("main.cfg", config);
+    }
 
-	return { Options: ctx_options, Default: DATA.LANGUAGE, ItemCount: ctx_options.length, Confirm: _a};
+    return { Options: ctx_options, Default: DATA.LANGUAGE, ItemCount: ctx_options.length, Confirm: _a};
 }
 
 function getButtonContextInfo()
 {
-	let ctx_options = [];
-	ctx_options.push({ Name: TYPE_1, Icon: -1 });
-	ctx_options.push({ Name: TYPE_2, Icon: -1 });
+    let ctx_options = [];
+    ctx_options.push({ Name: TYPE_1, Icon: -1 });
+    ctx_options.push({ Name: TYPE_2, Icon: -1 });
 
-	// Accept Changes Function
-	let _a = function(DATA, val)
-	{
-		DATA.BTNTYPE = val;
-		let config = DATA.CONFIG.Get("main.cfg");
-		config["btnType"] = val.toString();
-		DATA.CONFIG.Push("main.cfg", config);
-	}
+    // Accept Changes Function
+    let _a = function(DATA, val)
+    {
+        DATA.BTNTYPE = val;
+        let config = DATA.CONFIG.Get("main.cfg");
+        config["btnType"] = val.toString();
+        DATA.CONFIG.Push("main.cfg", config);
+    }
 
-	return { Options: ctx_options, Default: DATA.BTNTYPE, ItemCount: ctx_options.length, Confirm: _a};
+    return { Options: ctx_options, Default: DATA.BTNTYPE, ItemCount: ctx_options.length, Confirm: _a};
 }
 
 function showSysInfoMsg()
 {
-	const tmp = std.open("rom0:ROMVER", "r");
+    const tmp = std.open("rom0:ROMVER", "r");
 
     if (tmp)
     {
@@ -262,89 +262,89 @@ function showSysInfoMsg()
         }
 
         // Place all the Data extracted into the object
-	    const sysInfo = [];
-	    sysInfo.push({
-		    Selectable: false,
-		    Name: "ROMVER",
-		    get Description() {
-			    return formattedVersion;
-		    }
-	    });
+        const sysInfo = [];
+        sysInfo.push({
+            Selectable: false,
+            Name: "ROMVER",
+            get Description() {
+                return formattedVersion;
+            }
+        });
 
-	    sysInfo.push({
-		    Selectable: false,
-		    get Name() {
-			    return "Region";
-		    },
-		    get Description() {
-			    return ConsoleRegion;
-		    }
-	    });
+        sysInfo.push({
+            Selectable: false,
+            get Name() {
+                return "Region";
+            },
+            get Description() {
+                return ConsoleRegion;
+            }
+        });
 
-	    sysInfo.push({
-		    Selectable: false,
-		    get Name() {
-			    return SYSINFO_TYPE[DATA.LANGUAGE];
-		    },
-		    get Description() {
-			    return consoleType;
-		    }
-	    });
+        sysInfo.push({
+            Selectable: false,
+            get Name() {
+                return SYSINFO_TYPE[DATA.LANGUAGE];
+            },
+            get Description() {
+                return consoleType;
+            }
+        });
 
-	    sysInfo.push({
-		    Selectable: false,
-		    get Name() {
-			    return SYSINFO_BDATE[DATA.LANGUAGE];
-		    },
-		    get Description() {
-			    return formattedDate;
-		    }
-	    });
+        sysInfo.push({
+            Selectable: false,
+            get Name() {
+                return SYSINFO_BDATE[DATA.LANGUAGE];
+            },
+            get Description() {
+                return formattedDate;
+            }
+        });
 
-	    DATA.DASH_STATE = "IDLE_MESSAGE_FADE_IN";
-	    DATA.OVSTATE = "MESSAGE_IN";
-	    DATA.MESSAGE_INFO =
-	    {
-		    Icon: 8,
-		    Title: NAME_SET3,
-		    BG: false,
-		    Type: "INFO",
-		    Data: sysInfo,
-		    BACK_BTN: true,
-		    ENTER_BTN: false,
-	    };
+        DATA.DASH_STATE = "IDLE_MESSAGE_FADE_IN";
+        DATA.OVSTATE = "MESSAGE_IN";
+        DATA.MESSAGE_INFO =
+        {
+            Icon: 8,
+            Title: NAME_SET3,
+            BG: false,
+            Type: "INFO",
+            Data: sysInfo,
+            BACK_BTN: true,
+            ENTER_BTN: false,
+        };
     }
 }
 
 function getOptions()
 {
-	let options = [];
+    let options = [];
 
-	options.push({
-		Name: NAME_SET1,
-		Description: DESC_SET1,
-		Icon: 15,
-		Type: "CONTEXT",
-		Value: getLanguagetContextInfo(),
-	});
+    options.push({
+        Name: NAME_SET1,
+        Description: DESC_SET1,
+        Icon: 15,
+        Type: "CONTEXT",
+        Value: getLanguagetContextInfo(),
+    });
 
-	options.push({
-		Name: NAME_SET2,
-		Description: DESC_SET2,
-		Icon: 15,
-		Type: "CONTEXT",
-		Value: getButtonContextInfo(),
-	});
+    options.push({
+        Name: NAME_SET2,
+        Description: DESC_SET2,
+        Icon: 15,
+        Type: "CONTEXT",
+        Value: getButtonContextInfo(),
+    });
 
-	options.push({
-		Name: NAME_SET3,
-		Description: "",
-		Icon: 15,
-		Type: "CODE",
-		Value: showSysInfoMsg,
-	});
+    options.push({
+        Name: NAME_SET3,
+        Description: "",
+        Icon: 15,
+        Type: "CODE",
+        Value: showSysInfoMsg,
+    });
 
-	return { Options: options, Default: 0, ItemCount: options.length };
+    return { Options: options, Default: 0, ItemCount: options.length };
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -354,12 +354,12 @@ function getOptions()
 //////////////////////////////////////////////////////////////////////////
 
 const Info = {
-	Name: NAME_MAIN,
-	Description: DESC_MAIN,
-	Icon: 8,
-	Category: 1,
-	Type: "SUBMENU",
-	Value: getOptions(),
+    Name: NAME_MAIN,
+    Description: DESC_MAIN,
+    Icon: 8,
+    Category: 1,
+    Type: "SUBMENU",
+    Value: getOptions(),
 };
 
 return Info;

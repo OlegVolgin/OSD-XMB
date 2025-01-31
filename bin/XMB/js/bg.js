@@ -71,74 +71,74 @@ let prevColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b,
 // two moving backgound waves.
 
 const Waves = (() => {
-	// Wave constants
-	let screenWidth = DATA.CANVAS.width;
-	let time = 0;
-	const step = 6;
+    // Wave constants
+    let screenWidth = DATA.CANVAS.width;
+    let time = 0;
+    const step = 6;
 
-	// Wave constants
-	const wave1ColorBottom = Color.new(0, 0, 0, 36);
-	const wave1Amplitude = 30.0f;
-	const wave1Speed = 0.019f;
-	const wave2Amplitude = 32.0f;
-	const waveLength = 0.005f;
-	const wave2Speed = 0.021f;
-	const baseYStart = DATA.CANVAS.height - 128;
+    // Wave constants
+    const wave1ColorBottom = Color.new(0, 0, 0, 36);
+    const wave1Amplitude = 30.0f;
+    const wave1Speed = 0.019f;
+    const wave2Amplitude = 32.0f;
+    const waveLength = 0.005f;
+    const wave2Speed = 0.021f;
+    const baseYStart = DATA.CANVAS.height - 128;
 
-	// Precompute x-wave values
-	const precomputedXWave = [];
+    // Precompute x-wave values
+    const precomputedXWave = [];
 
-	function precomputeValues() {
-		for (let x = 0; x <= screenWidth; x += step) {
-			precomputedXWave[x] = x * waveLength;
-		}
-	}
+    function precomputeValues() {
+        for (let x = 0; x <= screenWidth; x += step) {
+            precomputedXWave[x] = x * waveLength;
+        }
+    }
 
-	precomputeValues();
+    precomputeValues();
 
-	let wave2ColorTop, wave2ColorBottom;
+    let wave2ColorTop, wave2ColorBottom;
 
-	function setThemeColor(themeColor)
-	{
-		const r = Math.min(themeColor.r + 65, 255);
-		const g = Math.min(themeColor.g + 65, 255);
-		const b = Math.min(themeColor.b + 90, 255);
+    function setThemeColor(themeColor)
+    {
+        const r = Math.min(themeColor.r + 65, 255);
+        const g = Math.min(themeColor.g + 65, 255);
+        const b = Math.min(themeColor.b + 90, 255);
 
-		wave2ColorTop = Color.new(r, g, b, 127);
-		wave2ColorBottom = Color.new(r, g, b, 96);
-	}
+        wave2ColorTop = Color.new(r, g, b, 127);
+        wave2ColorBottom = Color.new(r, g, b, 96);
+    }
 
-	function renderWaves()
-	{
-		const width = Screen.getMode().width;
+    function renderWaves()
+    {
+        const width = Screen.getMode().width;
         const height = Screen.getMode().height;
 
-		if (width !== screenWidth) { screenWidth = width; precomputeValues(); }
+        if (width !== screenWidth) { screenWidth = width; precomputeValues(); }
 
-		const timeWave1 = time * wave1Speed;
-		const timeWave2 = time * wave2Speed;
+        const timeWave1 = time * wave1Speed;
+        const timeWave2 = time * wave2Speed;
 
-		for (let x = 0; x <= screenWidth; x += step)
-		{
-			const y1 = Math.sinf(precomputedXWave[x] + timeWave1) * wave1Amplitude;
-			const currentY1 = baseYStart + (y1 + 1);
+        for (let x = 0; x <= screenWidth; x += step)
+        {
+            const y1 = Math.sinf(precomputedXWave[x] + timeWave1) * wave1Amplitude;
+            const currentY1 = baseYStart + (y1 + 1);
 
-			const y2 = Math.sinf(precomputedXWave[x] + timeWave2) * wave2Amplitude;
-			const currentY2 = baseYStart + (y2 + 1);
+            const y2 = Math.sinf(precomputedXWave[x] + timeWave2) * wave2Amplitude;
+            const currentY2 = baseYStart + (y2 + 1);
 
-			// Draw wave 1 bottom
-			Draw.rect(x, currentY1, step, height, wave1ColorBottom);
-			Draw.rect(x, currentY2 - 1, step, 2, wave2ColorTop);
-			Draw.rect(x, currentY2, step, height, wave2ColorBottom);
-		}
+            // Draw wave 1 bottom
+            Draw.rect(x, currentY1, step, height, wave1ColorBottom);
+            Draw.rect(x, currentY2 - 1, step, 2, wave2ColorTop);
+            Draw.rect(x, currentY2, step, height, wave2ColorBottom);
+        }
 
-		time++;
+        time++;
         if (time < 0) { time = 0; }
-	}
+    }
 
-	return {
-		renderWaves, setThemeColor,
-	};
+    return {
+        renderWaves, setThemeColor,
+    };
 })();
 
 // Set the Waves' color.
@@ -152,87 +152,87 @@ Waves.setThemeColor(currentBgColor);
 
 function DrawMessageLines(a)
 {
-	Draw.line((DATA.WIDESCREEN * 32), 80, DATA.CANVAS.width - (DATA.WIDESCREEN * 32), 80, Color.new(196,196,196, a));
-	Draw.line((DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), DATA.CANVAS.width - (DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), Color.new(196,196,196, a));
+    Draw.line((DATA.WIDESCREEN * 32), 80, DATA.CANVAS.width - (DATA.WIDESCREEN * 32), 80, Color.new(196,196,196, a));
+    Draw.line((DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), DATA.CANVAS.width - (DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), Color.new(196,196,196, a));
 }
 
 // This draws the Icon and Title for the Message Screen if there are any.
 
 function DrawMessageTop(alpha)
 {
-	if (("Icon" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.Icon != -1))
-	{
-		dash_icons[DATA.MESSAGE_INFO.Icon].width = 24
-		dash_icons[DATA.MESSAGE_INFO.Icon].height = 24;
-		dash_icons[DATA.MESSAGE_INFO.Icon].color = Color.new(255,255,255, alpha);
-		dash_icons[DATA.MESSAGE_INFO.Icon].draw(40 + (DATA.WIDESCREEN * 32), 55);
-	}
+    if (("Icon" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.Icon != -1))
+    {
+        dash_icons[DATA.MESSAGE_INFO.Icon].width = 24
+        dash_icons[DATA.MESSAGE_INFO.Icon].height = 24;
+        dash_icons[DATA.MESSAGE_INFO.Icon].color = Color.new(255,255,255, alpha);
+        dash_icons[DATA.MESSAGE_INFO.Icon].draw(40 + (DATA.WIDESCREEN * 32), 55);
+    }
 
-	if (("Title" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.Title != ""))
-	{
-		let txt = (Array.isArray(DATA.MESSAGE_INFO.Title)) ? DATA.MESSAGE_INFO.Title[DATA.LANGUAGE] : DATA.MESSAGE_INFO.Title;
-		TxtPrint(txt, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 72 + (DATA.WIDESCREEN * 32), y:48 });
-	}
+    if (("Title" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.Title != ""))
+    {
+        let txt = (Array.isArray(DATA.MESSAGE_INFO.Title)) ? DATA.MESSAGE_INFO.Title[DATA.LANGUAGE] : DATA.MESSAGE_INFO.Title;
+        TxtPrint(txt, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 72 + (DATA.WIDESCREEN * 32), y:48 });
+    }
 }
 
 // This draws the X and O button texts at the bottom of the Message Screen if needed.
 
 function DrawMessageBottom(alpha)
 {
-	if (("BACK_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.BACK_BTN))
-	{
-		let backBtnString = (DATA.BTNTYPE) ? `X  ${TXT_MESSAGE_BACK[DATA.LANGUAGE]}` : `O  ${TXT_MESSAGE_BACK[DATA.LANGUAGE]}`;
-		TxtPrint(backBtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 80 + (DATA.WIDESCREEN * 32), y:(DATA.CANVAS.height - 297) }, "CENTER");
-	}
+    if (("BACK_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.BACK_BTN))
+    {
+        let backBtnString = (DATA.BTNTYPE) ? `X  ${TXT_MESSAGE_BACK[DATA.LANGUAGE]}` : `O  ${TXT_MESSAGE_BACK[DATA.LANGUAGE]}`;
+        TxtPrint(backBtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 80 + (DATA.WIDESCREEN * 32), y:(DATA.CANVAS.height - 297) }, "CENTER");
+    }
 
-	if (("ENTER_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.ENTER_BTN))
-	{
-		let BtnString = (DATA.BTNTYPE) ? `O  ${TXT_MESSAGE_ENTER[DATA.LANGUAGE]}` : `X  ${TXT_MESSAGE_ENTER[DATA.LANGUAGE]}`;
-		TxtPrint(BtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: -70 + (DATA.WIDESCREEN * 32), y:(DATA.CANVAS.height - 297) }, "CENTER");
-	}
+    if (("ENTER_BTN" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.ENTER_BTN))
+    {
+        let BtnString = (DATA.BTNTYPE) ? `O  ${TXT_MESSAGE_ENTER[DATA.LANGUAGE]}` : `X  ${TXT_MESSAGE_ENTER[DATA.LANGUAGE]}`;
+        TxtPrint(BtnString, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: -70 + (DATA.WIDESCREEN * 32), y:(DATA.CANVAS.height - 297) }, "CENTER");
+    }
 }
 
 // Initializes the special 'Video Mode' Screen Message Object.
 
 function InitVModeMessageSettings()
 {
-	DATA.MESSAGE_INFO.Processed = TextRender.ProcessText(TXT_VMODE_MSG[DATA.LANGUAGE]);
-	DATA.MESSAGE_INFO.Selected = 1;
-	DATA.MESSAGE_INFO.Confirm = function()
-	{
-		switch(DATA.MESSAGE_INFO.Selected)
-		{
-			case 0:
-				let config = DATA.CONFIG.Get("main.cfg");
-				switch(DATA.CANVAS.mode)
-				{
-					case NTSC: config["vmode"] = "0"; break;
-					case PAL: config["vmode"] = "1"; break;
-					case DTV_480p: config["vmode"] = "2"; break;
-					case DTV_576p: config["vmode"] = "3"; break;
-					case DTV_720p: config["vmode"] = "4"; break;
-					case DTV_1080i: config["vmode"] = "5"; break;
-				}
-				DATA.CONFIG.Push("main.cfg", config);
-				DATA.SCREEN_PREVMODE = DATA.CANVAS.mode;
-				break;
-			case 1:
-				let def_val = 0;
-				switch(DATA.SCREEN_PREVMODE)
-				{
-					case NTSC: def_val = 0; break;
-					case PAL: def_val = 1; break;
-					case DTV_480p: def_val = 2; break;
-					case DTV_576p: def_val = 3; break;
-					case DTV_720p: def_val = 4; break;
-					case DTV_1080i: def_val = 5; break;
-				}
-				DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.Default = def_val;
-				DATA.CANVAS.mode = DATA.SCREEN_PREVMODE
-				Screen.setMode(DATA.CANVAS);
-				break;
-		}
-	}
+    DATA.MESSAGE_INFO.Processed = TextRender.ProcessText(TXT_VMODE_MSG[DATA.LANGUAGE]);
+    DATA.MESSAGE_INFO.Selected = 1;
+    DATA.MESSAGE_INFO.Confirm = function()
+    {
+        switch(DATA.MESSAGE_INFO.Selected)
+        {
+            case 0:
+                let config = DATA.CONFIG.Get("main.cfg");
+                switch(DATA.CANVAS.mode)
+                {
+                    case NTSC: config["vmode"] = "0"; break;
+                    case PAL: config["vmode"] = "1"; break;
+                    case DTV_480p: config["vmode"] = "2"; break;
+                    case DTV_576p: config["vmode"] = "3"; break;
+                    case DTV_720p: config["vmode"] = "4"; break;
+                    case DTV_1080i: config["vmode"] = "5"; break;
+                }
+                DATA.CONFIG.Push("main.cfg", config);
+                DATA.SCREEN_PREVMODE = DATA.CANVAS.mode;
+                break;
+            case 1:
+                let def_val = 0;
+                switch(DATA.SCREEN_PREVMODE)
+                {
+                    case NTSC: def_val = 0; break;
+                    case PAL: def_val = 1; break;
+                    case DTV_480p: def_val = 2; break;
+                    case DTV_576p: def_val = 3; break;
+                    case DTV_720p: def_val = 4; break;
+                    case DTV_1080i: def_val = 5; break;
+                }
+                DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.Default = def_val;
+                DATA.CANVAS.mode = DATA.SCREEN_PREVMODE
+                Screen.setMode(DATA.CANVAS);
+                break;
+        }
+    }
 
     SetPadEvents_Vmode();
 }
@@ -241,166 +241,166 @@ function InitVModeMessageSettings()
 
 function InitParentalSetMessageSettings()
 {
-	DATA.MESSAGE_INFO.Processed = TXT_ENTER_NEW_PASS[DATA.LANGUAGE];
-	DATA.MESSAGE_INFO.Selected = 0;
-	DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
+    DATA.MESSAGE_INFO.Processed = TXT_ENTER_NEW_PASS[DATA.LANGUAGE];
+    DATA.MESSAGE_INFO.Selected = 0;
+    DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
     SetPadEvents_Parental();
 
-	DATA.MESSAGE_INFO.Confirm = function()
-	{
-		DATA.PRNTCODE = DATA.MESSAGE_INFO.TMPCODE;
-		let config = DATA.CONFIG.Get("main.cfg");
-		config["prntcode"] = `[ ${DATA.PRNTCODE[0].toString()}, ${DATA.PRNTCODE[1].toString()}, ${DATA.PRNTCODE[2].toString()}, ${DATA.PRNTCODE[3].toString()} ]`;
-		DATA.CONFIG.Push("main.cfg", config);
-	};
+    DATA.MESSAGE_INFO.Confirm = function()
+    {
+        DATA.PRNTCODE = DATA.MESSAGE_INFO.TMPCODE;
+        let config = DATA.CONFIG.Get("main.cfg");
+        config["prntcode"] = `[ ${DATA.PRNTCODE[0].toString()}, ${DATA.PRNTCODE[1].toString()}, ${DATA.PRNTCODE[2].toString()}, ${DATA.PRNTCODE[3].toString()} ]`;
+        DATA.CONFIG.Push("main.cfg", config);
+    };
 }
 
 // Initializes the special 'Get Parental Code' Screen Message Object.
 
 function InitParentalCheckMessageSettings()
 {
-	DATA.MESSAGE_INFO.Processed = TXT_ENTER_CUR_PASS[DATA.LANGUAGE];
-	DATA.MESSAGE_INFO.Selected = 0;
-	DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
+    DATA.MESSAGE_INFO.Processed = TXT_ENTER_CUR_PASS[DATA.LANGUAGE];
+    DATA.MESSAGE_INFO.Selected = 0;
+    DATA.MESSAGE_INFO.TMPCODE = [ 0, 0, 0, 0 ];
     SetPadEvents_Parental();
 
-	DATA.MESSAGE_INFO.Confirm = function()
-	{
-		if ((DATA.MESSAGE_INFO.TMPCODE[0] === DATA.PRNTCODE[0]) && (DATA.MESSAGE_INFO.TMPCODE[1] === DATA.PRNTCODE[1]) && (DATA.MESSAGE_INFO.TMPCODE[2] === DATA.PRNTCODE[2]) && (DATA.MESSAGE_INFO.TMPCODE[3] === DATA.PRNTCODE[3]))
-		{
-			console.log("Parental Control Code Succeded");
-			DATA.PRNTSUCC = true;
-		}
-	};
+    DATA.MESSAGE_INFO.Confirm = function()
+    {
+        if ((DATA.MESSAGE_INFO.TMPCODE[0] === DATA.PRNTCODE[0]) && (DATA.MESSAGE_INFO.TMPCODE[1] === DATA.PRNTCODE[1]) && (DATA.MESSAGE_INFO.TMPCODE[2] === DATA.PRNTCODE[2]) && (DATA.MESSAGE_INFO.TMPCODE[3] === DATA.PRNTCODE[3]))
+        {
+            console.log("Parental Control Code Succeded");
+            DATA.PRNTSUCC = true;
+        }
+    };
 }
 
 // Draws the elements for the Parental Code Message Screen.
 
 function DrawParentalCodeMessage(txtColor, arrAlpha)
 {
-	let baseX = Math.round(DATA.CANVAS.width / 2) - 50 - (DATA.WIDESCREEN * 32);
-	let baseY = Math.round(DATA.CANVAS.height / 2) + 20;
+    let baseX = Math.round(DATA.CANVAS.width / 2) - 50 - (DATA.WIDESCREEN * 32);
+    let baseY = Math.round(DATA.CANVAS.height / 2) + 20;
 
-	for (let i = 0; i < 4; i++)
-	{
-		let Chr = (i == DATA.MESSAGE_INFO.Selected) ? DATA.MESSAGE_INFO.TMPCODE[i].toString() : "*";
-		let ymod = (i == DATA.MESSAGE_INFO.Selected) ? 0 : 3;
-		let xmod = (i == DATA.MESSAGE_INFO.Selected) ? 2 : 0;
-		TxtPrint(Chr, txtColor, { x: baseX + (i * 30) + (DATA.WIDESCREEN * 32) - xmod, y: baseY + ymod}, "LEFT", undefined, (i == DATA.MESSAGE_INFO.Selected));
-	}
+    for (let i = 0; i < 4; i++)
+    {
+        let Chr = (i == DATA.MESSAGE_INFO.Selected) ? DATA.MESSAGE_INFO.TMPCODE[i].toString() : "*";
+        let ymod = (i == DATA.MESSAGE_INFO.Selected) ? 0 : 3;
+        let xmod = (i == DATA.MESSAGE_INFO.Selected) ? 2 : 0;
+        TxtPrint(Chr, txtColor, { x: baseX + (i * 30) + (DATA.WIDESCREEN * 32) - xmod, y: baseY + ymod}, "LEFT", undefined, (i == DATA.MESSAGE_INFO.Selected));
+    }
 
-	dash_arrow.width = 16;
-	dash_arrow.height = 16;
-	dash_arrow.color = Color.new(255,255,255,arrAlpha);
+    dash_arrow.width = 16;
+    dash_arrow.height = 16;
+    dash_arrow.color = Color.new(255,255,255,arrAlpha);
 
-	dash_arrow.angle = -0.5f;
-	dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2 + (DATA.WIDESCREEN * 32), baseY + 5);
-	dash_arrow.angle = 0.5f;
-	dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2 + (DATA.WIDESCREEN * 32), baseY + 31);
-	dash_arrow.angle = 0.0f;
+    dash_arrow.angle = -0.5f;
+    dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2 + (DATA.WIDESCREEN * 32), baseY + 5);
+    dash_arrow.angle = 0.5f;
+    dash_arrow.draw(baseX + (DATA.MESSAGE_INFO.Selected * 30) + 2 + (DATA.WIDESCREEN * 32), baseY + 31);
+    dash_arrow.angle = 0.0f;
 
-	TxtPrint(DATA.MESSAGE_INFO.Processed, txtColor, { x: (DATA.WIDESCREEN * 32) + 12, y: -20}, "CENTER");
+    TxtPrint(DATA.MESSAGE_INFO.Processed, txtColor, { x: (DATA.WIDESCREEN * 32) + 12, y: -20}, "CENTER");
 }
 
 // Initializes a Generic 'Information' Screen Message Object.
 
 function InitMessageInfoScreenSettings()
 {
-	DATA.MESSAGE_INFO.Processed = true;
-	DATA.MESSAGE_INFO.Selected = -1;
+    DATA.MESSAGE_INFO.Processed = true;
+    DATA.MESSAGE_INFO.Selected = -1;
     SetPadEvents_Information();
 
-	for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
-	{
-		if (DATA.MESSAGE_INFO.Data[i].Selectable)
-		{
-			DATA.MESSAGE_INFO.Selected = i;
-			break;
-		}
-	}
+    for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
+    {
+        if (DATA.MESSAGE_INFO.Data[i].Selectable)
+        {
+            DATA.MESSAGE_INFO.Selected = i;
+            break;
+        }
+    }
 }
 
 // Draws the elements for the 'Information' Screen.
 
 function DrawMessageInfoScreen(txtColor, arrAlpha)
 {
-	const nameX = -(Math.round(DATA.CANVAS.width / 2) + 16 - (DATA.WIDESCREEN * 96));
-	const descX = (Math.round(DATA.CANVAS.width / 2) - 24);
-	const baseY = Math.round(DATA.CANVAS.height / 2) - (DATA.MESSAGE_INFO.Data.length * 8)
-	for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
-	{
-		let glowEnabled = false;
-		if ((txtColor.a == 128) && (DATA.MESSAGE_INFO.Data[i].Selectable) && (DATA.MESSAGE_INFO.Selected === i))
-		{
-			glowEnabled = true;
-		}
+    const nameX = -(Math.round(DATA.CANVAS.width / 2) + 16 - (DATA.WIDESCREEN * 96));
+    const descX = (Math.round(DATA.CANVAS.width / 2) - 24);
+    const baseY = Math.round(DATA.CANVAS.height / 2) - (DATA.MESSAGE_INFO.Data.length * 8)
+    for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
+    {
+        let glowEnabled = false;
+        if ((txtColor.a == 128) && (DATA.MESSAGE_INFO.Data[i].Selectable) && (DATA.MESSAGE_INFO.Selected === i))
+        {
+            glowEnabled = true;
+        }
 
-		TxtPrint(`${DATA.MESSAGE_INFO.Data[i].Name}:`, txtColor, { x: nameX, y: baseY + (20 * i) }, "RIGHT", undefined);
-		TxtPrint(`${DATA.MESSAGE_INFO.Data[i].Description}`, txtColor, { x: descX + 25, y: baseY + (20 * i) }, "LEFT", undefined, glowEnabled);
-	}
+        TxtPrint(`${DATA.MESSAGE_INFO.Data[i].Name}:`, txtColor, { x: nameX, y: baseY + (20 * i) }, "RIGHT", undefined);
+        TxtPrint(`${DATA.MESSAGE_INFO.Data[i].Description}`, txtColor, { x: descX + 25, y: baseY + (20 * i) }, "LEFT", undefined, glowEnabled);
+    }
 
-	if (DATA.MESSAGE_INFO.Selected > -1)
-	{
-		const selectedTextWidth = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Description.length * 8; //font_s.getTextSize(DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Description).width;
-		const arrY = DATA.MESSAGE_INFO.Selected * 20;
-		dash_arrow.width = 16;
-		dash_arrow.height = 16;
-		dash_arrow.color = Color.new(255,255,255,arrAlpha);
+    if (DATA.MESSAGE_INFO.Selected > -1)
+    {
+        const selectedTextWidth = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Description.length * 8; //font_s.getTextSize(DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected].Description).width;
+        const arrY = DATA.MESSAGE_INFO.Selected * 20;
+        dash_arrow.width = 16;
+        dash_arrow.height = 16;
+        dash_arrow.color = Color.new(255,255,255,arrAlpha);
 
-		dash_arrow.angle = 0.0f;
-		dash_arrow.draw(descX + 8, baseY + arrY + 12);
-		dash_arrow.angle = 1.0f;
-		dash_arrow.draw(descX + selectedTextWidth + 34, baseY + arrY + 19);
-		dash_arrow.angle = 0.0f;
-	}
+        dash_arrow.angle = 0.0f;
+        dash_arrow.draw(descX + 8, baseY + arrY + 12);
+        dash_arrow.angle = 1.0f;
+        dash_arrow.draw(descX + selectedTextWidth + 34, baseY + arrY + 19);
+        dash_arrow.angle = 0.0f;
+    }
 }
 
 // Message Screen Fade In Animation.
 
 function DrawMessageFadeIn()
 {
-	if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
-	let prevOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
-	let ovAlpha = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
-	let tempColor = interpolateColorObj(prevOvColor, { r: 0, g: 0, b: 0, a: ovAlpha }, Math.fround(DATA.DASH_MOVE_FRAME / 20));
-	let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: DATA.DASH_MOVE_FRAME * 6 };
-	DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
-	DrawMessageLines(DATA.DASH_MOVE_FRAME * 6);
-	DrawMessageTop(DATA.DASH_MOVE_FRAME * 6);
-	DrawMessageBottom(DATA.DASH_MOVE_FRAME * 6);
+    if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
+    let prevOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
+    let ovAlpha = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
+    let tempColor = interpolateColorObj(prevOvColor, { r: 0, g: 0, b: 0, a: ovAlpha }, Math.fround(DATA.DASH_MOVE_FRAME / 20));
+    let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: DATA.DASH_MOVE_FRAME * 6 };
+    DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+    DrawMessageLines(DATA.DASH_MOVE_FRAME * 6);
+    DrawMessageTop(DATA.DASH_MOVE_FRAME * 6);
+    DrawMessageBottom(DATA.DASH_MOVE_FRAME * 6);
 
-	switch(DATA.MESSAGE_INFO.Type)
-	{
-		case "TEXT":
-			if (!DATA.MESSAGE_INFO.Processed)
-			{
-				let txt = (Array.isArray(DATA.MESSAGE_INFO.Text)) ? DATA.MESSAGE_INFO.Text[DATA.LANGUAGE] : DATA.MESSAGE_INFO.Text;
-				DATA.MESSAGE_INFO.Processed = TextRender.ProcessText(txt);
-			}
+    switch(DATA.MESSAGE_INFO.Type)
+    {
+        case "TEXT":
+            if (!DATA.MESSAGE_INFO.Processed)
+            {
+                let txt = (Array.isArray(DATA.MESSAGE_INFO.Text)) ? DATA.MESSAGE_INFO.Text[DATA.LANGUAGE] : DATA.MESSAGE_INFO.Text;
+                DATA.MESSAGE_INFO.Processed = TextRender.ProcessText(txt);
+            }
 
-			TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
-			break;
-		case "VMODE":
-			if (!DATA.MESSAGE_INFO.Processed) { InitVModeMessageSettings();	}
-			TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -40}, "CENTER");
-			TxtPrint(`${TXT_VMODE_REMTIME[DATA.LANGUAGE]}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 20}, "CENTER");
-			TxtPrint(`10 ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, txtFadeColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
-			TxtPrint(`${TXT_YES[DATA.LANGUAGE]}`, txtFadeColor, { x: -40 + (DATA.WIDESCREEN * 32), y: 70}, "CENTER");
-			TxtPrint(`${TXT_NO[DATA.LANGUAGE]}`, txtFadeColor, { x: 30 + (DATA.WIDESCREEN * 32), y: 70}, "CENTER");
-			break;
-		case "PARENTAL_SET":
-			if (!DATA.MESSAGE_INFO.Processed) { InitParentalSetMessageSettings(); }
-			DrawParentalCodeMessage(txtFadeColor, DATA.DASH_MOVE_FRAME * 5);
-			break;
-		case "PARENTAL_CHECK":
-			if (!DATA.MESSAGE_INFO.Processed) { InitParentalCheckMessageSettings(); }
-			DrawParentalCodeMessage(txtFadeColor, DATA.DASH_MOVE_FRAME * 5);
-			break;
-		case "INFO":
-			if (!DATA.MESSAGE_INFO.Processed) { InitMessageInfoScreenSettings(); }
-			DrawMessageInfoScreen(txtFadeColor, DATA.DASH_MOVE_FRAME * 5);
-			break;
-	}
+            TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
+            break;
+        case "VMODE":
+            if (!DATA.MESSAGE_INFO.Processed) { InitVModeMessageSettings();	}
+            TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -40}, "CENTER");
+            TxtPrint(`${TXT_VMODE_REMTIME[DATA.LANGUAGE]}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 20}, "CENTER");
+            TxtPrint(`10 ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, txtFadeColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
+            TxtPrint(`${TXT_YES[DATA.LANGUAGE]}`, txtFadeColor, { x: -40 + (DATA.WIDESCREEN * 32), y: 70}, "CENTER");
+            TxtPrint(`${TXT_NO[DATA.LANGUAGE]}`, txtFadeColor, { x: 30 + (DATA.WIDESCREEN * 32), y: 70}, "CENTER");
+            break;
+        case "PARENTAL_SET":
+            if (!DATA.MESSAGE_INFO.Processed) { InitParentalSetMessageSettings(); }
+            DrawParentalCodeMessage(txtFadeColor, DATA.DASH_MOVE_FRAME * 5);
+            break;
+        case "PARENTAL_CHECK":
+            if (!DATA.MESSAGE_INFO.Processed) { InitParentalCheckMessageSettings(); }
+            DrawParentalCodeMessage(txtFadeColor, DATA.DASH_MOVE_FRAME * 5);
+            break;
+        case "INFO":
+            if (!DATA.MESSAGE_INFO.Processed) { InitMessageInfoScreenSettings(); }
+            DrawMessageInfoScreen(txtFadeColor, DATA.DASH_MOVE_FRAME * 5);
+            break;
+    }
 }
 
 // Message Screen Main Handler.
@@ -408,104 +408,104 @@ function DrawMessageFadeIn()
 function DrawMessageIdle()
 {
     DATA.DASH_MOVE_FRAME = 0;
-	DrawMessageLines(128);
-	DrawMessageTop(128);
-	DrawMessageBottom(128);
+    DrawMessageLines(128);
+    DrawMessageTop(128);
+    DrawMessageBottom(128);
 
-	switch(DATA.MESSAGE_INFO.Type)
-	{
-		case "TEXT":
-			TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
-			break;
-		case "VMODE":
-			if (DATA.MESSAGE_TIMER == null) { DATA.MESSAGE_TIMER = Timer.new(); }
+    switch(DATA.MESSAGE_INFO.Type)
+    {
+        case "TEXT":
+            TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
+            break;
+        case "VMODE":
+            if (DATA.MESSAGE_TIMER == null) { DATA.MESSAGE_TIMER = Timer.new(); }
 
-			let time = Math.round(Timer.getTime(DATA.MESSAGE_TIMER) / 1000000);
+            let time = Math.round(Timer.getTime(DATA.MESSAGE_TIMER) / 1000000);
 
-			if (time > 10)
-			{
-				let def_val = 0;
-				switch(DATA.SCREEN_PREVMODE)
-				{
-					case NTSC: def_val = 0; break;
-					case PAL: def_val = 1; break;
-					case DTV_480p: def_val = 2; break;
-					case DTV_576p: def_val = 3; break;
-					case DTV_720p: def_val = 4; break;
-					case DTV_1080i: def_val = 5; break;
-				}
-				DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.Default = def_val;
-				DATA.CANVAS.mode = DATA.SCREEN_PREVMODE
-				Screen.setMode(DATA.CANVAS);
-				DATA.OVSTATE = "MESSAGE_OUT";
-				DATA.DASH_STATE = (DATA.DASH_STATE == "SUBMENU_MESSAGE_IDLE") ? "SUBMENU_MESSAGE_FADE_IN" : "IDLE";
-				DATA.DASH_MOVE_FRAME = 0;
-				SetDashPadEvents(0);
-				break;
-			}
+            if (time > 10)
+            {
+                let def_val = 0;
+                switch(DATA.SCREEN_PREVMODE)
+                {
+                    case NTSC: def_val = 0; break;
+                    case PAL: def_val = 1; break;
+                    case DTV_480p: def_val = 2; break;
+                    case DTV_576p: def_val = 3; break;
+                    case DTV_720p: def_val = 4; break;
+                    case DTV_1080i: def_val = 5; break;
+                }
+                DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.Default = def_val;
+                DATA.CANVAS.mode = DATA.SCREEN_PREVMODE
+                Screen.setMode(DATA.CANVAS);
+                DATA.OVSTATE = "MESSAGE_OUT";
+                DATA.DASH_STATE = (DATA.DASH_STATE == "SUBMENU_MESSAGE_IDLE") ? "SUBMENU_MESSAGE_FADE_IN" : "IDLE";
+                DATA.DASH_MOVE_FRAME = 0;
+                SetDashPadEvents(0);
+                break;
+            }
 
-			TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -40}, "CENTER");
-			TxtPrint(`${TXT_VMODE_REMTIME[DATA.LANGUAGE]}`, textColor, { x: (DATA.WIDESCREEN * 32), y: 20}, "CENTER");
-			TxtPrint(`${(10 - time).toString()} ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, textColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
-			TxtPrint(TXT_YES[DATA.LANGUAGE], textColor, {x: -40 + (DATA.WIDESCREEN * 32), y: 70 }, "CENTER", undefined, (DATA.MESSAGE_INFO.Selected == 0));
-			TxtPrint(TXT_NO[DATA.LANGUAGE], textColor, {x: 30 + (DATA.WIDESCREEN * 32), y: 70 }, "CENTER", undefined, (DATA.MESSAGE_INFO.Selected == 1));
+            TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -40}, "CENTER");
+            TxtPrint(`${TXT_VMODE_REMTIME[DATA.LANGUAGE]}`, textColor, { x: (DATA.WIDESCREEN * 32), y: 20}, "CENTER");
+            TxtPrint(`${(10 - time).toString()} ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, textColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
+            TxtPrint(TXT_YES[DATA.LANGUAGE], textColor, {x: -40 + (DATA.WIDESCREEN * 32), y: 70 }, "CENTER", undefined, (DATA.MESSAGE_INFO.Selected == 0));
+            TxtPrint(TXT_NO[DATA.LANGUAGE], textColor, {x: 30 + (DATA.WIDESCREEN * 32), y: 70 }, "CENTER", undefined, (DATA.MESSAGE_INFO.Selected == 1));
 
-			break;
-		case "PARENTAL_SET":
-			DrawParentalCodeMessage(textColor, 100);
-			break;
-		case "PARENTAL_CHECK":
-			DrawParentalCodeMessage(textColor, 100);
-			break;
-		case "INFO":
-			DrawMessageInfoScreen(textColor, 100);
-			break;
-		case "INFO_TO_PROGRESS":
-			let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * -6) };
-			TxtPrint(TXT_WAIT[DATA.LANGUAGE], txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
-			TxtPrint(`1/${DATA.MESSAGE_INFO.Count}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 10}, "CENTER");
-			TxtPrint("0%", txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 30}, "CENTER");
-			DATA.DASH_MOVE_FRAME++;
-			if (DATA.DASH_MOVE_FRAME > 19) { DATA.MESSAGE_INFO.Type = "PROGRESS"; }
-			break;
-		case "PROGRESS":
-			const progress = DATA.MESSAGE_INFO.Progress;
-			TxtPrint(TXT_WAIT[DATA.LANGUAGE], textColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
-			TxtPrint(`${DATA.MESSAGE_INFO.Done.toString()}/${DATA.MESSAGE_INFO.Count.toString()}`, textColor, { x: (DATA.WIDESCREEN * 32), y: 10}, "CENTER");
-			TxtPrint(`${progress.toString()}%`, textColor, { x: (DATA.WIDESCREEN * 32), y: 30}, "CENTER");
-			if ((DATA.MESSAGE_INFO.Done == DATA.MESSAGE_INFO.Count) && (progress === 100))
-			{
-				DATA.OVSTATE = "MESSAGE_OUT";
-				DATA.DASH_STATE = (DATA.DASH_STATE == "SUBMENU_MESSAGE_IDLE") ? "SUBMENU_MESSAGE_FADE_IN" : "IDLE_MESSAGE_FADE_OUT";
-				DATA.DASH_MOVE_FRAME = 0;
-				SetDashPadEvents(0);
-			}
-			break;
-	}
+            break;
+        case "PARENTAL_SET":
+            DrawParentalCodeMessage(textColor, 100);
+            break;
+        case "PARENTAL_CHECK":
+            DrawParentalCodeMessage(textColor, 100);
+            break;
+        case "INFO":
+            DrawMessageInfoScreen(textColor, 100);
+            break;
+        case "INFO_TO_PROGRESS":
+            let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * -6) };
+            TxtPrint(TXT_WAIT[DATA.LANGUAGE], txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
+            TxtPrint(`1/${DATA.MESSAGE_INFO.Count}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 10}, "CENTER");
+            TxtPrint("0%", txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 30}, "CENTER");
+            DATA.DASH_MOVE_FRAME++;
+            if (DATA.DASH_MOVE_FRAME > 19) { DATA.MESSAGE_INFO.Type = "PROGRESS"; }
+            break;
+        case "PROGRESS":
+            const progress = DATA.MESSAGE_INFO.Progress;
+            TxtPrint(TXT_WAIT[DATA.LANGUAGE], textColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
+            TxtPrint(`${DATA.MESSAGE_INFO.Done.toString()}/${DATA.MESSAGE_INFO.Count.toString()}`, textColor, { x: (DATA.WIDESCREEN * 32), y: 10}, "CENTER");
+            TxtPrint(`${progress.toString()}%`, textColor, { x: (DATA.WIDESCREEN * 32), y: 30}, "CENTER");
+            if ((DATA.MESSAGE_INFO.Done == DATA.MESSAGE_INFO.Count) && (progress === 100))
+            {
+                DATA.OVSTATE = "MESSAGE_OUT";
+                DATA.DASH_STATE = (DATA.DASH_STATE == "SUBMENU_MESSAGE_IDLE") ? "SUBMENU_MESSAGE_FADE_IN" : "IDLE_MESSAGE_FADE_OUT";
+                DATA.DASH_MOVE_FRAME = 0;
+                SetDashPadEvents(0);
+            }
+            break;
+    }
 }
 
 // Message Screen Fade Out Animation.
 
 function DrawMessageFadeOut()
 {
-	let newOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
-	let ovAlphaOut = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
-	let prevtempColor = interpolateColorObj({ r: 0, g: 0, b: 0, a: ovAlphaOut }, newOvColor, Math.fround(DATA.DASH_MOVE_FRAME / 20));
-	let txtFadeOutColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * 6) };
-	DATA.OVCOL = Color.new(prevtempColor.r, prevtempColor.g, prevtempColor.b, prevtempColor.a);
-	DrawMessageLines(128 - (DATA.DASH_MOVE_FRAME * 6));
+    let newOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
+    let ovAlphaOut = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
+    let prevtempColor = interpolateColorObj({ r: 0, g: 0, b: 0, a: ovAlphaOut }, newOvColor, Math.fround(DATA.DASH_MOVE_FRAME / 20));
+    let txtFadeOutColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * 6) };
+    DATA.OVCOL = Color.new(prevtempColor.r, prevtempColor.g, prevtempColor.b, prevtempColor.a);
+    DrawMessageLines(128 - (DATA.DASH_MOVE_FRAME * 6));
 
-	switch(DATA.MESSAGE_INFO.Type)
-	{
-		case "TEXT":
-			TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeOutColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
-			break;
-		case "VMODE":
-			if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
-			break;
-	}
+    switch(DATA.MESSAGE_INFO.Type)
+    {
+        case "TEXT":
+            TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeOutColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
+            break;
+        case "VMODE":
+            if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
+            break;
+    }
 
-	if (DATA.DASH_MOVE_FRAME > 19) { DATA.OVSTATE = "IDLE" }
+    if (DATA.DASH_MOVE_FRAME > 19) { DATA.OVSTATE = "IDLE" }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -542,24 +542,24 @@ function getDailyBrightness()
 
 function updateBGBrightness()
 {
-	if (DATA.BGSWITCH)
-	{
-		let tmpBrightness = (DATA.BGTMP == 0) ? getDailyBrightness() : DATA.BGCUSTOMBRIGHT;
-		tmpBrightness = interpolateValue(prevBrightness, tmpBrightness, brightnessFrame);
-		brightnessFrame += 0.05f;
-		if (brightnessFrame > 0.95)
-		{
-			brightnessFrame = 0.95f;
-			prevBrightness = tmpBrightness;
-		}
-		return tmpBrightness;
-	}
-	else
-	{
-		// Interpolate values based on time of day if using Original Background color
-		prevBrightness = DATA.BGBRIGHTNESS;
-		return (DATA.BGTMP == 0) ? getDailyBrightness() : DATA.BGCUSTOMBRIGHT;
-	}
+    if (DATA.BGSWITCH)
+    {
+        let tmpBrightness = (DATA.BGTMP == 0) ? getDailyBrightness() : DATA.BGCUSTOMBRIGHT;
+        tmpBrightness = interpolateValue(prevBrightness, tmpBrightness, brightnessFrame);
+        brightnessFrame += 0.05f;
+        if (brightnessFrame > 0.95)
+        {
+            brightnessFrame = 0.95f;
+            prevBrightness = tmpBrightness;
+        }
+        return tmpBrightness;
+    }
+    else
+    {
+        // Interpolate values based on time of day if using Original Background color
+        prevBrightness = DATA.BGBRIGHTNESS;
+        return (DATA.BGTMP == 0) ? getDailyBrightness() : DATA.BGCUSTOMBRIGHT;
+    }
 }
 
 // This is the main Background Function.
@@ -626,38 +626,38 @@ function drawBg()
 
 function drawOv()
 {
-	// Draw Date and Time
+    // Draw Date and Time
 
-	if (DATA.CURRENT_STATE == 1)
-	{
-		switch(DATA.DASH_STATE)
-		{
-			case "FADE_OUT": drawDate(DATA.DASH_MOVE_FRAME * -12, DATA.DASH_MOVE_FRAME * -12, DATA.DASH_MOVE_FRAME * -12); break;
-			default: drawDate(); break;
-		}
-	}
+    if (DATA.CURRENT_STATE == 1)
+    {
+        switch(DATA.DASH_STATE)
+        {
+            case "FADE_OUT": drawDate(DATA.DASH_MOVE_FRAME * -12, DATA.DASH_MOVE_FRAME * -12, DATA.DASH_MOVE_FRAME * -12); break;
+            default: drawDate(); break;
+        }
+    }
 
-	// Draw a partially visible theme color overlay to tint the whole interface.
-	// Fade In/Out screens also use this with a Full Black color.
-	Draw.rect((DATA.WIDESCREEN * 32),0,DATA.CANVAS.width - (DATA.WIDESCREEN * 64), DATA.CANVAS.height, DATA.OVCOL);
+    // Draw a partially visible theme color overlay to tint the whole interface.
+    // Fade In/Out screens also use this with a Full Black color.
+    Draw.rect((DATA.WIDESCREEN * 32),0,DATA.CANVAS.width - (DATA.WIDESCREEN * 64), DATA.CANVAS.height, DATA.OVCOL);
 
-	// If a message screen should be displayed, this takes care of it.
+    // If a message screen should be displayed, this takes care of it.
 
-	switch(DATA.OVSTATE)
-	{
-		case "MESSAGE_IN": DrawMessageFadeIn();	break;
-		case "MESSAGE_IDLE": DrawMessageIdle(); break;
-		case "MESSAGE_OUT": DrawMessageFadeOut(); break;
-	}
+    switch(DATA.OVSTATE)
+    {
+        case "MESSAGE_IN": DrawMessageFadeIn();	break;
+        case "MESSAGE_IDLE": DrawMessageIdle(); break;
+        case "MESSAGE_OUT": DrawMessageFadeOut(); break;
+    }
 
-	// Draw Black bars at the sides of the screen if Widescreen mode is enabled.
-	// This is done because elements drawn at the edges will flicker or look weird.
+    // Draw Black bars at the sides of the screen if Widescreen mode is enabled.
+    // This is done because elements drawn at the edges will flicker or look weird.
 
-	if (DATA.WIDESCREEN)
-	{
-		Draw.rect(0,0,32,DATA.CANVAS.height, Color.new(0,0,0,128));
-		Draw.rect(DATA.CANVAS.width - 32,0,DATA.CANVAS.width,DATA.CANVAS.height, Color.new(0,0,0,128));
-	}
+    if (DATA.WIDESCREEN)
+    {
+        Draw.rect(0,0,32,DATA.CANVAS.height, Color.new(0,0,0,128));
+        Draw.rect(DATA.CANVAS.width - 32,0,DATA.CANVAS.width,DATA.CANVAS.height, Color.new(0,0,0,128));
+    }
 }
 
 // Draws the Clock elements.
@@ -667,56 +667,56 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
     // Helper function to pad single-digit numbers with leading zeros
     const padnum = (num) => num.toString().padStart(2, '0');
 
-	if ((ICOFULLA + boxAlphaMod) > ICOFULLA) { boxAlphaMod = 0; }
-	if ((ICOFULLA + boxAlphaMod) < 0) { boxAlphaMod = -ICOFULLA; }
-	if ((ICOFULLA + icoAlphaMod) > ICOFULLA) { icoAlphaMod = 0; }
-	if ((ICOFULLA + icoAlphaMod) < 0) { icoAlphaMod = -ICOFULLA; }
+    if ((ICOFULLA + boxAlphaMod) > ICOFULLA) { boxAlphaMod = 0; }
+    if ((ICOFULLA + boxAlphaMod) < 0) { boxAlphaMod = -ICOFULLA; }
+    if ((ICOFULLA + icoAlphaMod) > ICOFULLA) { icoAlphaMod = 0; }
+    if ((ICOFULLA + icoAlphaMod) < 0) { icoAlphaMod = -ICOFULLA; }
 
-	// Draw Start of Clock Outline
-	dash_clock_outline.width = 32;
-	dash_clock_outline.startx = 2;
-	dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
-	dash_clock_outline.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 158, 35);
+    // Draw Start of Clock Outline
+    dash_clock_outline.width = 32;
+    dash_clock_outline.startx = 2;
+    dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
+    dash_clock_outline.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 158, 35);
 
-	// Draw End of Clock Outline
-	dash_clock_outline.width = 180;
-	dash_clock_outline.startx = 32;
-	dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
-	dash_clock_outline.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 128, 35);
+    // Draw End of Clock Outline
+    dash_clock_outline.width = 180;
+    dash_clock_outline.startx = 32;
+    dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
+    dash_clock_outline.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 128, 35);
 
-	dash_clock.color = Color.new(255,255,255,ICOFULLA + icoAlphaMod);
-	dash_clock.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 25, 42);
+    dash_clock.color = Color.new(255,255,255,ICOFULLA + icoAlphaMod);
+    dash_clock.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 25, 42);
 
-	// Get current date and time
-	const currentDate = new Date();
+    // Get current date and time
+    const currentDate = new Date();
 
-	// Extract date components
-	//const year = currentDate.getFullYear();
-	const month = (currentDate.getMonth() + 1).toString(); // Months are zero-based
-	const day = currentDate.getDate().toString();
+    // Extract date components
+    //const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString(); // Months are zero-based
+    const day = currentDate.getDate().toString();
 
-	// Extract time components
-	const hours24 = currentDate.getHours();
-	const minutes = currentDate.getMinutes().toString();
-	//const seconds = currentDate.getSeconds();
+    // Extract time components
+    const hours24 = currentDate.getHours();
+    const minutes = currentDate.getMinutes().toString();
+    //const seconds = currentDate.getSeconds();
 
-	// Convert to 12-hour format
-	const hours12 = (hours24 % 12 || 12).toString(); // Adjust for midnight (0 => 12)
-	const amPm = hours24 >= 12 ? 'PM' : 'AM';
-	const modColor = { r:textColor.r, g:textColor.g, b:textColor.b, a:textColor.a }
-	if ((modColor.a + textAlphaMod) > modColor.a) { textAlphaMod = 0; }
-	if ((modColor.a + textAlphaMod) < 0) { textAlphaMod = -modColor.a; }
-	modColor.a = modColor.a + textAlphaMod;
+    // Convert to 12-hour format
+    const hours12 = (hours24 % 12 || 12).toString(); // Adjust for midnight (0 => 12)
+    const amPm = hours24 >= 12 ? 'PM' : 'AM';
+    const modColor = { r:textColor.r, g:textColor.g, b:textColor.b, a:textColor.a }
+    if ((modColor.a + textAlphaMod) > modColor.a) { textAlphaMod = 0; }
+    if ((modColor.a + textAlphaMod) < 0) { textAlphaMod = -modColor.a; }
+    modColor.a = modColor.a + textAlphaMod;
 
-	let dateText = `${padnum(day)}/${padnum(month)}`;
-	let hourText = (DATA.HOUR_FORMAT) ? `${padnum(hours24)}:${padnum(minutes)}` : `${padnum(hours12)}:${padnum(minutes)} ${amPm}`;
+    let dateText = `${padnum(day)}/${padnum(month)}`;
+    let hourText = (DATA.HOUR_FORMAT) ? `${padnum(hours24)}:${padnum(minutes)}` : `${padnum(hours12)}:${padnum(minutes)} ${amPm}`;
 
-	switch(DATA.DATE_FORMAT)
-	{
-		case 1: dateText = `${padnum(month)}/${padnum(day)}`; break;
-	}
+    switch(DATA.DATE_FORMAT)
+    {
+        case 1: dateText = `${padnum(month)}/${padnum(day)}`; break;
+    }
 
-	TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 145, y:32 })
+    TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 145, y:32 })
 }
 
 console.log("INIT: BACKGROUND GRAPHICS INIT COMPLETE");

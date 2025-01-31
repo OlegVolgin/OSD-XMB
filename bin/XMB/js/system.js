@@ -24,114 +24,114 @@ Screen.setVSync(true);
 
 /*	Info:
 
-	Main DATA object used for storing all the main
-	data of the dashboard.
+    Main DATA object used for storing all the main
+    data of the dashboard.
 
-	Properties:
-		- DISCITEM: Boolean. Indicates if a Disctray Item is present on the dashboard.
-		- WIDESCREEN: Boolean. Indicates if the screen should be on a 16:9 aspect ratio.
-		- CANVAS: Screen Mode Object.
-		- EE_INFO: CPU Info Object.
-		- SCREEN_PREVMODE: Backup of Screen Mode Object.
-		- PARENTAL: Boolean. Indicates if Parental Control is activated.
-		- PRNTCODE: 4 Length Array. The code to be set if Parental Control is enabled.
-		- PRNTSUCC: Boolean. Indicates if Parental Code input was successful and item should be selected.
-		- LANGUAGE: Integer. Indicates the current language of the UI.
-		- BTNTYPE: Integer. 0 = X to select, 1 = O to Select.
-		- DATE_FORMAT: Integer. Indicates the Date Format Type to be displayed.
-		- HOUR_FORMAT: Integer. Indicates the Hour Format Type to either 12 or 24 hours.
-		- ASSETS_PATH: String. Folder with Main Resources.
-		- THEME_PATH: String. Path to Custom Resources.
-		- BGBRIGHTNESS: Integer. Background brightness defined by daylight.
-		- BGCUSTOMBRIGHT: Integer. Background custom brightness defined by the user.
-		- BGSWITCH: Boolean. Indicates if there was a change made to the background options by the user.
-		- BGFRAME: Float. Indicates the current animation frame for the background switch.
-		- BGVAL: Integer. Indicates a user selected background color to use.
-		- BGTMP: Integer. Indicates a temporary background color to use.
-		- BGCOL: Integer. Indicates which Item of monthColor to use.
-		- BGIMG: Image. Replaces Background with User selected Image.
-		- BGWAVES: Boolean. Indicates if background waves should be displayed.
-		- OVCOL: Color. Indicates the Screen Overlay color.
-		- OVSTATE: String. Indicates the current Overlay State.
-		- MESSAGE_INFO: Overlay Message Object.
-		- MESSAGE_TIMER: Timer. Used for Overlay Message.
-		- CURRENT_STATE: Integer. Main UI State.
-		- FADE_FRAME: Integer. Frame for Animations.
-		- BOOT_STATE: Integer. Boot animation state.
-		- EXIT_STATE: Integer. Exit animation state.
-		- DASH_STATE: String. Main Dashboard Navigation State.
-		- DASH_CURCAT: Integer. Current Selected Category.
-		- DASH_CUROPT: Integer. Current Selected Item on Category.
-		- DASH_CURSUB: Integer. Current Sub Menu Object Level.
-		- DASH_PRVSUB: Integer. Previous Sub Menu Object.
-		- DASH_CURSUBOPT: Integer. Current Selected Sub Menu Option.
-		- DASH_CURCTXLVL: Integer. Current Context Menu Level.
-		- DASH_CURCTXITMLAST: Integer. Last item of current context menu.
-		- DASH_CURCTXITMFIRST: Integer. First item of current context menu.
-		- DASH_CTX_TIMER: Timer. To be used on Context Menu Preview Function.
-		- DASH_TXT_TIMER: Timer. To be used while displaying large texts.
-		- DASH_MOVE_FRAME: Integer. Main Dashboard Animation Frame.
-		- DASH_PADMODE: Integer. Current Pad Event Mode.
-		- CUSTOM_FUNCTION: Custom function to be executed at exit.
-		- CONFIG: Configuration Object to manage cfg files.
-		- CPYQUEUE: Queue. To store queued thread copy items.
-		- GAMESETS: Main Neutrino Global Settings.
+    Properties:
+        - DISCITEM: Boolean. Indicates if a Disctray Item is present on the dashboard.
+        - WIDESCREEN: Boolean. Indicates if the screen should be on a 16:9 aspect ratio.
+        - CANVAS: Screen Mode Object.
+        - EE_INFO: CPU Info Object.
+        - SCREEN_PREVMODE: Backup of Screen Mode Object.
+        - PARENTAL: Boolean. Indicates if Parental Control is activated.
+        - PRNTCODE: 4 Length Array. The code to be set if Parental Control is enabled.
+        - PRNTSUCC: Boolean. Indicates if Parental Code input was successful and item should be selected.
+        - LANGUAGE: Integer. Indicates the current language of the UI.
+        - BTNTYPE: Integer. 0 = X to select, 1 = O to Select.
+        - DATE_FORMAT: Integer. Indicates the Date Format Type to be displayed.
+        - HOUR_FORMAT: Integer. Indicates the Hour Format Type to either 12 or 24 hours.
+        - ASSETS_PATH: String. Folder with Main Resources.
+        - THEME_PATH: String. Path to Custom Resources.
+        - BGBRIGHTNESS: Integer. Background brightness defined by daylight.
+        - BGCUSTOMBRIGHT: Integer. Background custom brightness defined by the user.
+        - BGSWITCH: Boolean. Indicates if there was a change made to the background options by the user.
+        - BGFRAME: Float. Indicates the current animation frame for the background switch.
+        - BGVAL: Integer. Indicates a user selected background color to use.
+        - BGTMP: Integer. Indicates a temporary background color to use.
+        - BGCOL: Integer. Indicates which Item of monthColor to use.
+        - BGIMG: Image. Replaces Background with User selected Image.
+        - BGWAVES: Boolean. Indicates if background waves should be displayed.
+        - OVCOL: Color. Indicates the Screen Overlay color.
+        - OVSTATE: String. Indicates the current Overlay State.
+        - MESSAGE_INFO: Overlay Message Object.
+        - MESSAGE_TIMER: Timer. Used for Overlay Message.
+        - CURRENT_STATE: Integer. Main UI State.
+        - FADE_FRAME: Integer. Frame for Animations.
+        - BOOT_STATE: Integer. Boot animation state.
+        - EXIT_STATE: Integer. Exit animation state.
+        - DASH_STATE: String. Main Dashboard Navigation State.
+        - DASH_CURCAT: Integer. Current Selected Category.
+        - DASH_CUROPT: Integer. Current Selected Item on Category.
+        - DASH_CURSUB: Integer. Current Sub Menu Object Level.
+        - DASH_PRVSUB: Integer. Previous Sub Menu Object.
+        - DASH_CURSUBOPT: Integer. Current Selected Sub Menu Option.
+        - DASH_CURCTXLVL: Integer. Current Context Menu Level.
+        - DASH_CURCTXITMLAST: Integer. Last item of current context menu.
+        - DASH_CURCTXITMFIRST: Integer. First item of current context menu.
+        - DASH_CTX_TIMER: Timer. To be used on Context Menu Preview Function.
+        - DASH_TXT_TIMER: Timer. To be used while displaying large texts.
+        - DASH_MOVE_FRAME: Integer. Main Dashboard Animation Frame.
+        - DASH_PADMODE: Integer. Current Pad Event Mode.
+        - CUSTOM_FUNCTION: Custom function to be executed at exit.
+        - CONFIG: Configuration Object to manage cfg files.
+        - CPYQUEUE: Queue. To store queued thread copy items.
+        - GAMESETS: Main Neutrino Global Settings.
 */
 
 const DATA =
 {
-	DISCITEM: false,
-	WIDESCREEN: false,
-	CANVAS: Screen.getMode(),
-	EE_INFO: System.getCPUInfo(),
-	SCREEN_PREVMODE: null,
-	PARENTAL: false,
-	PRNTCODE: [ 0, 0, 0, 0 ],
-	PRNTSUCC: false,
-	LANGUAGE: 0,
-	BTNTYPE: 0,
-	DATE_FORMAT: 0,
-	HOUR_FORMAT: 1,
-	ASSETS_PATH: "XMB/",
-	THEME_PATH: "THM/Original/",
+    DISCITEM: false,
+    WIDESCREEN: false,
+    CANVAS: Screen.getMode(),
+    EE_INFO: System.getCPUInfo(),
+    SCREEN_PREVMODE: null,
+    PARENTAL: false,
+    PRNTCODE: [ 0, 0, 0, 0 ],
+    PRNTSUCC: false,
+    LANGUAGE: 0,
+    BTNTYPE: 0,
+    DATE_FORMAT: 0,
+    HOUR_FORMAT: 1,
+    ASSETS_PATH: "XMB/",
+    THEME_PATH: "THM/Original/",
     CUSTOMBG_PATH: "",
     BGBRIGHTNESS: 0,
-	BGCUSTOMBRIGHT: 0,
-	BGSWITCH: false,
-	BGFRAME: 0,
-	BGVAL: 0,
-	BGTMP: 0,
+    BGCUSTOMBRIGHT: 0,
+    BGSWITCH: false,
+    BGFRAME: 0,
+    BGVAL: 0,
+    BGTMP: 0,
     BGCOL: 0,
     BGIMGTMP: false,
     BGIMG: false,
     BGIMGA: 0,
     DISPLAYBG: false,
-	BGWAVES: true,
-	OVCOL: Color.new(0, 0, 0, 0),
-	OVSTATE: "BOOT",
-	MESSAGE_INFO: null,
-	MESSAGE_TIMER: null,
-	CURRENT_STATE: 0,
-	FADE_FRAME: 0,
-	BOOT_STATE: 0,
-	EXIT_STATE: 0,
-	DASH_STATE: "IDLE",
-	DASH_CURCAT: 5,
-	DASH_CUROPT: 0,
-	DASH_CURSUB: -1,
-	DASH_PRVSUB: -2,
-	DASH_CURSUBOPT: 0,
-	DASH_CURCTXLVL: -1,
-	DASH_CURCTXITMLAST: 9,
-	DASH_CURCTXITMFIRST: 0,
-	DASH_CTX_TIMER: null,
-	DASH_TXT_TIMER: null,
-	DASH_MOVE_FRAME: 0,
-	DASH_PADMODE: 0,
-	CUSTOM_FUNCTION: () => { console.log("Default function"); },
-	CONFIG: null,
-	CPYQUEUE: [],
-	GAMESETS: { LOGO: false, DBC: false},
+    BGWAVES: true,
+    OVCOL: Color.new(0, 0, 0, 0),
+    OVSTATE: "BOOT",
+    MESSAGE_INFO: null,
+    MESSAGE_TIMER: null,
+    CURRENT_STATE: 0,
+    FADE_FRAME: 0,
+    BOOT_STATE: 0,
+    EXIT_STATE: 0,
+    DASH_STATE: "IDLE",
+    DASH_CURCAT: 5,
+    DASH_CUROPT: 0,
+    DASH_CURSUB: -1,
+    DASH_PRVSUB: -2,
+    DASH_CURSUBOPT: 0,
+    DASH_CURCTXLVL: -1,
+    DASH_CURCTXITMLAST: 9,
+    DASH_CURCTXITMFIRST: 0,
+    DASH_CTX_TIMER: null,
+    DASH_TXT_TIMER: null,
+    DASH_MOVE_FRAME: 0,
+    DASH_PADMODE: 0,
+    CUSTOM_FUNCTION: () => { console.log("Default function"); },
+    CONFIG: null,
+    CPYQUEUE: [],
+    GAMESETS: { LOGO: false, DBC: false},
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -142,18 +142,18 @@ const DATA =
 
 function ftxtWrite(path, txt)
 {
-	let errObj = {};
-	const file = std.open(path, "w", errObj);
-	if (file)
-	{
-		file.puts(txt);
-		file.flush();
-		file.close();
-	}
-	else
-	{
-		console.log(`IO ERROR: ${std.strerror(errObj.errno)}`);
-	}
+    let errObj = {};
+    const file = std.open(path, "w", errObj);
+    if (file)
+    {
+        file.puts(txt);
+        file.flush();
+        file.close();
+    }
+    else
+    {
+        console.log(`IO ERROR: ${std.strerror(errObj.errno)}`);
+    }
 }
 
 /* Write 'line' text to the 'log.txt' file */
@@ -222,7 +222,7 @@ function utf8Decode(byteArray) {
 
 function readFileAsUtf8(filepath)
 {
-	const file = os.open(filepath, os.O_RDONLY);
+    const file = os.open(filepath, os.O_RDONLY);
 
     if (file < 0)
     {
@@ -234,8 +234,8 @@ function readFileAsUtf8(filepath)
     if (flen > 0)
     {
         const array = new Uint8Array(flen);
-		os.seek(file, 0, std.SEEK_SET);
-		os.read(file, array.buffer, 0, flen);
+        os.seek(file, 0, std.SEEK_SET);
+        os.read(file, array.buffer, 0, flen);
         os.close(file);
 
         return utf8Decode(array);
@@ -275,7 +275,7 @@ function getFolderNameFromPath(path)
 {
     if (typeof path !== 'string' || !path.endsWith('/')) {
         console.log("ERORR: Path must be a string and end with a slash (/).");
-		return "";
+        return "";
     }
 
     // Remove the trailing slash and find the last part of the path
@@ -291,9 +291,9 @@ function getFolderNameFromPath(path)
 
 function getDirectoryName(path)
 {
-	// Regular expression to match the directory part
-	const match = path.match(/^(.*[\/:])/);
-	return match ? match[1] : "./";
+    // Regular expression to match the directory part
+    const match = path.match(/^(.*[\/:])/);
+    return match ? match[1] : "./";
 }
 
 /*	Converts a given integer into a byte formatted string	*/
@@ -320,29 +320,29 @@ function formatFileSize(size)
 
 function getGameName(path)
 {
-	// Regular expression to match the identifier and game name
-	const match = path.match(/[A-Z]{4}[-_][0-9]{3}\.[0-9]{2}\.(.+)\.[^/]+$/);
-	if (match && match[1]) {
-		return match[1].trim(); // Return the "Game Name" part
-	}
+    // Regular expression to match the identifier and game name
+    const match = path.match(/[A-Z]{4}[-_][0-9]{3}\.[0-9]{2}\.(.+)\.[^/]+$/);
+    if (match && match[1]) {
+        return match[1].trim(); // Return the "Game Name" part
+    }
 
-	// If no match, extract the file name without the extension
-	const fileNameMatch = path.match(/([^/]+)\.[^/.]+$/); // Match the file name and remove extension
-	if (fileNameMatch && fileNameMatch[1]) {
-		return fileNameMatch[1].trim();
-	}
+    // If no match, extract the file name without the extension
+    const fileNameMatch = path.match(/([^/]+)\.[^/.]+$/); // Match the file name and remove extension
+    if (fileNameMatch && fileNameMatch[1]) {
+        return fileNameMatch[1].trim();
+    }
 
-	// Return the full path as a fallback
-	return path.trim();
+    // Return the full path as a fallback
+    return path.trim();
 }
 
 /*	Parses a Path to extract the Game Code in case of Old Format naming conventions	*/
 
 function getGameCodeFromOldFormatName(path)
 {
-	// Regular expression to match the "code" part
-	const match = path.match(/[A-Z]{4}[-_][0-9]{3}\.[0-9]{2}/);
-	return match ? match[0] : "";
+    // Regular expression to match the "code" part
+    const match = path.match(/[A-Z]{4}[-_][0-9]{3}\.[0-9]{2}/);
+    return match ? match[0] : "";
 }
 
 /*	Searchs for a matching ICO file in the ART folder for a specified string	*/
@@ -350,61 +350,61 @@ function getGameCodeFromOldFormatName(path)
 
 function findICO(baseFilename)
 {
-	const dirPath = `${System.boot_path}/ART/`;
-	const extensions = ["_ICO.png", "_ICO.jpg"];
+    const dirPath = `${System.boot_path}/ART/`;
+    const extensions = ["_ICO.png", "_ICO.jpg"];
 
-	for (const ext of extensions) {
-		const fileCandidates = [
-		  `${dirPath}${baseFilename}${ext}`,
-		  `${dirPath}${baseFilename}${ext}`.toLowerCase(),
-		  `${dirPath}${baseFilename}${ext}`.toUpperCase()
-		];
+    for (const ext of extensions) {
+        const fileCandidates = [
+          `${dirPath}${baseFilename}${ext}`,
+          `${dirPath}${baseFilename}${ext}`.toLowerCase(),
+          `${dirPath}${baseFilename}${ext}`.toUpperCase()
+        ];
 
-		for (const filePath of fileCandidates) {
-		  if (std.exists(filePath)) { return filePath; }
-		}
-	}
+        for (const filePath of fileCandidates) {
+          if (std.exists(filePath)) { return filePath; }
+        }
+    }
 
-	return ""; // Return empty string if no matching file is found
+    return ""; // Return empty string if no matching file is found
 }
 
 /*	Parses a filepath to get its extension if it has one	*/
 
 function getFileExtension(filePath)
 {
-	if (typeof filePath !== 'string') return "";
+    if (typeof filePath !== 'string') return "";
 
-	// Extract extension after the last dot, if any
-	const lastDotIndex = filePath.lastIndexOf('.');
-	if (lastDotIndex === -1 || lastDotIndex === filePath.length - 1) {
-		return ""; // No extension found or dot is at the end
-	}
+    // Extract extension after the last dot, if any
+    const lastDotIndex = filePath.lastIndexOf('.');
+    if (lastDotIndex === -1 || lastDotIndex === filePath.length - 1) {
+        return ""; // No extension found or dot is at the end
+    }
 
-	return filePath.substring(lastDotIndex + 1);
+    return filePath.substring(lastDotIndex + 1);
 }
 
 /*	Parses a filepath to search if it matches any extension from a list of extensions	*/
 
 function isExtensionMatching(filePath, ...filterExtensions)
 {
-	if (!Array.isArray(filterExtensions) || filterExtensions.length === 0) {
-		console.log("At least one filter extension must be provided.");
-		return false;
-	}
+    if (!Array.isArray(filterExtensions) || filterExtensions.length === 0) {
+        console.log("At least one filter extension must be provided.");
+        return false;
+    }
 
-	const fileExtension = getFileExtension(filePath);
+    const fileExtension = getFileExtension(filePath);
 
-	// Compare the extracted extension with any of the filters (case-insensitive)
-	return filterExtensions.some(filter =>
-		typeof filter === 'string' &&
-		fileExtension?.toLowerCase() === filter.toLowerCase()
-	);
+    // Compare the extracted extension with any of the filters (case-insensitive)
+    return filterExtensions.some(filter =>
+        typeof filter === 'string' &&
+        fileExtension?.toLowerCase() === filter.toLowerCase()
+    );
 }
 
 /*
-	For moving element animations
-	easeOutCubic will return an increasing value
-	easeInCubic will return a decreasing value
+    For moving element animations
+    easeOutCubic will return an increasing value
+    easeInCubic will return a decreasing value
 */
 
 function easeOutCubic(t)
@@ -418,8 +418,8 @@ function easeInCubic(t)
 }
 
 /*
-	To interpolate an integer from 'startValue' to 'endValue'
-	using a 'progress' float that goes from 0.0 to 1.0
+    To interpolate an integer from 'startValue' to 'endValue'
+    using a 'progress' float that goes from 0.0 to 1.0
 */
 
 function interpolateValue(startValue, endValue, progress)
@@ -430,8 +430,8 @@ function interpolateValue(startValue, endValue, progress)
 }
 
 /*
-	To interpolate a color object into another one
-	using a 'progress' float that goes from 0.0 to 1.0
+    To interpolate a color object into another one
+    using a 'progress' float that goes from 0.0 to 1.0
 */
 
 function interpolateColorObj(color1, color2, t)
@@ -468,30 +468,30 @@ function neutralizeOverlayWithAlpha() {
 
 function threadCopyPush(_src, _dest)
 {
-	DATA.CPYQUEUE.push({ src: _src, dest: _dest });
+    DATA.CPYQUEUE.push({ src: _src, dest: _dest });
 }
 
 /*	Processes the thread copy queue		*/
 
 function processThreadCopy()
 {
-	const progress = System.getFileProgress();
-	const ready = ((progress.current === undefined) || (progress.current == progress.final))
+    const progress = System.getFileProgress();
+    const ready = ((progress.current === undefined) || (progress.current == progress.final))
 
-	if ((!ready) && (progress.current != progress.final))
-	{
-		console.log(`Copy Thread Progress: ${progress.current.toString()} / ${progress.final.toString()}`);
-		return false;
-	}
-	else if ((ready) && (DATA.CPYQUEUE.length > 0))
-	{
-		const { src, dest } = DATA.CPYQUEUE.shift();
-		console.log(`Copy File Src: ${src}`);
-		console.log(`Copy File Dest: ${dest}`);
-		System.threadCopyFile(src, dest);
-	}
+    if ((!ready) && (progress.current != progress.final))
+    {
+        console.log(`Copy Thread Progress: ${progress.current.toString()} / ${progress.final.toString()}`);
+        return false;
+    }
+    else if ((ready) && (DATA.CPYQUEUE.length > 0))
+    {
+        const { src, dest } = DATA.CPYQUEUE.shift();
+        console.log(`Copy File Src: ${src}`);
+        console.log(`Copy File Dest: ${dest}`);
+        System.threadCopyFile(src, dest);
+    }
 
-	return true;
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -524,7 +524,7 @@ function IconSysDecodeTitle(strIn) {
                 case 0x6E: strOut += ']'; break;
                 case 0x6F: strOut += '{'; break;
                 case 0x70: strOut += '}'; break;
-				case 0x7C: strOut += '-'; break;
+                case 0x7C: strOut += '-'; break;
                 default: strOut += '?'; break;
             }
         } else if (t1 === 0x82) {
@@ -553,115 +553,115 @@ function IconSysDecodeTitle(strIn) {
 
 /*	Info:
 
-	Function to get if cheats on the 'cheats' array
-	are enabled in the CHEATS.TXT file.
-	Will return a Bool Array corresponding to each cheat on the 'cheats' array.
-	'game' variable can be specified to get a game's CHEATS.TXT.
-	'game' must be the game's title followed by a '/'.
+    Function to get if cheats on the 'cheats' array
+    are enabled in the CHEATS.TXT file.
+    Will return a Bool Array corresponding to each cheat on the 'cheats' array.
+    'game' variable can be specified to get a game's CHEATS.TXT.
+    'game' must be the game's title followed by a '/'.
 
 */
 
 function getPOPSCheat(cheats, game = "")
 {
-	// Create an array to store whether each cheat is enabled
-	const enabledCheats = new Array(cheats.length).fill(false);
+    // Create an array to store whether each cheat is enabled
+    const enabledCheats = new Array(cheats.length).fill(false);
 
-	const path = (System.boot_path.substring(0,4) === "host") ? `${System.boot_path}/POPS/${game}CHEATS.TXT` : `mass:/POPS/${game}CHEATS.TXT`;
-	if (std.exists(path))
-	{
-		let errObj = {};
-		const file = std.open(path, "r", errObj);
-		if (file === null) { console.log(`getPOPSCheat(): I/O Error - ${std.strerror(errObj.errno)}`); return enabledCheats; }
-		const content = file.readAsString();
-		file.close();
+    const path = (System.boot_path.substring(0,4) === "host") ? `${System.boot_path}/POPS/${game}CHEATS.TXT` : `mass:/POPS/${game}CHEATS.TXT`;
+    if (std.exists(path))
+    {
+        let errObj = {};
+        const file = std.open(path, "r", errObj);
+        if (file === null) { console.log(`getPOPSCheat(): I/O Error - ${std.strerror(errObj.errno)}`); return enabledCheats; }
+        const content = file.readAsString();
+        file.close();
 
-		const lines = content.split(/\r?\n/);    // Split the content into lines
-		// Iterate over the lines in the content
-		for (const line of lines) {
-			for (let i = 0; i < cheats.length; i++) {
-				const cheatString = cheats[i];
+        const lines = content.split(/\r?\n/);    // Split the content into lines
+        // Iterate over the lines in the content
+        for (const line of lines) {
+            for (let i = 0; i < cheats.length; i++) {
+                const cheatString = cheats[i];
 
-				// Check if the line matches the enabled cheat format
-				if (line === `$${cheatString}`) {
-					enabledCheats[i] = true;
-				}
-			}
-		}
-	}
+                // Check if the line matches the enabled cheat format
+                if (line === `$${cheatString}`) {
+                    enabledCheats[i] = true;
+                }
+            }
+        }
+    }
 
-	return enabledCheats;
+    return enabledCheats;
 }
 
 /*	Info:
 
-	Function to set cheats on the 'cheats' array to a CHEATS.TXT file.
-	'game' variable can be specified to set a game's CHEATS.TXT.
-	'game' must be the game's title followed by a '/'.
+    Function to set cheats on the 'cheats' array to a CHEATS.TXT file.
+    'game' variable can be specified to set a game's CHEATS.TXT.
+    'game' must be the game's title followed by a '/'.
 
 */
 
 function setPOPSCheat(cheats, game = "")
 {
-	const path = (System.boot_path.substring(0,4) === "host") ? `${System.boot_path}/POPS/${game}CHEATS.TXT` : `mass:/POPS/${game}CHEATS.TXT`;
-	if (std.exists(path))
-	{
-		let errObj = {};
-		const file = std.open(path, "r", errObj);
-		if (file === null) { console.log(`setPOPSCheat(): I/O ERROR - ${std.strerror(errObj.errno)}`); return; }
-		const content = file.readAsString();
-		file.close();
+    const path = (System.boot_path.substring(0,4) === "host") ? `${System.boot_path}/POPS/${game}CHEATS.TXT` : `mass:/POPS/${game}CHEATS.TXT`;
+    if (std.exists(path))
+    {
+        let errObj = {};
+        const file = std.open(path, "r", errObj);
+        if (file === null) { console.log(`setPOPSCheat(): I/O ERROR - ${std.strerror(errObj.errno)}`); return; }
+        const content = file.readAsString();
+        file.close();
 
-		const lines = content.split(/\r?\n/);    // Split the content into lines
-		const resultLines = []; // To store the processed lines
+        const lines = content.split(/\r?\n/);    // Split the content into lines
+        const resultLines = []; // To store the processed lines
 
-		// Iterate over the lines in the content
-		for (const line of lines) {
-			let found = false;
+        // Iterate over the lines in the content
+        for (const line of lines) {
+            let found = false;
 
-			// Check if the line matches any cheat code
-			for (let i = 0; i < cheats.length; i++) {
-				const cheat = cheats[i];
+            // Check if the line matches any cheat code
+            for (let i = 0; i < cheats.length; i++) {
+                const cheat = cheats[i];
 
-				if (line === cheat.code || line === `$${cheat.code}`) {
-					found = true;
+                if (line === cheat.code || line === `$${cheat.code}`) {
+                    found = true;
 
-					// If cheat is enabled, add it with `$`
-					if (cheat.enabled) {
-						resultLines.push(`$${cheat.code}`);
-					}
-					// Remove the cheat from the array
-					cheats.splice(i, 1);
-					break;
-				}
-			}
+                    // If cheat is enabled, add it with `$`
+                    if (cheat.enabled) {
+                        resultLines.push(`$${cheat.code}`);
+                    }
+                    // Remove the cheat from the array
+                    cheats.splice(i, 1);
+                    break;
+                }
+            }
 
-			// If the line wasn't related to a cheat, keep it unchanged
-			if (!found) {
-				resultLines.push(line);
-			}
-		}
+            // If the line wasn't related to a cheat, keep it unchanged
+            if (!found) {
+                resultLines.push(line);
+            }
+        }
 
-		// Add remaining enabled cheats to the end
-		for (const cheat of cheats) {
-			if (cheat.enabled) {
-				resultLines.push(`$${cheat.code}`);
-			}
-		}
+        // Add remaining enabled cheats to the end
+        for (const cheat of cheats) {
+            if (cheat.enabled) {
+                resultLines.push(`$${cheat.code}`);
+            }
+        }
 
-		// Combine all lines into a single string
-		ftxtWrite(path, resultLines.join('\n'));
-	}
-	else
-	{
-		let lines = [];
+        // Combine all lines into a single string
+        ftxtWrite(path, resultLines.join('\n'));
+    }
+    else
+    {
+        let lines = [];
 
-		for (let i = 0; i < cheats.length; i++)
-		{
-			if (cheats[i].enabled) { lines.push(`$${cheats[i].code}`); }
-		}
+        for (let i = 0; i < cheats.length; i++)
+        {
+            if (cheats[i].enabled) { lines.push(`$${cheats[i].code}`); }
+        }
 
-		if (lines.length > 0) {	ftxtWrite(path, lines.join('\n')); }
-	}
+        if (lines.length > 0) {	ftxtWrite(path, lines.join('\n')); }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -670,87 +670,87 @@ function setPOPSCheat(cheats, game = "")
 
 /* Info:
 
-	Function to set a new Context (Option) Menu
-	Object.
+    Function to set a new Context (Option) Menu
+    Object.
 
 */
 
 function SetDashContext(CONTEXT, STATE)
 {
-	DATA.DASH_CURCTXITMFIRST = 0;
-	DATA.DASH_CURCTXITMLAST = 8;
-	DATA.DASH_CURCTXLVL++;
-	DATA.DASH_STATE = STATE;
-	DASH_CTX[DATA.DASH_CURCTXLVL] = CONTEXT;
-	DASH_CTX[DATA.DASH_CURCTXLVL].Selected = CONTEXT.Default;
+    DATA.DASH_CURCTXITMFIRST = 0;
+    DATA.DASH_CURCTXITMLAST = 8;
+    DATA.DASH_CURCTXLVL++;
+    DATA.DASH_STATE = STATE;
+    DASH_CTX[DATA.DASH_CURCTXLVL] = CONTEXT;
+    DASH_CTX[DATA.DASH_CURCTXLVL].Selected = CONTEXT.Default;
 
-	if (DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount < 8)
-	{
-		DATA.DASH_CURCTXITMLAST = DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount;
-	}
+    if (DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount < 8)
+    {
+        DATA.DASH_CURCTXITMLAST = DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount;
+    }
 
-	if (DASH_CTX[DATA.DASH_CURCTXLVL].Selected > 7)
-	{
-		if ((DASH_CTX[DATA.DASH_CURCTXLVL].Selected + 7) > DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount)
-		{
-			DATA.DASH_CURCTXITMLAST = DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount;
-			DATA.DASH_CURCTXITMFIRST = DATA.DASH_CURCTXITMLAST - 8;
-		}
-		else
-		{
-			DATA.DASH_CURCTXITMFIRST = DASH_CTX[DATA.DASH_CURCTXLVL].Selected;
-			DATA.DASH_CURCTXITMLAST = DATA.DASH_CURCTXITMFIRST + 8;
-		}
-	}
+    if (DASH_CTX[DATA.DASH_CURCTXLVL].Selected > 7)
+    {
+        if ((DASH_CTX[DATA.DASH_CURCTXLVL].Selected + 7) > DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount)
+        {
+            DATA.DASH_CURCTXITMLAST = DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount;
+            DATA.DASH_CURCTXITMFIRST = DATA.DASH_CURCTXITMLAST - 8;
+        }
+        else
+        {
+            DATA.DASH_CURCTXITMFIRST = DASH_CTX[DATA.DASH_CURCTXLVL].Selected;
+            DATA.DASH_CURCTXITMLAST = DATA.DASH_CURCTXITMFIRST + 8;
+        }
+    }
 
-	if (DATA.DASH_CTX_TIMER) { Timer.destroy(DATA.DASH_CTX_TIMER); }
-	DATA.DASH_CTX_TIMER = Timer.new();
-	DATA.DASH_MOVE_FRAME = 0;
-	SetDashPadEvents(0);
+    if (DATA.DASH_CTX_TIMER) { Timer.destroy(DATA.DASH_CTX_TIMER); }
+    DATA.DASH_CTX_TIMER = Timer.new();
+    DATA.DASH_MOVE_FRAME = 0;
+    SetDashPadEvents(0);
 }
 
 /*	Main Handler to Select Items on the Dashboard.	*/
 
 function SelectItem()
 {
-	if (DATA.DASH_CURSUB < 0)
-	{
-		switch(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Type)
-		{
-			case "ELF": DATA.DASH_STATE = "FADE_OUT"; DASH_SEL = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT]; break;
-			case "CODE": DASH_SEL = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT]; DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value(DATA); break;
-			case "SUBMENU":
-				DATA.DASH_PRVSUB++;
-				DATA.DASH_CURSUB++;
-				DATA.DASH_STATE = "SUBMENU_IN";
-				DASH_SUB[DATA.DASH_CURSUB] = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value;
-				DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
-				DATA.DASH_CURSUBOPT = (DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value.ItemCount < 1) ? -1 : DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value.Default;
-				break;
-			case "CONTEXT":
-				SetDashContext(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value, "MENU_CONTEXT_IN");
-				break;
-		}
-	}
-	else
-	{
-		switch(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Type)
-		{
-			case "ELF": DATA.DASH_STATE = "FADE_OUT"; DASH_SEL = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT]; break;
-			case "CODE": DASH_SEL = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT]; DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value(DATA); break;
-			case "SUBMENU":
-				DATA.DASH_STATE = "NEW_SUBMENU_IN";
-				DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
-				DASH_SUB[DATA.DASH_CURSUB + 1] = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value;
-				DATA.DASH_CURSUBOPT = (DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.ItemCount < 1) ? -1 : 0;
-				DATA.DASH_PRVSUB++;
-				DATA.DASH_CURSUB++;
-				break;
-			case "CONTEXT":
-				SetDashContext(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value, "SUBMENU_CONTEXT_IN");
-				break;
-		}
-	}
+    if (DATA.DASH_CURSUB < 0)
+    {
+        switch(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Type)
+        {
+            case "ELF": DATA.DASH_STATE = "FADE_OUT"; DASH_SEL = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT]; break;
+            case "CODE": DASH_SEL = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT]; DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value(DATA); break;
+            case "SUBMENU":
+                DATA.DASH_PRVSUB++;
+                DATA.DASH_CURSUB++;
+                DATA.DASH_STATE = "SUBMENU_IN";
+                DASH_SUB[DATA.DASH_CURSUB] = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value;
+                DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
+                DATA.DASH_CURSUBOPT = (DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value.ItemCount < 1) ? -1 : DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value.Default;
+                break;
+            case "CONTEXT":
+                SetDashContext(DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value, "MENU_CONTEXT_IN");
+                break;
+        }
+    }
+    else
+    {
+        switch(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Type)
+        {
+            case "ELF": DATA.DASH_STATE = "FADE_OUT"; DASH_SEL = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT]; break;
+            case "CODE": DASH_SEL = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT]; DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value(DATA); break;
+            case "SUBMENU":
+                DATA.DASH_STATE = "NEW_SUBMENU_IN";
+                DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
+                DASH_SUB[DATA.DASH_CURSUB + 1] = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value;
+                DATA.DASH_CURSUBOPT = (DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.ItemCount < 1) ? -1 : 0;
+                DATA.DASH_PRVSUB++;
+                DATA.DASH_CURSUB++;
+                break;
+            case "CONTEXT":
+                SetDashContext(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value, "SUBMENU_CONTEXT_IN");
+                break;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

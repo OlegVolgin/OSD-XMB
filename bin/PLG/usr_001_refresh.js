@@ -10,13 +10,13 @@ export const Plugin = (() => { 	// DO NOT REMOVE, Encloses plugin on a local sco
 
 const NAME_MAIN =
 [
-	"Restart Interface",
-	"Restart Interface",
-	"Reiniciar Interfaz",
-	"Restart Interface",
-	"Restart Interface",
-	"Restart Interface",
-	"Restart Interface",
+    "Restart Interface",
+    "Restart Interface",
+    "Reiniciar Interfaz",
+    "Restart Interface",
+    "Restart Interface",
+    "Restart Interface",
+    "Restart Interface",
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -30,12 +30,12 @@ let elfPath = `${System.boot_path}/OSDXMB.ELF`;
 if (`${System.boot_path}/`.endsWith("//")) { elfPath = `${System.boot_path}OSDXMB.ELF`; }
 
 const Info = {
-	Name: NAME_MAIN,
-	Description: "",
-	Icon: 20,
-	Category: 0,
-	Type: "ELF",
-	Value: { Path: elfPath, Args: [ "main.js" ] },
+    Name: NAME_MAIN,
+    Description: "",
+    Icon: 20,
+    Category: 0,
+    Type: "ELF",
+    Value: { Path: elfPath, Args: [ "main.js" ] },
 };
 
 return Info;

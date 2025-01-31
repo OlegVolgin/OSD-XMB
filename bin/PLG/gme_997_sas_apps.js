@@ -70,18 +70,18 @@ function parseTitleCfg(path)
 
 function TryAddMCApps(options, path)
 {
-	const dir = System.listDir(path);
+    const dir = System.listDir(path);
 
-	dir.forEach((item) =>
-	{
-		if ((item.dir) && (item.name !== ".") && (item.name !== "..") && (item.name.includes('_')))
-		{
+    dir.forEach((item) =>
+    {
+        if ((item.dir) && (item.name !== ".") && (item.name !== "..") && (item.name.includes('_')))
+        {
             const app = parseTitleCfg(`${path}${item.name}/`);
-			if ('Name' in app)
+            if ('Name' in app)
             {
                 options.push(app);
             }
-		}
+        }
     });
 
     return options;
@@ -95,7 +95,7 @@ function GetMcOptions()
 
     options.sort((a, b) => a.Name.localeCompare(b.Name));
 
-	return { Options: options, Default: 0, ItemCount: options.length, };
+    return { Options: options, Default: 0, ItemCount: options.length, };
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,12 +105,12 @@ function GetMcOptions()
 //////////////////////////////////////////////////////////////////////////
 
 const Info = {
-	Name: "Apps",
-	Description: "",
-	Icon: 18,
-	Category: 5,
-	Type: "SUBMENU",
-	Value: GetMcOptions(),
+    Name: "Apps",
+    Description: "",
+    Icon: 18,
+    Category: 5,
+    Type: "SUBMENU",
+    Value: GetMcOptions(),
 };
 
 if (Info.Value.ItemCount < 1) { return {}; }
