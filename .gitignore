@@ -397,5 +397,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
 /POPS
 /DVD
+/CD
+bin/CFG/main.CFG
+bin/*.elf
+bin/log.txt
+!bin/OSDXMB.ELF
+# exclude hidden macos files
+.*
+!.gitignore
+!.edirorconfig
+!.github
