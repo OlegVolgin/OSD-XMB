@@ -411,5 +411,5 @@ bin/log.txt
 # exclude hidden macos files
 .*
 !.gitignore
-!.edirorconfig
+!.editorconfig
 !.github
