@@ -617,6 +617,11 @@ function drawBg()
         DATA.BGIMG.color = Color.new(col.r, col.g, col.b, DATA.BGIMGA);
         DATA.BGIMG.draw((DATA.WIDESCREEN * 32), 0);
     }
+
+    if ((DATA.BGIMGTMP) && (DATA.BGIMGTMPSTATE > 16))
+    {
+        DATA.BGIMGTMP.draw((DATA.WIDESCREEN * 32), 0);
+    }
 }
 
 // This is the main Overlay function.

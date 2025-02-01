@@ -187,7 +187,8 @@ function GetThemeContextInfo()
     // Loop through sortedDirectories and collect directories into the desired structure
     sortedDirectories.forEach((item) =>
     {
-    const ico = (std.exists(`./THM/${item.name}/thmico.png`)) ? new Image(`./THM/${item.name}/thmico.png`, RAM, async_list) : -1;
+        const dirFiles = os.readdir(`./THM/${item.name}/`)[0];
+        const ico = (dirFiles.includes("thmico.png")) ? new Image(`./THM/${item.name}/thmico.png`, RAM, async_list) : -1;
         dir_options.push
         ({
             Name: item.name,

@@ -148,7 +148,9 @@ function SetPadEvents_Main()
         // Set the new State and reset the Animation Frame.
         DATA.DASH_STATE = (direction < 0) ? "MOVE_BACK" : "MOVE_FORWARD";
         DATA.DASH_MOVE_FRAME = 0;
-        optBoxA = 0; // Reset the Option Box visibility.
+        optBoxA = 0;                    // Reset the Option Box visibility.
+        DATA.BGTMPIMG = false;          // Reset the Temporary Background Image.
+        DATA.BGIMGTMPSTATE = 0;         // Reset the Temporary Background Image State.
     };
 
     // Function to Move Up or Down and change Item.
@@ -162,7 +164,9 @@ function SetPadEvents_Main()
         // Set the new State and reset the Animation Frame.
         DATA.DASH_STATE = (direction < 0) ? "MOVE_UP" : "MOVE_DOWN";
         DATA.DASH_MOVE_FRAME = 0;
-        optBoxA = 0; // Reset the Option Box visibility.
+        optBoxA = 0;                    // Reset the Option Box visibility.
+        DATA.BGTMPIMG = false;          // Reset the Temporary Background Image.
+        DATA.BGIMGTMPSTATE = 0;         // Reset the Temporary Background Image State.
     };
 
     // Enter Item Selected
@@ -258,7 +262,9 @@ function SetPadEvents_Sub()
             // Update the current State to exit and reset the animation frame.
             DATA.DASH_STATE = (DATA.DASH_CURSUB > 0) ? "NEW_SUBMENU_OUT" : "SUBMENU_OUT";
             DATA.DASH_MOVE_FRAME = 0;
-            optBoxA = 0; // Reset the Option Box visibility.
+            optBoxA = 0;                    // Reset the Option Box visibility.
+            DATA.BGTMPIMG = false;          // Reset the Temporary Background Image.
+            DATA.BGIMGTMPSTATE = 0;         // Reset the Temporary Background Image State.
             SetDashPadEvents(0); // Disable all inputs until IDLE state again to avoid issues.
         }
     };
@@ -272,7 +278,9 @@ function SetPadEvents_Sub()
         DASH_SUB[DATA.DASH_CURSUB].Default = DATA.DASH_CURSUBOPT; // Update default sub item of this sub menu. This only works for the first level of a Sub Menu.
         DATA.DASH_STATE = (direction < 0) ? "SUBMENU_MOVE_UP" : "SUBMENU_MOVE_DOWN"; // Update the current State.
         DATA.DASH_MOVE_FRAME = 0; // Reset the Animation Frame.
-        optBoxA = 0; // Reset the Option Box visibility.
+        optBoxA = 0;                    // Reset the Option Box visibility.
+        DATA.BGTMPIMG = false;          // Reset the Temporary Background Image.
+        DATA.BGIMGTMPSTATE = 0;         // Reset the Temporary Background Image State.
     };
 
     // Enter Selected Item.

@@ -36,8 +36,7 @@ const Info = {
 };
 
 // Set a Custom Icon for the plugin if it exists.
-
-if (std.exists(`./APPS/retroarch/ico.png`)) { Info.CustomIcon = new Image(`./APPS/retroarch/ico.png`, RAM, async_list); }
+if (os.readdir('./APPS/retroarch/')[0].includes("ico.png")) { Info.CustomIcon = new Image(`./APPS/retroarch/ico.png`, RAM, async_list); }
 
 return Info;
 

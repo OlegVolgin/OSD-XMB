@@ -213,6 +213,38 @@ function DrawDashElementIcon(Obj, size, x, y, a)
     }
 }
 
+// Draws an interface element's background.
+
+function DrawDashElementBackground(Obj, draw)
+{
+    if (("CustomBG" in Obj) && (Obj.CustomBG != "") && (draw))
+    {
+        const col = neutralizeOverlayWithAlpha();
+
+        if (DATA.BGIMGTMPSTATE === 15)
+        {
+            console.log("Loading Custom Background Image: " + Obj.CustomBG);
+            DATA.BGIMGTMP = new Image(Obj.CustomBG);
+            DATA.BGIMGTMP.optimize();
+            DATA.BGIMGTMP.filter = LINEAR;
+            DATA.BGIMGTMP.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+            DATA.BGIMGTMP.height = DATA.CANVAS.height;
+            DATA.BGIMGTMP.color = Color.new(col.r, col.g, col.b, 0);
+            DATA.BGIMGTMPSTATE = 16;
+        }
+        else if (DATA.BGIMGTMPSTATE > 15)
+        {
+            DATA.BGIMGTMPSTATE = (DATA.BGIMGTMPSTATE > 143) ? 143 : DATA.BGIMGTMPSTATE;
+            DATA.BGIMGTMP.color = Color.new(col.r, col.g, col.b, DATA.BGIMGTMPSTATE - 15);
+            DATA.BGIMGTMPSTATE+=6;
+        }
+        else
+        {
+            DATA.BGIMGTMPSTATE++;
+        }
+    }
+}
+
 // Draws an interface element's text.
 
 function DrawDashElementText(obj, glow, nameInfo, descInfo = -1, cntxInfo = -1)
@@ -509,8 +541,10 @@ function DrawSelectedItem(cat = DATA.DASH_CURCAT, opt = DATA.DASH_CUROPT, sizeMo
     const nameInfo = { x: 240 + txtXmod, y: 212 + txtYmod, a: txtAmod };
     const descInfo = { x: 242 + txtXmod, y: 226 + txtYmod, a: descTxtAmod };
     const glow = ((opt == DATA.DASH_CUROPT) && (txtAmod == 0));
+    const drawBg = ((sizeMod === 0) && (aMod === 0));
     DrawDashElementIcon(DASH_CAT[cat].Options[opt], 78 + sizeMod, 140 + xMod, 190 + yMod, aMod);
     DrawDashElementText(DASH_CAT[cat].Options[opt], glow, nameInfo, descInfo)
+    DrawDashElementBackground(DASH_CAT[cat].Options[opt], drawBg);
 }
 
 // Draw an Unselected Item's Icon and Text.
@@ -715,9 +749,10 @@ function DrawSubMenuSelectedItem(sub = DATA.DASH_CURSUB, opt = DATA.DASH_CURSUBO
     const descPpts = { x: 265 + txtXmod, y: 229 + txtYmod, a: descTxtAmod };
     const cntxPpts = { x: -35 + txtXmod, y: 215 + txtYmod, a: contxtA };
     const glow = ((opt === DATA.DASH_CURSUBOPT) && (txtAmod === 0));
-
+    const drawBg = ((sizeMod === 0) && (aMod === 0));
     DrawDashElementIcon(DASH_SUB[sub].Options[opt], 78 + sizeMod, 175 + xMod, 195 + yMod, aMod);
     DrawDashElementText(DASH_SUB[sub].Options[opt], glow, namePpts, descPpts, cntxPpts);
+    DrawDashElementBackground(DASH_SUB[sub].Options[opt], drawBg);
 }
 
 // Draws a Sub Menu unselected Item Icon and Text.

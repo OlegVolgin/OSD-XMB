@@ -103,6 +103,7 @@ const DATA =
     BGTMP: 0,
     BGCOL: 0,
     BGIMGTMP: false,
+    BGIMGTMPSTATE: false,
     BGIMG: false,
     BGIMGA: 0,
     DISPLAYBG: false,
@@ -345,27 +346,52 @@ function getGameCodeFromOldFormatName(path)
     return match ? match[0] : "";
 }
 
+/*	Searchs for an Image file either in PNG or JPG Format following a name pattern.	*/
+
+function findArt(baseFilename, suffix)
+{
+    let baseDir = `${System.boot_path}/`;
+
+    if (baseDir.endsWith("//"))
+    {
+        baseDir = baseDir.substring(0, baseDir.length - 1);
+    }
+
+    const dirPath = `${baseDir}ART/`;
+    const extensions = [`_${suffix.toUpperCase()}.png`, `_${suffix.toUpperCase()}.jpg`];
+    const dirFiles = os.readdir(dirPath)[0];
+
+    for (const ext of extensions)
+    {
+        const fileCandidates = [
+            `${baseFilename}${ext}`,
+            `${baseFilename}${ext}`.toLowerCase(),
+            `${baseFilename}${ext}`.toUpperCase()
+        ];
+
+        for (const filePath of fileCandidates)
+        {
+            if (dirFiles.includes(filePath)) { return `${dirPath}${filePath}`; }
+        }
+    }
+
+    return ""; // Return empty string if no matching file is found
+}
+
 /*	Searchs for a matching ICO file in the ART folder for a specified string	*/
 /*	Returns empty string if not found.											*/
 
 function findICO(baseFilename)
 {
-    const dirPath = `${System.boot_path}/ART/`;
-    const extensions = ["_ICO.png", "_ICO.jpg"];
+    return findArt(baseFilename, "ICO");
+}
 
-    for (const ext of extensions) {
-        const fileCandidates = [
-          `${dirPath}${baseFilename}${ext}`,
-          `${dirPath}${baseFilename}${ext}`.toLowerCase(),
-          `${dirPath}${baseFilename}${ext}`.toUpperCase()
-        ];
+/*	Searchs for a matching BG file in the ART folder for a specified string	*/
+/*	Returns empty string if not found.											*/
 
-        for (const filePath of fileCandidates) {
-          if (std.exists(filePath)) { return filePath; }
-        }
-    }
-
-    return ""; // Return empty string if no matching file is found
+function findBG(baseFilename)
+{
+    return findArt(baseFilename, "BG");
 }
 
 /*	Parses a filepath to get its extension if it has one	*/
@@ -565,12 +591,12 @@ function getPOPSCheat(cheats, game = "")
 {
     // Create an array to store whether each cheat is enabled
     const enabledCheats = new Array(cheats.length).fill(false);
-
-    const path = (System.boot_path.substring(0,4) === "host") ? `${System.boot_path}/POPS/${game}CHEATS.TXT` : `mass:/POPS/${game}CHEATS.TXT`;
-    if (std.exists(path))
+    const path = (System.boot_path.substring(0, 4) === "host") ? `${System.boot_path}/POPS/${game}` : `mass:/POPS/${game}`;
+    const dirFiles = os.readdir(path)[0];
+    if (dirFiles.includes("CHEATS.TXT"))
     {
         let errObj = {};
-        const file = std.open(path, "r", errObj);
+        const file = std.open(`${path}CHEATS.TXT`, "r", errObj);
         if (file === null) { console.log(`getPOPSCheat(): I/O Error - ${std.strerror(errObj.errno)}`); return enabledCheats; }
         const content = file.readAsString();
         file.close();
@@ -602,11 +628,13 @@ function getPOPSCheat(cheats, game = "")
 
 function setPOPSCheat(cheats, game = "")
 {
-    const path = (System.boot_path.substring(0,4) === "host") ? `${System.boot_path}/POPS/${game}CHEATS.TXT` : `mass:/POPS/${game}CHEATS.TXT`;
-    if (std.exists(path))
+    const path = (System.boot_path.substring(0, 4) === "host") ? `${System.boot_path}/POPS/${game}` : `mass:/POPS/${game}`;
+    const dirFiles = os.readdir(path)[0];
+
+    if (dirFiles.includes("CHEATS.TXT"))
     {
         let errObj = {};
-        const file = std.open(path, "r", errObj);
+        const file = std.open(`${path}CHEATS.TXT`, "r", errObj);
         if (file === null) { console.log(`setPOPSCheat(): I/O ERROR - ${std.strerror(errObj.errno)}`); return; }
         const content = file.readAsString();
         file.close();
@@ -660,7 +688,7 @@ function setPOPSCheat(cheats, game = "")
             if (cheats[i].enabled) { lines.push(`$${cheats[i].code}`); }
         }
 
-        if (lines.length > 0) {	ftxtWrite(path, lines.join('\n')); }
+        if (lines.length > 0) { ftxtWrite(`${path}CHEATS.TXT`, lines.join('\n')); }
     }
 }
 
@@ -720,6 +748,9 @@ function SelectItem()
             case "ELF": DATA.DASH_STATE = "FADE_OUT"; DASH_SEL = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT]; break;
             case "CODE": DASH_SEL = DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT]; DASH_CAT[DATA.DASH_CURCAT].Options[DATA.DASH_CUROPT].Value(DATA); break;
             case "SUBMENU":
+                optBoxA = 0;                    // Reset the Option Box visibility.
+                DATA.BGTMPIMG = false;          // Reset the Temporary Background Image.
+                DATA.BGIMGTMPSTATE = 0;         // Reset the Temporary Background Image State.
                 DATA.DASH_PRVSUB++;
                 DATA.DASH_CURSUB++;
                 DATA.DASH_STATE = "SUBMENU_IN";
@@ -739,6 +770,9 @@ function SelectItem()
             case "ELF": DATA.DASH_STATE = "FADE_OUT"; DASH_SEL = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT]; break;
             case "CODE": DASH_SEL = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT]; DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value(DATA); break;
             case "SUBMENU":
+                optBoxA = 0;                    // Reset the Option Box visibility.
+                DATA.BGTMPIMG = false;          // Reset the Temporary Background Image.
+                DATA.BGIMGTMPSTATE = 0;         // Reset the Temporary Background Image State.
                 DATA.DASH_STATE = "NEW_SUBMENU_IN";
                 DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
                 DASH_SUB[DATA.DASH_CURSUB + 1] = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value;

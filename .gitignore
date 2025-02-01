@@ -404,6 +404,9 @@ FodyWeavers.xsd
 /bin/POPS
 /bin/DVD
 /bin/CD
+/bin/CFG/neutrino.cfg
+/bin/CFG/pops.cfg
+/bin/CFG/main.CFG
 bin/CFG/main.CFG
 bin/*.elf
 bin/log.txt
@@ -413,5 +416,3 @@ bin/log.txt
 !.gitignore
 !.editorconfig
 !.github
-/bin/CFG/neutrino.cfg
-/bin/CFG/pops.cfg

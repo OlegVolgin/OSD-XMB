@@ -46,13 +46,16 @@ DATA.CONFIG = {
 
         // Read each line for config.
         let config = {};
+        let errObj = {};
+        const file = std.open(path, "r", errObj);
 
-        const file = std.open(path, "r");
-
-        if (file) {
-            while (!file.eof()) {
+        if (file)
+        {
+            while (!file.eof())
+            {
                 let line = file.getline();
-                if (line && line.includes('=')) { // Ensure the line is not empty and contains an '='
+                if (line && line.includes('='))
+                { // Ensure the line is not empty and contains an '='
                     line = line.trim(); // Read and trim whitespace
                     const [key, value] = line.split('='); // Split into key and value
                     config[key.trim()] = value.trim(); // Trim and store in the config object
@@ -61,25 +64,28 @@ DATA.CONFIG = {
 
             file.close();
         }
+        else
+        {
+            console.log(`IO ERROR: ${std.strerror(errObj.errno)}`);
+        }
 
         return config;
     },
 
     Set: function(path, config)
     {
+        console.log("Saving File: " + path);
         path = `${this.configPath}${path}`;
-        const file = std.open(path, "w");
+        const lines = []; // Create an array to store each line
 
-        if (file)
+        // Iterate through the table and write each key-value pair
+        for (const key in config)
         {
-            // Iterate through the table and write each key-value pair
-            for (const key in config) {
-                const line = `${key.toString()}=${config[key].toString()}\n`; // Format as KEY=VALUE
-                file.puts(line); // Write to file
-            }
-            file.flush();
-            file.close();
+            const line = `${key.toString()}=${config[key].toString()}`; // Format as KEY=VALUE
+            lines.push(line);
         }
+
+        ftxtWrite(path, lines.join('\n')); // Write the lines to the file
     },
 
     Push: function (path, newConfig)

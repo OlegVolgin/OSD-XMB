@@ -253,9 +253,6 @@ function getOptionContextInfo(path)
 
 function PopsParseDirectory(path)
 {
-    if (!std.exists(`${path}POPS_IOX.PAK`)) { return; }
-    if (!std.exists(`${path}POPSTARTER.ELF`)) { return; }
-
     let dir = System.listDir(path);
 
     dir.forEach((item) =>
@@ -297,6 +294,9 @@ function PopsParseDirectory(path)
             // Add ART
             const icoFile = findICO(gameCode);
             if (icoFile !== "") { gameList[gameList.length - 1].CustomIcon = new Image(icoFile, RAM, async_list); }
+
+            const bgFile = findBG(gameCode);
+            if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
         }
     });
 }
@@ -342,26 +342,6 @@ function getVCDGameID(path)
     return RET;
 }
 
-function findICO(baseFilename)
-{
-    const dirPath = "./ART/";
-    const extensions = ["_ICO.png", "_ICO.jpg"];
-
-    for (const ext of extensions) {
-        const fileCandidates = [
-          `${dirPath}${baseFilename}${ext}`,
-          `${dirPath}${baseFilename}${ext}`.toLowerCase(),
-          `${dirPath}${baseFilename}${ext}`.toUpperCase()
-        ];
-
-        for (const filePath of fileCandidates) {
-          if (std.exists(filePath)) { return filePath; }
-        }
-    }
-
-    return ""; // Return empty string if no matching file is found
-}
-
 function getGames()
 {
     let lastPlayed = 0;
@@ -378,6 +358,11 @@ function getGames()
         {
             continue;
         }
+
+        const dirFiles = os.readdir(`${popsPaths[i]}POPS/`)[0];
+
+        if (!dirFiles.includes("POPS_IOX.PAK")) { continue; }
+        if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
 
         PopsParseDirectory(`${popsPaths[i]}POPS/`);
 

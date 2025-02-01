@@ -233,7 +233,13 @@ function InitDiscDashItem(discType)
     const gmecfg = DATA.CONFIG.Get(`${ELFName.toUpperCase()}.cfg`);
     if ("Title" in gmecfg) { name = gmecfg["Title"]; }
 
-    if (std.exists(`${System.boot_path}/APPS/neutrino/neutrino.elf`))
+    let basePath = `${System.boot_path}/`;
+
+    if (basePath.endsWith("//")) { basePath = basePath.substring(0, basePath.length - 1); }
+
+    const dirFiles = os.readdir(`${basePath}APPS/neutrino/`)[0];
+
+    if (dirFiles.includes(`neutrino.elf`))
     {
         let cwd = "";
         if (System.boot_path.substring(0,4) !== "host")
@@ -251,7 +257,7 @@ function InitDiscDashItem(discType)
 
         if (cwd !== "")
         {
-            ELFPath = `${System.boot_path}/APPS/neutrino/neutrino.elf`;
+            ELFPath = `${basePath}APPS/neutrino/neutrino.elf`;
             ELFArgs = [ `-cwd=${cwd}` ];
         }
     }
@@ -324,9 +330,13 @@ function InitDashboard()
         };
     }
 
+    let baseDir = `${System.boot_path}/`;
+    if (baseDir.endsWith("//")) { baseDir = baseDir.substring(0, baseDir.length - 1); }
+    const dirFiles = os.readdir(`${baseDir}${DATA.THEME_PATH}icons/`)[0];
+
     for (let i = 0; i < dash_icons_names.length; i++)
     {
-        const imgPath = (std.exists(`${DATA.THEME_PATH}icons/${dash_icons_names[i]}`)) ? `${DATA.THEME_PATH}icons/${dash_icons_names[i]}` : `./THM/Original/icons/${dash_icons_names[i]}`;
+        const imgPath = (dirFiles.includes(dash_icons_names[i])) ? `${DATA.THEME_PATH}icons/${ dash_icons_names[i]}` : `./THM/Original/icons/${dash_icons_names[i]}`;
         const tmpImage = new Image(imgPath, RAM, async_list);
         dash_icons.push(tmpImage);
     }

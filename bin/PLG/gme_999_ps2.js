@@ -321,6 +321,9 @@ function ParseDirectory(path, device, fs)
                     return this.Art.ICO;
                 }
             });
+
+            const bgFile = findBG(gameCode);
+            if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
         }
     });
 }
