@@ -413,3 +413,5 @@ bin/log.txt
 !.gitignore
 !.editorconfig
 !.github
+/bin/CFG/neutrino.cfg
+/bin/CFG/pops.cfg
