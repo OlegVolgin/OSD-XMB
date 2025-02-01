@@ -401,6 +401,9 @@ FodyWeavers.xsd
 /POPS
 /DVD
 /CD
+/bin/POPS
+/bin/DVD
+/bin/CD
 bin/CFG/main.CFG
 bin/*.elf
 bin/log.txt
@@ -410,5 +413,3 @@ bin/log.txt
 !.gitignore
 !.edirorconfig
 !.github
-/bin/DVD
-/bin/POPS
