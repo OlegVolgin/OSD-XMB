@@ -410,3 +410,5 @@ bin/log.txt
 !.gitignore
 !.edirorconfig
 !.github
+/bin/DVD
+/bin/POPS
