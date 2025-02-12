@@ -26,18 +26,18 @@ const NeutrinoSettingNames =
 let cwd = "mc0:/neutrino";
 let gameList = [];
 let devices = [ "usb", "usb", "mx4sio", "ata", "udpbd" ];
-let roots = [ `${System.boot_path}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/" ];
+let roots = [ `${os.getcwd()[0]}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/" ];
 let fsmodes = [ "exfat", "exfat", "exfat", "hdl", "bd" ];
 
 // For cases when the executable is placed directly at root.
-let basepath = `${System.boot_path}/`;
+let basepath = `${os.getcwd()[0]}/`;
 
 if (basepath.endsWith("//"))
 {
     basepath = basepath.slice(0, -1);
 }
 
-const elfPath = `${basepath}APPS/neutrino/neutrino.elf`;
+const elfPath = `${basepath}APPS/neutrino/`;
 const cfgPath = "neutrino.cfg";
 
 function SaveLastPlayedAndGetExArgs()
@@ -54,6 +54,131 @@ function SaveLastPlayedAndGetExArgs()
     const cfg = DATA.CONFIG.Get(cfgPath);
     cfg["lastPlayed"] = DASH_SEL.Name;
     DATA.CONFIG.Set(cfgPath, cfg);
+}
+
+function getGameSettings(code)
+{
+    const config = DATA.CONFIG.Get(`${code}.cfg`);
+    let settings = [ false, false, false, false, false, false, false ];
+    if ("VMC0" in config) { settings[0] = (config["VMC0"] === "true"); }
+    if ("VMC1" in config) { settings[1] = (config["VMC1"] === "true"); }
+    if ("gc" in config)
+    {
+        const gc = config["gc"];
+        settings[2] = /0/.test(gc);
+        settings[3] = /2/.test(gc);
+        settings[4] = /5/.test(gc);
+        settings[5] = /7/.test(gc);
+        settings[6] = /3/.test(gc);
+    }
+
+    return settings;
+}
+
+function getOptionContextInfo()
+{
+    let dir_options = [];
+    dir_options.push({ Name: TXT_INFO, Icon: -1 });
+
+    let _a = function(DATA, val)
+    {
+        console.log("NEUTSETTS: Get Current Game Settings");
+        const gameData = [];
+        const currSett = getGameSettings(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description);
+
+        console.log("NEUTSETTS: Set Game Title");
+        gameData.push({
+            Selectable: false,
+            get Name() {
+                return TXT_TITLE[DATA.LANGUAGE];
+            },
+            get Description() {
+                return DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Name;
+            }
+        });
+
+        console.log("NEUTSETTS: Set Neutrino Setting Options");
+        for (let i = 0; i < NeutrinoSettingNames.length; i++)
+        {
+            gameData.push({
+                Selectable: true,
+                Name: NeutrinoSettingNames[i],
+                Selected: (currSett[i]) ? 1 : 0,
+                Count: 2,
+                get Description() {
+                    return ((this.Selected === 0) ? TXT_NO[DATA.LANGUAGE] : TXT_YES[DATA.LANGUAGE]);
+                }
+            });
+        }
+
+        console.log("NEUTSETTS: Set Confirm Function");
+        let saveGameSettings = function()
+        {
+            const code = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description;
+            const config = DATA.CONFIG.Get(`${code}.cfg`);
+            config["VMC0"] = (DATA.MESSAGE_INFO.Data[1].Selected === 1).toString();
+            config["VMC1"] = (DATA.MESSAGE_INFO.Data[2].Selected === 1).toString();
+            let gcModes = "";
+            if (DATA.MESSAGE_INFO.Data[3].Selected === 1) { gcModes += "0"; }
+            if (DATA.MESSAGE_INFO.Data[4].Selected === 1) { gcModes += "2"; }
+            if (DATA.MESSAGE_INFO.Data[5].Selected === 1) { gcModes += "5"; }
+            if (DATA.MESSAGE_INFO.Data[6].Selected === 1) { gcModes += "7"; }
+            if (DATA.MESSAGE_INFO.Data[7].Selected === 1) { gcModes += "3"; }
+            config["gc"] = gcModes;
+            DATA.CONFIG.Push(`${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description}.cfg`, config);
+
+            let setCopyMessage = false;
+            const vmcfiles = os.readdir(`${basepath}VMC/`)[0];
+            for (let i = 0; i < 2; i++)
+            {
+                if ((DATA.MESSAGE_INFO.Data[i + 1].Selected === 1) && (!vmcfiles.includes(`${code}_${i}.vmc`)))
+                {
+                    threadCopyPush(`${basepath}VMC/blank.vmc`, `${basepath}VMC/${code}_${i}.vmc`);
+                    setCopyMessage = true;
+                }
+            }
+
+            if (setCopyMessage)
+            {
+                DATA.OVSTATE = "MESSAGE_IDLE";
+                DATA.DASH_STATE = "SUBMENU_MESSAGE_IDLE";
+                DATA.MESSAGE_INFO =
+                {
+                    Icon: -1,
+                    Title: "",
+                    BG: false,
+                    Type: "INFO_TO_PROGRESS",
+                    BACK_BTN: false,
+                    ENTER_BTN: false,
+                    Count: DATA.CPYQUEUE.length,
+                    Done: 0,
+                    get Progress()
+                    {
+                        this.Done = this.Count - DATA.CPYQUEUE.length;
+                        const progress = System.getFileProgress();
+                        return Math.round((progress.current / progress.final) * 100);
+                    }
+                };
+            }
+        };
+
+        console.log("NEUTSETTS: Set Message Screen Parameters");
+        DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
+        DATA.OVSTATE = "MESSAGE_IN";
+        DATA.MESSAGE_INFO =
+        {
+            Icon: -1,
+            Title: "",
+            BG: false,
+            Type: "INFO",
+            Data: gameData,
+            BACK_BTN: true,
+            ENTER_BTN: true,
+            Confirm: saveGameSettings,
+        };
+    }
+
+    return { Options: dir_options, Default: 0, ItemCount: dir_options.length, Confirm: _a, };
 }
 
 function getISOGameCode(isoPath, isoSize)
@@ -119,145 +244,6 @@ function getISOGameCode(isoPath, isoSize)
     return RET;
 }
 
-function getGameSettings(code)
-{
-    const settings = [ false, false, false, false, false, false, false ];
-    const config = DATA.CONFIG.Get(`${code}.cfg`);
-    if ("VMC0" in config) { settings[0] = (config["VMC0"] === "true"); }
-    if ("VMC1" in config) { settings[1] = (config["VMC1"] === "true"); }
-    if ("gc" in config)
-    {
-        // Map gc values to bool array indexes
-        const charToIndexMap =  { '0': 2, '2': 3, '5': 4, '7': 5, '3': 6 };
-
-        for (const c of config["gc"])
-        {
-            if (charToIndexMap.hasOwnProperty(c)) {
-                // Enable the corresponding boolean in the array
-                settings[charToIndexMap[c]] = true;
-            }
-        }
-    }
-
-    return settings;
-}
-
-function getOptionContextInfo()
-{
-    let dir_options = [];
-    dir_options.push({ Name: TXT_INFO, Icon: -1 });
-
-    let _a = function(DATA, val)
-    {
-        console.log("NEUTSETTS: Get Current Game Settings");
-        const gameData = [];
-        const currSett = getGameSettings(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description);
-
-        console.log("NEUTSETTS: Set Game Title");
-        gameData.push({
-            Selectable: false,
-            get Name() {
-                return TXT_TITLE[DATA.LANGUAGE];
-            },
-            get Description() {
-                return DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Name;
-            }
-        });
-
-        console.log("NEUTSETTS: Set Neutrino Setting Options");
-        for (let i = 0; i < NeutrinoSettingNames.length; i++)
-        {
-            gameData.push({
-                Selectable: true,
-                Name: NeutrinoSettingNames[i],
-                Selected: (currSett[i]) ? 1 : 0,
-                Count: 2,
-                get Description() {
-                    return ((this.Selected === 0) ? TXT_NO[DATA.LANGUAGE] : TXT_YES[DATA.LANGUAGE]);
-                }
-            });
-        }
-
-        console.log("NEUTSETTS: Set Confirm Function");
-        let saveGameSettings = function()
-        {
-            const code = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description;
-            const config = DATA.CONFIG.Get(`${code}.cfg`);
-            config["VMC0"] = (DATA.MESSAGE_INFO.Data[1].Selected === 1).toString();
-            config["VMC1"] = (DATA.MESSAGE_INFO.Data[2].Selected === 1).toString();
-            let gcModes = "";
-            if (DATA.MESSAGE_INFO.Data[3].Selected === 1) { gcModes += "0"; }
-            if (DATA.MESSAGE_INFO.Data[4].Selected === 1) { gcModes += "2"; }
-            if (DATA.MESSAGE_INFO.Data[5].Selected === 1) { gcModes += "5"; }
-            if (DATA.MESSAGE_INFO.Data[6].Selected === 1) { gcModes += "7"; }
-            if (DATA.MESSAGE_INFO.Data[7].Selected === 1) { gcModes += "3"; }
-            config["gc"] = gcModes;
-            DATA.CONFIG.Push(`${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description}.cfg`, config);
-
-            let setCopyMessage = false;
-            if (DATA.MESSAGE_INFO.Data[1].Selected === 1)
-            {
-                let VMCPath = `${basepath}VMC/${code}_0.vmc`;
-                if (!std.exists(VMCPath))
-                {
-                    threadCopyPush(`${basepath}VMC/blank.vmc`, VMCPath);
-                    setCopyMessage = true;
-                }
-            }
-
-            if (DATA.MESSAGE_INFO.Data[2].Selected === 1)
-            {
-                let VMCPath = `${basepath}VMC/${code}_1.vmc`;
-                if (!std.exists(VMCPath))
-                {
-                    threadCopyPush(`${basepath}VMC/blank.vmc`, VMCPath);
-                    setCopyMessage = true;
-                }
-            }
-
-            if (setCopyMessage)
-            {
-                DATA.OVSTATE = "MESSAGE_IDLE";
-                DATA.DASH_STATE = "SUBMENU_MESSAGE_IDLE";
-                DATA.MESSAGE_INFO =
-                {
-                    Icon: -1,
-                    Title: "",
-                    BG: false,
-                    Type: "INFO_TO_PROGRESS",
-                    BACK_BTN: false,
-                    ENTER_BTN: false,
-                    Count: DATA.CPYQUEUE.length,
-                    Done: 0,
-                    get Progress()
-                    {
-                        this.Done = this.Count - DATA.CPYQUEUE.length;
-                        const progress = System.getFileProgress();
-                        return Math.round((progress.current / progress.final) * 100);
-                    }
-                };
-            }
-        };
-
-        console.log("NEUTSETTS: Set Message Screen Parameters");
-        DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
-        DATA.OVSTATE = "MESSAGE_IN";
-        DATA.MESSAGE_INFO =
-        {
-            Icon: -1,
-            Title: "",
-            BG: false,
-            Type: "INFO",
-            Data: gameData,
-            BACK_BTN: true,
-            ENTER_BTN: true,
-            Confirm: saveGameSettings,
-        };
-    }
-
-    return { Options: dir_options, Default: 0, ItemCount: dir_options.length, Confirm: _a, };
-}
-
 function ParseDirectory(path, device, fs)
 {
     let dir = System.listDir(path);
@@ -276,7 +262,7 @@ function ParseDirectory(path, device, fs)
 
             // Set Launch Settings
             let args = [ `-cwd=${cwd}`, `-bsd=${device}`, `-bsdfs=${fs}`, `-dvd=${getRootName(path)}:${getPathWithoutRoot(path)}${item.name}`, `-mt=${getFolderNameFromPath(path).toLowerCase()}` ];
-            let value = { Path: elfPath, Args: args, Code: SaveLastPlayedAndGetExArgs };
+            let value = { Path: `${elfPath}neutrino.elf`, Args: args, Code: SaveLastPlayedAndGetExArgs };
 
             // Get Game Code
             let gameCode = "";
@@ -330,19 +316,14 @@ function ParseDirectory(path, device, fs)
 
 function getGames()
 {
-    if (!std.exists(elfPath)) { return { Options: {}, Default: 0, ItemCount: 0 }; }
-
-    if (System.boot_path.substring(0,4) !== "host")
+    // Scan MC0 for neutrino folder
+    if (!os.readdir("mc0:/")[0].includes("neutrino"))
     {
-        // Scan MC0 for neutrino folder
-        if (!os.readdir("mc0:/")[0].includes("neutrino"))
-        {
-            // Scan MC1 for neutrino folder
-            if (!os.readdir("mc1:/")[0].includes("neutrino")) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+        // Scan MC1 for neutrino folder
+        if (!os.readdir("mc1:/")[0].includes("neutrino")) { return { Options: {}, Default: 0, ItemCount: 0 }; }
 
-            // Update assets folder
-            cwd = "mc1:/neutrino";
-        }
+        // Update assets folder
+        cwd = "mc1:/neutrino";
     }
 
     let lastPlayed = 0;
@@ -414,6 +395,8 @@ function getDesc()
 ///																	   ///
 /// 	Here is the main info that will be retrieved by the App.   	   ///
 //////////////////////////////////////////////////////////////////////////
+
+if (!os.readdir(elfPath)[0].includes("neutrino.elf")) { return {}; }
 
 const Info = {
     Name: "Playstation 2",

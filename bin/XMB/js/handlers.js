@@ -113,6 +113,11 @@ function dashboard()
             DASH_UPDATE_FRAME(NEXT_IDLE_MESSAGE_STATE);
             break;
         case "IDLE_MESSAGE":
+            if (DATA.DASH_MOVE_FRAME == 20)
+            {
+                DATA.DASH_MOVE_FRAME = 0;
+            }
+
             if (DATA.MESSAGE_INFO.BG)
             {
                 DrawSelectedItem();
@@ -269,8 +274,20 @@ function dashboard()
             if (DATA.DASH_PADMODE != 0) { SetDashPadEvents(0); }
             DrawContextSubMenuAnimation(-1, !DATA.MESSAGE_INFO.BG);
             DASH_UPDATE_FRAME("SUBMENU_MESSAGE_IDLE");
+            if (DATA.DASH_MOVE_FRAME > 19)
+            {
+                delete DASH_CTX[DATA.DASH_CURCTXLVL];
+                DATA.DASH_CURCTXLVL--;
+                Timer.destroy(DATA.DASH_CTX_TIMER);
+                DATA.DASH_CTX_TIMER = false;
+            };
             break;
         case "SUBMENU_MESSAGE_IDLE":
+            if (DATA.DASH_MOVE_FRAME == 20)
+            {
+                DATA.DASH_MOVE_FRAME = 0;
+            }
+
             if (DATA.MESSAGE_INFO.BG)
             {
                 DrawSubMenuContent();

@@ -29,7 +29,7 @@
 
 DATA.CONFIG = {
 
-    configPath: `${System.boot_path}/CFG/`,
+    configPath: `${os.getcwd()[0]}/CFG/`,
     queue: [],
 
     Get: function(path)
@@ -39,15 +39,18 @@ DATA.CONFIG = {
 
         if (existingItem) { return existingItem.config; }
 
-        path = `${this.configPath}${path}`;
+        const fullPath = `${this.configPath}${path}`;
+        const pathParts = fullPath.split('/');
+        const filename = pathParts.pop();
+        const directory = pathParts.join('/');
 
-        const hasfile = std.exists(path);
+        const hasfile = os.readdir(directory)[0].includes(filename);
         if (!hasfile) { return {}; } // Return Empty Table if not found
 
         // Read each line for config.
         let config = {};
         let errObj = {};
-        const file = std.open(path, "r", errObj);
+        const file = std.open(fullPath, "r", errObj);
 
         if (file)
         {
@@ -125,9 +128,9 @@ DATA.CONFIG = {
     },
 };
 
-if (`${System.boot_path}/`.endsWith("//"))
+if (`${os.getcwd()[0]}/`.endsWith("//"))
 {
-    DATA.CONFIG.SetConfigPath(`${System.boot_path}CFG/`);
+    DATA.CONFIG.SetConfigPath(`${os.getcwd()[0]}CFG/`);
 }
 
 // Get the main Configuration File of the App and Parse its configuration if it has them.
@@ -135,6 +138,10 @@ if (`${System.boot_path}/`.endsWith("//"))
 function ParseMainCFG()
 {
     const mainCFG = DATA.CONFIG.Get("main.cfg");
+
+    // If the main Configuration file does not exist, return.
+
+    if (mainCFG.length < 1) { return; }
 
     // Get the user's preferred Video Mode.
     if ("vmode" in mainCFG)
@@ -204,6 +211,11 @@ function ParseMainCFG()
 
     if ("displayBg" in mainCFG) {
         DATA.DISPLAYBG = (mainCFG["displayBg"] === "true");
+    }
+
+    if (("net" in mainCFG) && (mainCFG["net"].toLowerCase() === "true"))
+    {
+        NetInit();
     }
 }
 

@@ -355,6 +355,16 @@ function DrawMessageInfoScreen(txtColor, arrAlpha)
     }
 }
 
+// Draws the elements for the 'Progress' Fade In Screen.
+
+function DrawProgressFadeInText()
+{
+    const txtFadeColor = { r: textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * -6) };
+    TxtPrint(TXT_WAIT[DATA.LANGUAGE], txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -10 }, "CENTER");
+    TxtPrint(`1/${DATA.MESSAGE_INFO.Count}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 10 }, "CENTER");
+    TxtPrint("0%", txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 30 }, "CENTER");
+}
+
 // Message Screen Fade In Animation.
 
 function DrawMessageFadeIn()
@@ -407,7 +417,6 @@ function DrawMessageFadeIn()
 
 function DrawMessageIdle()
 {
-    DATA.DASH_MOVE_FRAME = 0;
     DrawMessageLines(128);
     DrawMessageTop(128);
     DrawMessageBottom(128);
@@ -415,7 +424,22 @@ function DrawMessageIdle()
     switch(DATA.MESSAGE_INFO.Type)
     {
         case "TEXT":
-            TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
+            TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -10 }, "CENTER");
+            if (DATA.MESSAGE_INFO.BgFunction) { DATA.MESSAGE_INFO.Type = "TEXT_BGFUN"; }
+            break;
+        case "TEXT_BGFUN":
+            TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -10 }, "CENTER");
+            DATA.MESSAGE_INFO.BgFunction();
+            break;
+        case "TEXT_TO_TEXT":
+            if (!DATA.MESSAGE_INFO.Processed)
+            {
+                let txt = (Array.isArray(DATA.MESSAGE_INFO.Text)) ? DATA.MESSAGE_INFO.Text[DATA.LANGUAGE] : DATA.MESSAGE_INFO.Text;
+                DATA.MESSAGE_INFO.Processed = TextRender.ProcessText(txt);
+            }
+
+            TxtPrint(DATA.MESSAGE_INFO.Processed, { r: textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * -6) }, { x: (DATA.WIDESCREEN * 32), y: -10 }, "CENTER");
+            DATA.DASH_MOVE_FRAME++; if (DATA.DASH_MOVE_FRAME > 19) { DATA.MESSAGE_INFO.Type = "TEXT"; }
             break;
         case "VMODE":
             if (DATA.MESSAGE_TIMER == null) { DATA.MESSAGE_TIMER = Timer.new(); }
@@ -461,12 +485,8 @@ function DrawMessageIdle()
             DrawMessageInfoScreen(textColor, 100);
             break;
         case "INFO_TO_PROGRESS":
-            let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * -6) };
-            TxtPrint(TXT_WAIT[DATA.LANGUAGE], txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
-            TxtPrint(`1/${DATA.MESSAGE_INFO.Count}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 10}, "CENTER");
-            TxtPrint("0%", txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 30}, "CENTER");
-            DATA.DASH_MOVE_FRAME++;
-            if (DATA.DASH_MOVE_FRAME > 19) { DATA.MESSAGE_INFO.Type = "PROGRESS"; }
+            DrawProgressFadeInText();
+            DATA.DASH_MOVE_FRAME++; if (DATA.DASH_MOVE_FRAME > 19) { DATA.MESSAGE_INFO.Type = "PROGRESS"; }
             break;
         case "PROGRESS":
             const progress = DATA.MESSAGE_INFO.Progress;

@@ -12,7 +12,7 @@ export const Plugin = (() =>
     function getELFPath()
     {
         // Default to Path on APPS folder.
-        let elfPath = `${System.boot_path}/APPS/OPL/OPNPS2LD.ELF`;
+        let elfPath = `${os.getcwd()[0]}/APPS/OPL/OPNPS2LD.ELF`;
 
         // Scan all possible Open PS2 Loader Paths
 

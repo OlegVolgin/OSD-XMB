@@ -28,6 +28,7 @@ Screen.setVSync(true);
     data of the dashboard.
 
     Properties:
+        - NET: Boolean. Indicates if Network is enabled.
         - DISCITEM: Boolean. Indicates if a Disctray Item is present on the dashboard.
         - WIDESCREEN: Boolean. Indicates if the screen should be on a 16:9 aspect ratio.
         - CANVAS: Screen Mode Object.
@@ -80,6 +81,8 @@ Screen.setVSync(true);
 
 const DATA =
 {
+    NET: false,
+    NETTRY: false,
     DISCITEM: false,
     WIDESCREEN: false,
     CANVAS: Screen.getMode(),
@@ -161,10 +164,10 @@ function ftxtWrite(path, txt)
 
 function logl(line)
 {
-    const basepath = `${System.boot_path}/`;
-    if (`${System.boot_path}/`.endsWith("//"))
+    const basepath = `${os.getcwd()[0]}/`;
+    if (`${os.getcwd()[0]}/`.endsWith("//"))
     {
-        basepath = `${System.boot_path}`
+        basepath = `${os.getcwd()[0]}`
     }
 
     const file = std.open(`${basepath}log.txt`, "a+");
@@ -350,7 +353,7 @@ function getGameCodeFromOldFormatName(path)
 
 function findArt(baseFilename, suffix)
 {
-    let baseDir = `${System.boot_path}/`;
+    let baseDir = `${os.getcwd()[0]}/`;
 
     if (baseDir.endsWith("//"))
     {
@@ -473,19 +476,23 @@ function interpolateColorObj(color1, color2, t)
 // Neutralizes the overlay tint color.
 // Used in case a custom loaded image needs to display in full color.
 
-function neutralizeOverlayWithAlpha() {
-    const overlayEffect = Color.getA(DATA.OVCOL) / 128; // Scale the alpha to a range of 0 to 1
+function neutralizeOverlayWithAlpha()
+{
+    const ovA = Color.getA(DATA.OVCOL) / 128;
+    const OvR = Color.getR(DATA.OVCOL);
+    const OvG = Color.getG(DATA.OVCOL);
+    const OvB = Color.getB(DATA.OVCOL);
 
     const neutralizedColor = {
-        r: 128 - overlayEffect * (Color.getR(DATA.OVCOL) - 128),
-        g: 128 - overlayEffect * (Color.getG(DATA.OVCOL) - 128),
-        b: 128 - overlayEffect * (Color.getB(DATA.OVCOL) - 128),
+        r: Math.round(128 - (ovA * (OvR - 256))),
+        g: Math.round(128 - (ovA * (OvG - 256))),
+        b: Math.round(128 - (ovA * (OvB - 256))),
     };
 
     // Clamp the values to stay within the valid RGBA range (0-255)
-    neutralizedColor.r = Math.max(0, Math.min(128, neutralizedColor.r));
-    neutralizedColor.g = Math.max(0, Math.min(128, neutralizedColor.g));
-    neutralizedColor.b = Math.max(0, Math.min(128, neutralizedColor.b));
+    neutralizedColor.r = Math.max(0, Math.min(255, neutralizedColor.r));
+    neutralizedColor.g = Math.max(0, Math.min(255, neutralizedColor.g));
+    neutralizedColor.b = Math.max(0, Math.min(255, neutralizedColor.b));
 
     return neutralizedColor;
 }
@@ -591,7 +598,7 @@ function getPOPSCheat(cheats, game = "")
 {
     // Create an array to store whether each cheat is enabled
     const enabledCheats = new Array(cheats.length).fill(false);
-    const path = (System.boot_path.substring(0, 4) === "host") ? `${System.boot_path}/POPS/${game}` : `mass:/POPS/${game}`;
+    const path = (os.getcwd()[0].substring(0, 4) === "host") ? `${os.getcwd()[0]}/POPS/${game}` : `mass:/POPS/${game}`;
     const dirFiles = os.readdir(path)[0];
     if (dirFiles.includes("CHEATS.TXT"))
     {
@@ -628,7 +635,7 @@ function getPOPSCheat(cheats, game = "")
 
 function setPOPSCheat(cheats, game = "")
 {
-    const path = (System.boot_path.substring(0, 4) === "host") ? `${System.boot_path}/POPS/${game}` : `mass:/POPS/${game}`;
+    const path = (os.getcwd()[0].substring(0, 4) === "host") ? `${os.getcwd()[0]}/POPS/${game}` : `mass:/POPS/${game}`;
     const dirFiles = os.readdir(path)[0];
 
     if (dirFiles.includes("CHEATS.TXT"))
@@ -792,5 +799,5 @@ function SelectItem()
 //////////////////////////////////////////////////////////////////////////
 
 DATA.SCREEN_PREVMODE = DATA.CANVAS.mode; 		// Store current Canvas mode for backup.
-ftxtWrite(`${System.boot_path}/log.txt`, ""); 	// Initializes the log.txt file.
+ftxtWrite(`${os.getcwd()[0]}/log.txt`, ""); 	// Initializes the log.txt file.
 console.log("INIT: SYSTEM INIT COMPLETE");

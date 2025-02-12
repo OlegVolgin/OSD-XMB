@@ -6,12 +6,14 @@
 /// 				   		  										   ///
 //////////////////////////////////////////////////////////////////////////
 
+std.loadScript("./XMB/js/iop.js");          // Load IOP Modules.
 std.loadScript("./XMB/js/system.js"); 		// Main DATA Object and Generic Functions.
 std.loadScript("./XMB/js/config.js");		// Manage configuration files (.cfg).
 std.loadScript("./XMB/js/sound.js");		// Manage Audio playing.
 std.loadScript("./XMB/js/pads.js");			// Manage Events executed using Joystick's buttons.
 std.loadScript("./XMB/js/text.js");			// Manage all kind of Text related stuff.
-std.loadScript("./XMB/js/bg.js");			// Manage Background and Overlay Screens
+std.loadScript("./XMB/js/net.js"); 		    // Manage network system.
+std.loadScript("./XMB/js/bg.js");			// Manage Background and Overlay Screens.
 std.loadScript("./XMB/js/dashboard.js");	// Manages the Dashboard Graphic logic.
 std.loadScript("./XMB/js/handlers.js");		// Main Handler functions.
 
@@ -233,7 +235,7 @@ function InitDiscDashItem(discType)
     const gmecfg = DATA.CONFIG.Get(`${ELFName.toUpperCase()}.cfg`);
     if ("Title" in gmecfg) { name = gmecfg["Title"]; }
 
-    let basePath = `${System.boot_path}/`;
+    let basePath = `${os.getcwd()[0]}/`;
 
     if (basePath.endsWith("//")) { basePath = basePath.substring(0, basePath.length - 1); }
 
@@ -242,17 +244,14 @@ function InitDiscDashItem(discType)
     if (dirFiles.includes(`neutrino.elf`))
     {
         let cwd = "";
-        if (System.boot_path.substring(0,4) !== "host")
+        let files = os.readdir("mc0:/")[0];
+        let fileExist = files.includes("neutrino");
+        if (fileExist) { cwd = "mc0:/neutrino"; }
+        else
         {
-            let files = os.readdir("mc0:/")[0];
-            let fileExist = files.includes("neutrino");
-            if (fileExist) { cwd = "mc0:/neutrino"; }
-            else
-            {
-                files = os.readdir("mc1:/")[0];
-                fileExist = files.includes("neutrino");
-                if (fileExist) { cwd = "mc1:/neutrino"; }
-            }
+            files = os.readdir("mc1:/")[0];
+            fileExist = files.includes("neutrino");
+            if (fileExist) { cwd = "mc1:/neutrino"; }
         }
 
         if (cwd !== "")
@@ -285,6 +284,12 @@ function InitDiscDashItem(discType)
         DATA.DASH_MOVE_FRAME = 0;
         DATA.DASH_STATE = "MOVE_DOWN";
         DATA.DASH_CUROPT = DASH_CAT[5].ItemCount;
+    }
+    else
+    {
+        console.log("CURCAT: " + DATA.DASH_CURCAT);
+        console.log("CURSUB: " + DATA.DASH_CURSUB);
+        console.log("CURCTXLVL: " + DATA.DASH_CURCTXLVL);
     }
 
     DASH_CAT[5].ItemCount++;
@@ -330,7 +335,7 @@ function InitDashboard()
         };
     }
 
-    let baseDir = `${System.boot_path}/`;
+    let baseDir = `${os.getcwd()[0]}/`;
     if (baseDir.endsWith("//")) { baseDir = baseDir.substring(0, baseDir.length - 1); }
     const dirFiles = os.readdir(`${baseDir}${DATA.THEME_PATH}icons/`)[0];
 
@@ -407,7 +412,8 @@ function boot()
         case 6: // DISPLAY WARNING TEXT
             Draw.rect(0, 0, DATA.CANVAS.width, DATA.CANVAS.height, Color.new(0, 0, 0, 64));
             DisplayBootWarningText(128);
-            if (DATA.FADE_FRAME > 256) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; }
+            if ((DATA.FADE_FRAME > 256))
+            { DATA.FADE_FRAME = 0; DATA.BOOT_STATE++; }
             break;
         case 7: // FADE OUT WARNING TEXT
             let fadeInAlphaB = (DATA.FADE_FRAME > 63) ? 64 : DATA.FADE_FRAME;

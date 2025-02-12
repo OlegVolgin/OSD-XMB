@@ -41,6 +41,17 @@ const MASS_DIR_NAME = 	// Item 2 Name
     "Dispositivo USB",
 ];
 
+const HDD_DIR_NAME = 	// Item 3 Name
+[
+    "Internal Hard Disk Drive",
+    "Disque Dur Interne",
+    "Disco Duro Interno",
+    "Interne Festplatte",
+    "Disco Rigido Interno",
+    "Internal Hard Disk Drive",
+    "Disco Rígido Interno",
+];
+
 //////////////////////////////////////////////////////////////////////////
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
@@ -51,8 +62,8 @@ function ParseDirectory(path)
     let dir_options = [];
 
     // Separate directories and files
-    const directories = dir.filter(item => item.name !== "." && item.name !== ".." && item.dir); // All directories
-    const files = dir.filter(item => !item.dir); // All files
+    let directories = dir.filter(item => item.name !== "." && item.name !== ".." && item.dir); // All directories
+    let files = dir.filter(item => !item.dir); // All files
 
     // Sort directories and files alphabetically by name
     directories.sort((a, b) => a.name.localeCompare(b.name));
@@ -98,6 +109,26 @@ function ParseDirectory(path)
     return { Options: dir_options, Default:0, ItemCount: dir_options.length, };
 }
 
+function getHDDPartitions()
+{
+    let dir_options = [];
+    let partitions = os.readdir("hdd0:")[0];
+    partitions.sort((a, b) => a.localeCompare(b));
+
+    partitions.forEach((item) =>
+    {
+        dir_options.push({
+            Name: item,
+            Description: "",
+            Icon: 18,
+            Type: "",
+            get Value() { return {}; }
+        });
+    });
+
+    return { Options: dir_options, Default: 0, ItemCount: dir_options.length, };
+}
+
 function GetExplorerOptions()
 {
     let options = [];
@@ -107,7 +138,7 @@ function GetExplorerOptions()
         Description: "",
         Icon: 18,
         Type: "SUBMENU",
-        get Value() { return ParseDirectory(`${System.boot_path}/`); }
+        get Value() { return ParseDirectory(`${os.getcwd()[0]}/`); }
     });
 
     options.push({
@@ -116,6 +147,14 @@ function GetExplorerOptions()
         Icon: 21,
         Type: "SUBMENU",
         get Value() { return ParseDirectory("mass:/"); }
+    });
+
+    options.push({
+        Name: HDD_DIR_NAME,
+        Description: "",
+        Icon: 29,
+        Type: "SUBMENU",
+        get Value() { return getHDDPartitions(); }
     });
 
     return { Options: options, Default: 0, ItemCount: options.length, };

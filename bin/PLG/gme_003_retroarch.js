@@ -11,7 +11,7 @@ export const Plugin = (() => { 	// DO NOT REMOVE, Encloses plugin on a local sco
 function getELFPath()
 {
     // Default to Path on APPS folder.
-    let elfPath = `${System.boot_path}/APPS/retroarch/raboot.elf`;
+    let elfPath = `${os.getcwd()[0]}/APPS/retroarch/raboot.elf`;
 
     // Scan all possible Open PS2 Loader Paths
 

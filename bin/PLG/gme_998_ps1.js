@@ -33,8 +33,9 @@ const TXT_VMCMODE = [ "Default", "Slot 2 Only", "Slot 1 Only" ];
 
 let gameList = [];
 let popsPaths = [];
-popsPaths.push(`mass:/`);
-popsPaths.push(`${System.boot_path}/`);
+popsPaths.push(`mass:/`);               // Default Mass Support
+popsPaths.push(`${os.getcwd()[0]}/`);   // For host support
+popsPaths.push(`hdd0:__.`);             // For Future HDD support
 
 const cfgPath = "pops.cfg";
 const cfg = DATA.CONFIG.Get(cfgPath);
@@ -266,7 +267,8 @@ function PopsParseDirectory(path)
 
             // Set Launch Settings
             let prefix = (path.substring(0, 4) == "mass") ? "XX." : "";
-            let elfPath = `${path}${prefix}${item.name.substring(0, item.name.length - 3)}ELF`;
+            let basePath = (path.substring(0, 4) === "hdd0") ? "hdd0:/__common/POPS/" : path;
+            let elfPath = `${basePath}${prefix}${item.name.substring(0, item.name.length - 3)}ELF`;
             let value = { Path: elfPath, Args: [], Code: SaveLastPlayed };
 
             // Get Game Code
@@ -280,21 +282,28 @@ function PopsParseDirectory(path)
                 DATA.CONFIG.Push(cfgPath, cfg);
             }
 
+            let ico = (() => { return dash_icons[25]; });
+            const icoFile = findICO(gameCode);
+            if (icoFile !== "") { ico = new Image(icoFile, RAM, async_list); }
+
             gameList.push({
                 Name: title,
                 Description: gameCode,
-                Icon: icon,
+                Icon: -1,
                 Type: type,
                 Value: value,
-                Option: getOptionContextInfo(`${path}${item.name.substring(0, item.name.length - 4)}/`),
+                Option: getOptionContextInfo(`${basePath}${item.name.substring(0, item.name.length - 4)}/`),
+                Art: { ICO: ico },
+                get CustomIcon()
+                {
+                    if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
+                    return this.Art.ICO;
+                }
             });
 
-            if (!std.exists(elfPath)) { threadCopyPush(`${getDirectoryName(elfPath)}POPSTARTER.ELF`, elfPath); }
+            if (!os.readdir(basePath)[0].includes(`${prefix}${item.name.substring(0, item.name.length - 3)}ELF`)) { threadCopyPush(`${getDirectoryName(elfPath)}POPSTARTER.ELF`, elfPath); }
 
             // Add ART
-            const icoFile = findICO(gameCode);
-            if (icoFile !== "") { gameList[gameList.length - 1].CustomIcon = new Image(icoFile, RAM, async_list); }
-
             const bgFile = findBG(gameCode);
             if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
         }
@@ -359,10 +368,23 @@ function getGames()
             continue;
         }
 
-        const dirFiles = os.readdir(`${popsPaths[i]}POPS/`)[0];
+        // Check if POPS files are present
 
-        if (!dirFiles.includes("POPS_IOX.PAK")) { continue; }
-        if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
+        if (popsPaths[i].substring(0, 4) === "hdd0")
+        {
+            const dirFiles = os.readdir(`hdd0:__common:/POPS/`)[0];
+
+            if (!dirFiles.includes("POPS.ELF")) { continue; }
+            if (!dirFiles.includes("IOPRP252.IMG")) { continue; }
+            if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
+        }
+        else
+        {
+            const dirFiles = os.readdir(`${popsPaths[i]}POPS/`)[0];
+
+            if (!dirFiles.includes("POPS_IOX.PAK")) { continue; }
+            if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
+        }
 
         PopsParseDirectory(`${popsPaths[i]}POPS/`);
 

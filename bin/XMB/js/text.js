@@ -67,6 +67,28 @@ const TXT_NO =
     "No",
 ];
 
+const TXT_ENABLED =
+[
+    "Enabled",
+    "Activé",
+    "Habilitado",
+    "Aktiviert",
+    "Abilitato",
+    "Ingeschakeld",
+    "Ativado",
+]
+
+const TXT_DISABLED =
+[
+    "Disabled",
+    "Désactivé",
+    "Deshabilitado",
+    "Deaktiviert",
+    "Disabilitato",
+    "Uitgeschakeld",
+    "Desativado",
+]
+
 const TXT_INFO =
 [
     "Information",
@@ -92,12 +114,12 @@ const TXT_DELETE =
 const MSG_SUBMENU_EMPTY =
 [
     "There are no elements.",
-    "There are no elements.",
-    "There are no elements.",
-    "There are no elements.",
-    "There are no elements.",
-    "There are no elements.",
-    "There are no elements.",
+    "Il n'y a pas d'éléments.",
+    "No hay elementos.",
+    "Es gibt keine Elemente.",
+    "Non ci sono elementi.",
+    "Er zijn geen elementen.",
+    "Não há elementos.",
 ];
 
 const TXT_MESSAGE_BACK =

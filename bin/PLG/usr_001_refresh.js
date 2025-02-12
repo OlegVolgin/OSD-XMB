@@ -25,9 +25,9 @@ const NAME_MAIN =
 /// 	Here is the main info that will be retrieved by the App.   	   ///
 //////////////////////////////////////////////////////////////////////////
 
-let elfPath = `${System.boot_path}/OSDXMB.ELF`;
+let elfPath = `${os.getcwd()[0]}/OSDXMB.ELF`;
 
-if (`${System.boot_path}/`.endsWith("//")) { elfPath = `${System.boot_path}OSDXMB.ELF`; }
+if (`${os.getcwd()[0]}/`.endsWith("//")) { elfPath = `${os.getcwd()[0]}OSDXMB.ELF`; }
 
 const Info = {
     Name: NAME_MAIN,

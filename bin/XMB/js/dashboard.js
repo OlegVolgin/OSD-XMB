@@ -99,6 +99,8 @@ const dash_icons_names =
     "ic_game_ps1.png",					// [25]
     "ic_game_ps2.png",					// [26]
     "ic_x_tool.png",					// [27]
+    "ic_set_net.png",                   // [28]
+    "ic_x_mass.png"                     // [29]
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -249,32 +251,33 @@ function DrawDashElementBackground(Obj, draw)
 
 function DrawDashElementText(obj, glow, nameInfo, descInfo = -1, cntxInfo = -1)
 {
+    let txtCol = { r: 255, g: 255, b: 255, a: 0 };
     if ((TXTFULLA + nameInfo.a) > 0)
     {
+        txtCol.a = TXTFULLA + nameInfo.a;
         const name = (Array.isArray(obj.Name)) ? obj.Name[DATA.LANGUAGE] : obj.Name;
-        const clr = { r:255, g: 255, b: 255, a: TXTFULLA + nameInfo.a };
         const pos = { x: nameInfo.x, y: nameInfo.y };
-        TxtPrint(name, clr, pos, "LEFT", font_m, glow);
+        TxtPrint(name, txtCol, pos, "LEFT", font_m, glow);
 
         if ((cntxInfo !== -1) && ("Type" in obj) && (obj.Type == "CONTEXT") && ("Default" in obj.Value))
         {
             const defItem = obj.Value.Default;
             if ((defItem > -1) && ((TXTFULLA + cntxInfo.a) > 0))
             {
+                txtCol.a = TXTFULLA + cntxInfo.a;
                 const opttext = (Array.isArray(obj.Value.Options[defItem].Name)) ? obj.Value.Options[defItem].Name[DATA.LANGUAGE] : obj.Value.Options[defItem].Name;
-                const ctxclr = { r:255, g: 255, b: 255, a: TXTFULLA + cntxInfo.a };
                 const ctxpos = { x: cntxInfo.x, y: cntxInfo.y};
-                TxtPrint(opttext, ctxclr, ctxpos, "RIGHT", font_ss);
+                TxtPrint(opttext, txtCol, ctxpos, "RIGHT", font_ss);
             }
         }
     }
 
     if ((descInfo !== -1) && ((TXTFULLA + descInfo.a) > 0))
     {
+        txtCol.a = TXTFULLA + descInfo.a;
         const desc = (Array.isArray(obj.Description)) ? obj.Description[DATA.LANGUAGE] : obj.Description;
-        const clr = { r:255, g: 255, b: 255, a: TXTFULLA + descInfo.a };
         const pos = { x: descInfo.x, y: descInfo.y };
-        TxtPrint(desc, clr, pos, "LEFT", font_ss);
+        TxtPrint(desc, txtCol, pos, "LEFT", font_ss);
     }
 }
 
@@ -291,12 +294,13 @@ function DrawOptionBox(direction = 1)
 
     if ((obj) && ("Option" in obj))
     {
+        const col = neutralizeOverlayWithAlpha();
         optBoxA = (optBoxA >= 420) ? 428 : (optBoxA + (12 * direction));
         const alpha = ((optBoxA - 300) > 0) ? (optBoxA - 300) : 0;
-        dash_opt_box.width = 80 + (TXT_OPTION[DATA.LANGUAGE].length / 2);
-        dash_opt_box.color = Color.new(255, 255, 255, alpha);
+        dash_opt_box.width = 80 + ((TXT_OPTION[DATA.LANGUAGE].length + 6) / 2);
+        dash_opt_box.color = Color.new(col.r, col.g, col.b, alpha);
         dash_opt_box.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 100, DATA.CANVAS.height - 70);
-        dash_opt_triangle.color = Color.new(255, 255, 255, alpha);
+        dash_opt_triangle.color = Color.new(col.r, col.g, col.b, alpha);
         dash_opt_triangle.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 93, DATA.CANVAS.height - 34);
         TxtPrint(TXT_OPTION[DATA.LANGUAGE], { r: 255, g: 255, b: 255, a: alpha }, { x: DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 73, y: DATA.CANVAS.height - 47 }, "LEFT", font_ss);
     }
@@ -749,7 +753,7 @@ function DrawSubMenuSelectedItem(sub = DATA.DASH_CURSUB, opt = DATA.DASH_CURSUBO
     const descPpts = { x: 265 + txtXmod, y: 229 + txtYmod, a: descTxtAmod };
     const cntxPpts = { x: -35 + txtXmod, y: 215 + txtYmod, a: contxtA };
     const glow = ((opt === DATA.DASH_CURSUBOPT) && (txtAmod === 0));
-    const drawBg = ((sizeMod === 0) && (aMod === 0));
+    const drawBg = ((txtYmod === 0) && (aMod === 0));
     DrawDashElementIcon(DASH_SUB[sub].Options[opt], 78 + sizeMod, 175 + xMod, 195 + yMod, aMod);
     DrawDashElementText(DASH_SUB[sub].Options[opt], glow, namePpts, descPpts, cntxPpts);
     DrawDashElementBackground(DASH_SUB[sub].Options[opt], drawBg);
@@ -1140,6 +1144,14 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
     {
         if (currentSelected)
         {
+            if (DASH_CTX[lvl].Options[opt].Name === "")
+            {
+                // Update Glow Value if context option has no text to make the Icon still glow.
+                if (glowText.Value == glowText.Max) { glowText.Dir = -1; }
+                if (glowText.Value == glowText.Min) { glowText.Dir = 1; }
+                glowText.Value = glowText.Value + glowText.Dir;
+            }
+
             dash_ctx_ico.color = Color.new(255,255,255, glowText.Value * 2);
             dash_ctx_ico.draw(x - 8, y + 4);
         }
@@ -1166,11 +1178,14 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
                 }
 
                 const endIndex = scrollIndex + 24;
-                if (scrollIndex === 0) {
+                if (scrollIndex === 0)
+                {
                     displayText = nameText.substring(0, 24) + "..";
-                } else if (endIndex >= nameText.length) {
+                } else if (endIndex >= nameText.length)
+                {
                     displayText = ".." + nameText.substring(scrollIndex);
-                } else {
+                } else
+                {
                     displayText = ".." + nameText.substring(scrollIndex, endIndex) + "..";
                 }
 
@@ -1191,7 +1206,7 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
             }
         }
 
-        TxtPrint(displayText, { r: 255, g: 255, b: 255, a: TXTFULLA + a }, {x: x + xIcnMod, y: y}, "LEFT", font_ss, currentSelected);
+        TxtPrint(displayText, { r: 255, g: 255, b: 255, a: TXTFULLA + a }, { x: x + xIcnMod, y: y }, "LEFT", font_ss, currentSelected);
     }
 }
 
