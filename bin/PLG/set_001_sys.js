@@ -224,6 +224,7 @@ function showSysInfoMsg()
             case 'E': ConsoleRegion = "Europe"; break;
             case 'H': ConsoleRegion = "Asia"; break;
             case 'A': ConsoleRegion = "America"; break;
+            case 'T':
             case 'J': ConsoleRegion = "Japan"; break;
         }
 
@@ -236,7 +237,14 @@ function showSysInfoMsg()
         let formattedDate = `${day}/${month}/${year}`;
 
         // Get the Console Type
-        let consoleType = (ROMVER[5] === "C") ? SYSINFO_TYPE_C[DATA.LANGUAGE] : SYSINFO_TYPE_D[DATA.LANGUAGE];
+        let consoleType = SYSINFO_TYPE_C[DATA.LANGUAGE];
+
+        switch (ROMVER[5])
+        {
+            case "C": consoleType = SYSINFO_TYPE_C[DATA.LANGUAGE]; break;
+            case "D": consoleType = SYSINFO_TYPE_D[DATA.LANGUAGE]; break;
+            case "Z": consoleType = "Arcade"; break;
+        }
 
         if (std.exists("rom0:PSXVER")) { consoleType = "PSX-DVR"; }
 
