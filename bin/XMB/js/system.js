@@ -164,7 +164,7 @@ function ftxtWrite(path, txt)
 
 function logl(line)
 {
-    const basepath = `${os.getcwd()[0]}/`;
+    let basepath = `${os.getcwd()[0]}/`;
     if (`${os.getcwd()[0]}/`.endsWith("//"))
     {
         basepath = `${os.getcwd()[0]}`
