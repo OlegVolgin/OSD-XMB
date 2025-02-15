@@ -524,7 +524,7 @@ function SetPadEvents_Information()
     // Move Back
     PADEVENTS.LEFT = () =>
     {
-        if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
+        if ((DATA.OVSTATE !== "MESSAGE_IDLE") || (DATA.MESSAGE_INFO.Selected < 0)) { return; }
 
         let obj = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected]
         if (obj.Selectable)
@@ -537,7 +537,7 @@ function SetPadEvents_Information()
     // Move Forward
     PADEVENTS.RIGHT = () =>
     {
-        if (DATA.OVSTATE !== "MESSAGE_IDLE") { return; }
+        if ((DATA.OVSTATE !== "MESSAGE_IDLE") || (DATA.MESSAGE_INFO.Selected < 0)) { return; }
 
         let obj = DATA.MESSAGE_INFO.Data[DATA.MESSAGE_INFO.Selected]
         if (obj.Selectable)
