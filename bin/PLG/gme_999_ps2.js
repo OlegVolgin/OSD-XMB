@@ -23,11 +23,13 @@ const NeutrinoSettingNames =
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
+let bootDev = (os.getcwd()[0].substring(0,3) === "pfs") ? "ata" : "usb";
+let bootFs = (os.getcwd()[0].substring(0,3) === "pfs") ? "hdl" : "exfat";
 let cwd = "mc0:/neutrino";
 let gameList = [];
-let devices = [ "usb", "usb", "mx4sio", "ata", "udpbd" ];
-let roots = [ `${os.getcwd()[0]}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/" ];
-let fsmodes = [ "exfat", "exfat", "exfat", "hdl", "bd" ];
+let devices = [ `${bootDev}`, "usb", "mx4sio", "ata", "udpbd", "mmce", "mmce" ];
+let roots = [ `${os.getcwd()[0]}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/", "mmce0:/", "mmce1:/" ];
+let fsmodes = [ "exfat", "exfat", "exfat", "hdl", "bd", "exfat", "exfat" ];
 
 // For cases when the executable is placed directly at root.
 let basepath = `${os.getcwd()[0]}/`;

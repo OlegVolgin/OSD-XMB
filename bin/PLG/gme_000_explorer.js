@@ -113,6 +113,7 @@ function getHDDPartitions()
 {
     let dir_options = [];
     let partitions = os.readdir("hdd0:")[0];
+    partitions = [...new Set(partitions)];
     partitions.sort((a, b) => a.localeCompare(b));
 
     partitions.forEach((item) =>
@@ -122,7 +123,7 @@ function getHDDPartitions()
             Description: "",
             Icon: 18,
             Type: "",
-            get Value() { return {}; }
+            get Value() { return {}; }  // Placeholder for when HDD partitions are supported
         });
     });
 
@@ -156,6 +157,23 @@ function GetExplorerOptions()
         Type: "SUBMENU",
         get Value() { return getHDDPartitions(); }
     });
+
+    for (let i = 0; i < 2; i++)
+    {
+        const hasContent = os.readdir(`mmce${i.toString()}:/`)[0].length > 0;
+        if (!hasContent) continue;
+
+        options.push({
+            Name: `MMCE ${i.toString()}`,
+            Description: "",
+            Icon: 21,
+            Type: "SUBMENU",
+            get Value()
+            {
+                return ParseDirectory(`mmce${i.toString()}:/`);
+            }
+        });
+    }
 
     return { Options: options, Default: 0, ItemCount: options.length, };
 }
