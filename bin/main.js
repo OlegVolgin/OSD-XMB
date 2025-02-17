@@ -88,29 +88,7 @@ function InitializePluginTable()
                 if (validatePlugin(Plugin))
                 {
                     const item = DASH_CAT[Plugin.Category].ItemCount;
-                    DASH_CAT[Plugin.Category].Options[item] =
-                    {
-                        Name: Plugin.Name,
-                        Description: Plugin.Description,
-                        Icon: Plugin.Icon,
-                        Type: Plugin.Type,
-                        Value: Plugin.Value,
-                    }
-
-                    if ("Option" in Plugin)
-                    {
-                        DASH_CAT[Plugin.Category].Options[item].Option = Plugin.Option;
-                    }
-
-                    if ("CustomIcon" in Plugin)
-                    {
-                        DASH_CAT[Plugin.Category].Options[item].CustomIcon = Plugin.CustomIcon;
-                    }
-
-                    if ("Safe" in Plugin)
-                    {
-                        DASH_CAT[Plugin.Category].Options[item].Safe = Plugin.Safe;
-                    }
+                    DASH_CAT[Plugin.Category].Options[item] = Plugin;
 
                     DASH_CAT[Plugin.Category].ItemCount++;
                     console.log(`Loaded Plugin: ${pluginFile}`);

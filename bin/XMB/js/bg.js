@@ -110,15 +110,15 @@ const Waves = (() => {
 
     function renderWaves()
     {
-        const width = Screen.getMode().width;
-        const height = Screen.getMode().height;
+        const width = DATA.CANVAS.width;
+        const height = DATA.CANVAS.height;
 
         if (width !== screenWidth) { screenWidth = width; precomputeValues(); }
 
         const timeWave1 = time * wave1Speed;
         const timeWave2 = time * wave2Speed;
 
-        for (let x = 0; x <= screenWidth; x += step)
+        for (let x = 0; x < screenWidth; x += step)
         {
             const y1 = Math.sinf(precomputedXWave[x] + timeWave1) * wave1Amplitude;
             const currentY1 = baseYStart + (y1 + 1);
@@ -127,9 +127,12 @@ const Waves = (() => {
             const currentY2 = baseYStart + (y2 + 1);
 
             // Draw wave 1 bottom
-            Draw.rect(x, currentY1, step, height, wave1ColorBottom);
-            Draw.rect(x, currentY2 - 1, step, 2, wave2ColorTop);
-            Draw.rect(x, currentY2, step, height, wave2ColorBottom);
+
+            const endX = (x + step > screenWidth) ? (screenWidth - x) : step;
+
+            Draw.rect(x, currentY1, endX, height, wave1ColorBottom);
+            Draw.rect(x, currentY2 - 1, endX, 2, wave2ColorTop);
+            Draw.rect(x, currentY2, endX, height, wave2ColorBottom);
         }
 
         time++;

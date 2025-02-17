@@ -23,9 +23,6 @@ const NAME_MAIN = 		// Displayed name on the Main Interface
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
-let iCount = 0;
-let options = [];
-
 function parseIconSysTitle(path, name)
 {
     let RET = name;
@@ -77,10 +74,9 @@ function parseIconSysTitle(path, name)
     return RET;
 }
 
-function TryAddMC(path, slot, name)
+function ReadMCDir(slot)
 {
-    const dir = System.listDir(path).sort((a, b) => a.name.localeCompare(b.name));
-    //const info = System.getMCInfo(slot);
+    const dir = System.listDir(`mc${slot.toString()}:/`).sort((a, b) => a.name.localeCompare(b.name));
 
     // Initialize an empty array to hold the directories
     const directories = [];
@@ -91,7 +87,7 @@ function TryAddMC(path, slot, name)
         if ((item.dir) && (item.name !== ".") && (item.name !== ".."))
         {
             directories.push({
-                Name: parseIconSysTitle(path, item.name),
+                Name: parseIconSysTitle(`mc${slot.toString()}:/`, item.name),
                 Description: "",
                 Icon: 14,
             });
@@ -100,33 +96,41 @@ function TryAddMC(path, slot, name)
 
     directories.sort((a, b) => a.Name.localeCompare(b.Name));
 
-    if (directories.length > 0)
+    return { Options: directories, Default: 0, ItemCount: directories.length };
+}
+
+function TryAddMC(slot)
+{
+    if (os.readdir(`mc${slot.toString()}:/`)[0].length > 0)
     {
-        const MC0INFO =
-        {
-            Name: name,
+        //const info = System.getMCInfo(slot);
+
+        return {
+            Name: `Memory Card ${(slot + 1).toString()}`,
             Description: "8 Mb", // getMCInfo() doesn't work... using a temp description instead
             Icon: 16 + slot,
             Type: "SUBMENU",
-            Value:
+            get Value()
             {
-                Options: directories,
-                Default: 0,
-                ItemCount: directories.length,
-            },
-        }
-
-        options.push(MC0INFO);
-        iCount++;
+                return ReadMCDir(this.Icon - 16);
+            }
+        };
     }
+
+    return {};
 }
 
 function GetMcOptions()
 {
-    TryAddMC("mc0:/", 0, "Memory Card 1");
-    TryAddMC("mc1:/", 1, "Memory Card 2");
+    let options = [];
 
-    return { Options: options, Default: 0, ItemCount: iCount, };
+    const obj0 = TryAddMC(0);
+    const obj1 = TryAddMC(1);
+
+    if ("Name" in obj0) { options.push(obj0); }
+    if ("Name" in obj1) { options.push(obj1); }
+
+    return { Options: options, Default: 0, ItemCount: options.length, };
 }
 
 //////////////////////////////////////////////////////////////////////////

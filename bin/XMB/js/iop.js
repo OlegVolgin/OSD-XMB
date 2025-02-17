@@ -12,7 +12,7 @@ const neutMods =
     "mx4sio_bd_mini.irx",
     "mmceman.irx",
     "mmcefhi.irx"
-    ];
+];
 
 function locateIOPModulePath()
 {
@@ -63,6 +63,9 @@ function FixCwd()
 
 function ResetIOP(modPath = "")
 {
+    // Do not reset IOP if boot path is Virtual HDD
+    if (System.boot_path.substring(0, 3) === "pfs") { return; }
+
     // Check if module path exists and modules are present
     let loadAdditional = (modPath !== "");
     if (modPath === "")
@@ -101,19 +104,6 @@ function ResetIOP(modPath = "")
     FixCwd();
 
     console.log("IOP: LOADED REMAINING DEFAULT MODULES");
-}
-
-try
-{
-    const modPath = locateIOPModulePath();
-    if ((modPath !== "") && (IOPModulesExist(modPath)) && (System.boot_path.substring(0,3) !== "pfs"))
-    {
-        ResetIOP(modPath);
-    }
-}
-catch (err)
-{
-    console.log("Error: " + err);
 }
 
 // Load Extra Modules

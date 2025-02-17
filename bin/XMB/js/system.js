@@ -610,7 +610,8 @@ function getPOPSCheat(cheats, game = "")
 
         const lines = content.split(/\r?\n/);    // Split the content into lines
         // Iterate over the lines in the content
-        for (const line of lines) {
+        for (const line of lines)
+        {
             for (let i = 0; i < cheats.length; i++) {
                 const cheatString = cheats[i];
 
@@ -650,18 +651,22 @@ function setPOPSCheat(cheats, game = "")
         const resultLines = []; // To store the processed lines
 
         // Iterate over the lines in the content
-        for (const line of lines) {
+        for (const line of lines)
+        {
             let found = false;
 
             // Check if the line matches any cheat code
-            for (let i = 0; i < cheats.length; i++) {
+            for (let i = 0; i < cheats.length; i++)
+            {
                 const cheat = cheats[i];
 
-                if (line === cheat.code || line === `$${cheat.code}`) {
+                if (line === cheat.code || line === `$${cheat.code}`)
+                {
                     found = true;
 
                     // If cheat is enabled, add it with `$`
-                    if (cheat.enabled) {
+                    if (cheat.enabled)
+                    {
                         resultLines.push(`$${cheat.code}`);
                     }
                     // Remove the cheat from the array
@@ -671,20 +676,22 @@ function setPOPSCheat(cheats, game = "")
             }
 
             // If the line wasn't related to a cheat, keep it unchanged
-            if (!found) {
+            if (!found)
+            {
                 resultLines.push(line);
             }
         }
 
         // Add remaining enabled cheats to the end
-        for (const cheat of cheats) {
+        for (const cheat of cheats)
+        {
             if (cheat.enabled) {
                 resultLines.push(`$${cheat.code}`);
             }
         }
 
         // Combine all lines into a single string
-        ftxtWrite(path, resultLines.join('\n'));
+        ftxtWrite(`${path}CHEATS.TXT`, resultLines.join('\n'));
     }
     else
     {

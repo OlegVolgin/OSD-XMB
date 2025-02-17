@@ -76,14 +76,14 @@ function getGameSettings(path)
     settings[2] = (statuses[8]) ? 1 : 0;
     settings[3] = (statuses[9]) ? 1 : 0;
     settings[4] = (statuses[10]) ? 1 : 0;
-    settings[4] = (statuses[11]) ? 1 : settings[4];
+    settings[4] = (statuses[11]) ? 2 : settings[4];
     settings[5] = (statuses[12]) ? 1 : 0;
-    settings[5] = (statuses[13]) ? 1 : settings[5];
-    settings[5] = (statuses[14]) ? 1 : settings[5];
+    settings[5] = (statuses[13]) ? 2 : settings[5];
+    settings[5] = (statuses[14]) ? 3 : settings[5];
     settings[6] = (statuses[15]) ? 1 : 0;
-    settings[6] = (statuses[16]) ? 1 : settings[6];
+    settings[6] = (statuses[16]) ? 2 : settings[6];
     settings[7] = (statuses[17]) ? 1 : 0;
-    settings[7] = (statuses[18]) ? 1 : settings[7];
+    settings[7] = (statuses[18]) ? 2 : settings[7];
     return settings;
 }
 
@@ -104,7 +104,7 @@ function getOptionContextInfo(path)
     {
         console.log("POPS: Get Current Game Settings");
         const gameData = [];
-        const currSett = getGameSettings(`${DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected].Title}/`);
+        const currSett = getGameSettings(`${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Title}/`);
 
         console.log("POPS: Set Game Title");
         gameData.push({
@@ -229,8 +229,9 @@ function getOptionContextInfo(path)
             cheats.push({ code: "D2LS", enabled: (DATA.MESSAGE_INFO.Data[7].Selected === 1)});
             cheats.push({ code: "D2LS_ALT", enabled: (DATA.MESSAGE_INFO.Data[7].Selected === 2)});
             cheats.push({ code: "NOVMC0", enabled: (DATA.MESSAGE_INFO.Data[8].Selected === 1)});
-            cheats.push({ code: "NOVMC1", enabled: (DATA.MESSAGE_INFO.Data[8].Selected === 2)});
-            setPOPSCheat(cheats, `${DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected].Title}/`);
+            cheats.push({ code: "NOVMC1", enabled: (DATA.MESSAGE_INFO.Data[8].Selected === 2) });
+            console.log(`POPS: Game Title = ${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Title}/`)
+            setPOPSCheat(cheats, `${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Title}/`);
         };
 
         console.log("POPSETTS: Set Message Screen Parameters");

@@ -150,13 +150,16 @@ function GetExplorerOptions()
         get Value() { return ParseDirectory("mass:/"); }
     });
 
-    options.push({
-        Name: HDD_DIR_NAME,
-        Description: "",
-        Icon: 29,
-        Type: "SUBMENU",
-        get Value() { return getHDDPartitions(); }
-    });
+    if (os.readdir("hdd0:")[0].length > 0)
+    {
+        options.push({
+            Name: HDD_DIR_NAME,
+            Description: "",
+            Icon: 29,
+            Type: "SUBMENU",
+            get Value() { return getHDDPartitions(); }
+        });
+    }
 
     for (let i = 0; i < 2; i++)
     {

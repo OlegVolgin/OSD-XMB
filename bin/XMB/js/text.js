@@ -48,23 +48,23 @@ const TXT_WAIT =
 const TXT_YES =
 [
     "Yes",
-    "Yes",
-    "Si",
-    "Yes",
-    "Yes",
-    "Yes",
-    "Yes",
+    "Oui",
+    "Sí",
+    "Ja",
+    "Sì",
+    "Ja",
+    "Sim",
 ];
 
 const TXT_NO =
 [
     "No",
+    "Non",
     "No",
+    "Nein",
     "No",
-    "No",
-    "No",
-    "No",
-    "No",
+    "Nee",
+    "Não"
 ];
 
 const TXT_ENABLED =
@@ -95,20 +95,20 @@ const TXT_INFO =
     "Information",
     "Información",
     "Information",
-    "Information",
-    "Information",
-    "Information",
+    "Informazioni",
+    "Informatie",
+    "Informação"
 ];
 
 const TXT_DELETE =
 [
     "Delete",
-    "Delete",
+    "Supprimer",
     "Eliminar",
-    "Delete",
-    "Delete",
-    "Delete",
-    "Delete",
+    "Löschen",
+    "Elimina",
+    "Verwijderen",
+    "Eliminar",
 ];
 
 const MSG_SUBMENU_EMPTY =
@@ -125,23 +125,23 @@ const MSG_SUBMENU_EMPTY =
 const TXT_MESSAGE_BACK =
 [
     "Back",
-    "Back",
+    "Retour",
     "Volver",
-    "Back",
-    "Back",
-    "Back",
-    "Back",
+    "Zurück",
+    "Indietro",
+    "Terug",
+    "Voltar"
 ];
 
 const TXT_MESSAGE_ENTER =
 [
     "Accept",
-    "Accept",
+    "Valider",
     "Aceptar",
-    "Accept",
-    "Accept",
-    "Accept",
-    "Accept",
+    "Akzeptieren",
+    "Accetta",
+    "Accepteren",
+    "Aceitar"
 ];
 
 const TXT_VMODE_SEC =
@@ -214,7 +214,7 @@ const TXT_ENTER_NEW_PASS =
 [
     "Enter your new password",
     "Enter your new password",
-    "Enter your new password",
+    "Ingrese su nueva contraseña",
     "Enter your new password",
     "Enter your new password",
     "Enter your new password",
@@ -225,7 +225,7 @@ const TXT_ENTER_CUR_PASS =
 [
     "Enter your four-digir password",
     "Enter your four-digir password",
-    "Enter your four-digir password",
+    "Ingrese su contraseña de cuatro digitos",
     "Enter your four-digir password",
     "Enter your four-digir password",
     "Enter your four-digir password",
