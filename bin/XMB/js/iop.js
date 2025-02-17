@@ -106,6 +106,20 @@ function ResetIOP(modPath = "")
     console.log("IOP: LOADED REMAINING DEFAULT MODULES");
 }
 
+try
+{
+    const modPath = locateIOPModulePath();
+    if ((modPath !== "") && (IOPModulesExist(modPath)))
+    {
+        ResetIOP(modPath);
+    }
+}
+catch (e)
+{
+    console.error("IOP: ERROR LOADING IOP MODULES");
+    console.error(e);
+}
+
 // Load Extra Modules
 
 IOP.loadDefaultModule(IOP.network);
