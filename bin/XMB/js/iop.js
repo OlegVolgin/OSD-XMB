@@ -45,16 +45,21 @@ function IOPModulesExist(basePath)
 
 function FixCwd()
 {
+    // Fix CWD if boot path is mass storage device
     if (os.getcwd()[0].substring(0, 4) === "mass")
     {
+        // Get boot directory without root
         const bootDir = os.getcwd()[0].substring(4);
+
+        // Scan mass0 to mass9 for OSDXMB.ELF
         for (let i = 0; i < 10; i++)
         {
-            if (os.readdir(`mass${i.toString()}${bootDir}/`)[0].includes("OSDXMB.ELF"))
-            {
-                os.chdir(`mass${i.toString()}${bootDir}/`);
-                break;
-            }
+            // Concatenate new root to booth path. If path is a root, remove the extra slash.
+            let dir = `mass${i.toString()}${bootDir}/`;
+            if (dir.endsWith("//")) { dir = dir.substring(0, dir.length - 1); }
+
+            // Change current working directory if OSDXMB.ELF is found
+            if (os.readdir(dir)[0].includes("OSDXMB.ELF")) { os.chdir(dir); break; }
         }
     }
 
