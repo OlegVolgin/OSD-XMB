@@ -292,7 +292,12 @@ function GetThemeBackgroundContextInfo()
         DATA.CONFIG.Push("main.cfg", config);
     }
 
-    return { Options: dir_options, Default: ((!DATA.DISPLAYBG) ? 0 : 1), ItemCount: dir_options.length, Confirm: _a, };
+    return {
+        Options: dir_options,
+        ItemCount: dir_options.length,
+        Confirm: _a,
+        get Default() { return ((!DATA.DISPLAYBG) ? 0 : 1); }
+    };
 }
 
 function GetThemeWaveContextInfo()

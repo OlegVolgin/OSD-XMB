@@ -78,8 +78,10 @@ function getOptionContextInfo(fullpath)
         DATA.BGIMG = new Image(DATA.CUSTOMBG_PATH);
         DATA.BGIMG.optimize();
         DATA.BGIMG.filter = LINEAR;
+        DATA.DISPLAYBG = true;
         let config = DATA.CONFIG.Get("main.cfg");
         config["customBg"] = DATA.CUSTOMBG_PATH;
+        config["displayBg"] = DATA.DISPLAYBG.toString();
         DATA.CONFIG.Push("main.cfg", config);
     }
 
