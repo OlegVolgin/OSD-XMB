@@ -7,6 +7,8 @@
 /// 				   		  										   ///
 //////////////////////////////////////////////////////////////////////////
 
+const soundEnabled = false;
+
 Sound.setVolume(0);
 
 // Load Boot Sound Effect and play it immediatelly.
@@ -15,12 +17,12 @@ let currAudioDuration = calculateWavValue(sfx_boot);
 let AudioPlaying = Sound.load(sfx_boot);
 
 const sfx_cursor = (std.exists(`${DATA.THEME_PATH}sound/snd_cursor.wav`)) ? `${DATA.THEME_PATH}sound/snd_cursor.wav` : `./THM/Original/sound/snd_cursor.wav`;
-const cursorSFX_AudioDuration = 0; //calculateWavValue(sfx_cursor);
-const cursorSFX = false; //Sound.load(sfx_cursor);
+const cursorSFX_AudioDuration = (!soundEnabled) ? 0 : calculateWavValue(sfx_cursor);
+const cursorSFX = (!soundEnabled) ? false : Sound.load(sfx_cursor);
 
 const sfx_cancel = (std.exists(`${DATA.THEME_PATH}sound/snd_cancel.wav`)) ? `${DATA.THEME_PATH}sound/snd_cancel.wav` : `./THM/Original/sound/snd_cancel.wav`;
-const cancelSFX_AudioDuration = 0; //calculateWavValue(sfx_cancel);
-const cancelSFX = false; //Sound.load(sfx_cancel);
+const cancelSFX_AudioDuration = (!soundEnabled) ? 0 : calculateWavValue(sfx_cancel);
+const cancelSFX = (!soundEnabled) ? false : Sound.load(sfx_cancel);
 
 /*	Manual Sound Stop process to avoid the audio to finish (and crash the app)  */
 
@@ -101,7 +103,7 @@ function playSound(path)
 
 function playCursorSFX()
 {
-    /*
+    if (!soundEnabled) { return; }
 
     Sound.setVolume(100);
 
@@ -119,14 +121,13 @@ function playCursorSFX()
         Sound.restart(AudioPlaying);
         Sound.play(AudioPlaying);
     }
-    //*/
 }
 
 /*	Play the XMB's Cancel SFX  */
 
 function playCancelSFX()
 {
-    /*
+    if (!soundEnabled) { return; }
 
     Sound.setVolume(100);
 
@@ -144,7 +145,6 @@ function playCancelSFX()
         Sound.restart(AudioPlaying);
         Sound.play(AudioPlaying);
     }
-    //*/
 }
 
 console.log("INIT: SOUND INIT COMPLETE");
