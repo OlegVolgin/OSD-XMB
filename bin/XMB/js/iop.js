@@ -6,7 +6,7 @@
 /// 				   		  										   ///
 //////////////////////////////////////////////////////////////////////////
 
-const neutMods =
+const extDevMods =
 [
     "ata_bd.irx",
     "mx4sio_bd_mini.irx",
@@ -35,7 +35,7 @@ function locateIOPModulePath()
 
 function IOPModulesExist(basePath)
 {
-    neutMods.forEach((mod) =>
+    extDevMods.forEach((mod) =>
     {
         if (!os.readdir(basePath)[0].includes(mod)) { return false; }
     });
@@ -95,7 +95,7 @@ function ResetIOP(modPath = "")
 
     // Load all neutrino device modules.
 
-    if (loadAdditional) { neutMods.forEach((mod) => { IOP.loadModule(`${modPath}${mod}`); }); }
+    if (loadAdditional) { extDevMods.forEach((mod) => { IOP.loadModule(`${modPath}${mod}`); }); }
 
     console.log("IOP: LOADED NEUTRINO MODULES");
 
@@ -111,22 +111,25 @@ function ResetIOP(modPath = "")
     console.log("IOP: LOADED REMAINING DEFAULT MODULES");
 }
 
-try
+function IOPBoot()
 {
-    const modPath = locateIOPModulePath();
-    if ((modPath !== "") && (IOPModulesExist(modPath)))
+    try
     {
-        ResetIOP(modPath);
+        // Old IOP Initial Reset to load extended device modules.
+
+        //const modPath = locateIOPModulePath();
+        //if ((modPath !== "") && (IOPModulesExist(modPath))) { ResetIOP(modPath); }
+
+        // Load Extra Modules
+
+        IOP.loadDefaultModule(IOP.network);
+    }
+    catch (e)
+    {
+        console.error("IOP: ERROR LOADING IOP MODULES");
+        console.error(e);
     }
 }
-catch (e)
-{
-    console.error("IOP: ERROR LOADING IOP MODULES");
-    console.error(e);
-}
 
-// Load Extra Modules
-
-IOP.loadDefaultModule(IOP.network);
-
+IOPBoot();
 console.log("INIT: IOP INIT COMPLETE");
