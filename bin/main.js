@@ -217,25 +217,32 @@ function InitDiscDashItem(discType)
 
     if (basePath.endsWith("//")) { basePath = basePath.substring(0, basePath.length - 1); }
 
-    const dirFiles = os.readdir(`${basePath}APPS/neutrino/`)[0];
+    const neutDir = `${basePath}APPS/neutrino/`;
+    const dirFiles = os.readdir(neutDir)[0];
 
     if (dirFiles.includes(`neutrino.elf`))
     {
+        let modFound = true;
         let cwd = "";
-        let files = os.readdir("mc0:/")[0];
-        let fileExist = files.includes("neutrino");
-        if (fileExist) { cwd = "mc0:/neutrino"; }
-        else
+        if (!dirFiles.includes(`modules`))
         {
-            files = os.readdir("mc1:/")[0];
-            fileExist = files.includes("neutrino");
-            if (fileExist) { cwd = "mc1:/neutrino"; }
+            let files = os.readdir("mc0:/")[0];
+            let fileExist = files.includes("neutrino");
+            if (fileExist) { cwd = "mc0:/neutrino"; }
+            else
+            {
+                files = os.readdir("mc1:/")[0];
+                fileExist = files.includes("neutrino");
+                if (fileExist) { cwd = "mc1:/neutrino"; }
+                else { modFound = false; }
+            }
         }
 
-        if (cwd !== "")
+        if (modFound)
         {
             ELFPath = `${basePath}APPS/neutrino/neutrino.elf`;
-            ELFArgs = [ `-cwd=${cwd}` ];
+
+            if (cwd !== "") { ELFArgs = [`-cwd=${cwd}`]; }
         }
     }
 

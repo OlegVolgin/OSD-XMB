@@ -19,39 +19,6 @@ const NAME_MAIN = 		// Displayed name on the Main Interface
     "Explorador de arquivos",
 ];
 
-const WORK_DIR_NAME = 	// Item 1 Name
-[
-    "Main Directory",
-    "Répertoire principal",
-    "Directorio principal",
-    "Hauptverzeichnis",
-    "Directory principale",
-    "Hoofdmap",
-    "Diretório principal",
-];
-
-const MASS_DIR_NAME = 	// Item 2 Name
-[
-    "USB Drive",
-    "Périphérique USB",
-    "Dispositivo USB",
-    "USB-Gerät",
-    "Dispositivo USB",
-    "USB-apparaat",
-    "Dispositivo USB",
-];
-
-const HDD_DIR_NAME = 	// Item 3 Name
-[
-    "Internal Hard Disk Drive",
-    "Disque Dur Interne",
-    "Disco Duro Interno",
-    "Interne Festplatte",
-    "Disco Rigido Interno",
-    "Internal Hard Disk Drive",
-    "Disco Rígido Interno",
-];
-
 //////////////////////////////////////////////////////////////////////////
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
@@ -112,18 +79,49 @@ function ParseDirectory(path)
 function getHDDPartitions()
 {
     let dir_options = [];
-    let partitions = os.readdir("hdd0:")[0];
-    partitions = [...new Set(partitions)];
-    partitions.sort((a, b) => a.localeCompare(b));
+    let partitions = System.listDir("hdd0:");
+    let directories = partitions.filter(item => item.name !== "." && item.name !== ".." && item.dir); // All directories
+    let files = partitions.filter(item => !item.dir); // All files
 
-    partitions.forEach((item) =>
+    // Sort directories and files alphabetically by name
+    directories.sort((a, b) => a.name.localeCompare(b.name));
+    files.sort((a, b) => a.name.localeCompare(b.name));
+
+    directories.forEach((item) =>
     {
         dir_options.push({
-            Name: item,
+            Name: item.name,
             Description: "",
             Icon: 18,
+            Type: "SUBMENU",
+            get Value() { mountHDDPartition(this.Name); return ParseDirectory(`pfs1:/`); }
+        });
+    });
+
+    files.forEach((item) =>
+    {
+        let icon = 24; // default icon for files
+        switch (getFileExtension(item.name).toLowerCase())
+        {
+            case "vcd": icon = 25; break;
+            case "iso": icon = 26; break;
+            case "elf": icon = 27; break;
+            case "png":
+            case "jpg":
+            case "bmp": icon = 2; break;
+            case "mp3":
+            case "wav":
+            case "ogg": icon = 3; break;
+            case "mp4":
+            case "mkv":
+            case "avi": icon = 4; break;
+        }
+
+        dir_options.push({
+            Name: item.name,
+            Description: "",
+            Icon: icon,
             Type: "",
-            get Value() { return {}; }  // Placeholder for when HDD partitions are supported
         });
     });
 

@@ -25,7 +25,7 @@ const NeutrinoSettingNames =
 
 let bootDev = (os.getcwd()[0].substring(0,3) === "pfs") ? "ata" : "usb";
 let bootFs = (os.getcwd()[0].substring(0,3) === "pfs") ? "hdl" : "exfat";
-let cwd = "mc0:/neutrino";
+let cwd = "";
 let gameList = [];
 let devices = [ `${bootDev}`, "usb", "mx4sio", "ata", "udpbd", "mmce", "mmce" ];
 let roots = [ `${os.getcwd()[0]}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/", "mmce0:/", "mmce1:/" ];
@@ -263,7 +263,15 @@ function ParseDirectory(path, device, fs)
             let type = "ELF";
 
             // Set Launch Settings
-            let args = [ `-cwd=${cwd}`, `-bsd=${device}`, `-bsdfs=${fs}`, `-dvd=${getRootName(path)}:${getPathWithoutRoot(path)}${item.name}`, `-mt=${getFolderNameFromPath(path).toLowerCase()}` ];
+            let args = [];
+
+            // Set Current Working Directory if modules are in a separate dir.
+            if (cwd !== "") { args.push(`-cwd=${cwd}`); }
+            args.push(`-bsd=${device}`);
+            args.push(`-bsdfs=${fs}`);
+            args.push(`-dvd=${getRootName(path)}:${getPathWithoutRoot(path)}${item.name}`);
+            args.push(`-mt=${getFolderNameFromPath(path).toLowerCase()}`);
+
             let value = { Path: `${elfPath}neutrino.elf`, Args: args, Code: SaveLastPlayedAndGetExArgs };
 
             // Get Game Code
@@ -318,14 +326,20 @@ function ParseDirectory(path, device, fs)
 
 function getGames()
 {
-    // Scan MC0 for neutrino folder
-    if (!os.readdir("mc0:/")[0].includes("neutrino"))
+    // If modules are not present at Elf Path, scan Memory Cards for them
+    if (!os.readdir(elfPath)[0].includes(`modules`))
     {
-        // Scan MC1 for neutrino folder
-        if (!os.readdir("mc1:/")[0].includes("neutrino")) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+        cwd = "mc0:/neutrino";
 
-        // Update assets folder
-        cwd = "mc1:/neutrino";
+        // Scan MC0 for neutrino folder
+        if (!os.readdir("mc0:/")[0].includes("neutrino"))
+        {
+            // Scan MC1 for neutrino folder
+            if (!os.readdir("mc1:/")[0].includes("neutrino")) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+
+            // Update assets folder
+            cwd = "mc1:/neutrino";
+        }
     }
 
     let lastPlayed = 0;

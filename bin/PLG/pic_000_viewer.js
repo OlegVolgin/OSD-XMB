@@ -28,39 +28,6 @@ const TXT_SETASBG =
     "Imposta come sfondo",
     "Instellen als achtergrond",
     "Definir como papel de parede",
-]
-
-const WORK_DIR_NAME = 	// Item 1 Name
-[
-    "Main Directory",
-    "Répertoire principal",
-    "Directorio principal",
-    "Hauptverzeichnis",
-    "Directory principale",
-    "Hoofdmap",
-    "Diretório principal",
-];
-
-const MASS_DIR_NAME = 	// Item 2 Name
-[
-    "USB Drive",
-    "Périphérique USB",
-    "Dispositivo USB",
-    "USB-Gerät",
-    "Dispositivo USB",
-    "USB-apparaat",
-    "Dispositivo USB",
-];
-
-const HDD_DIR_NAME = 	// Item 3 Name
-[
-    "Internal Hard Disk Drive",
-    "Disque Dur Interne",
-    "Disco Duro Interno",
-    "Interne Festplatte",
-    "Disco Rigido Interno",
-    "Internal Hard Disk Drive",
-    "Disco Rígido Interno",
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -133,6 +100,29 @@ function ParseDirectory(path) {
     return { Options: dir_options, Default: 0, ItemCount: dir_options.length, };
 }
 
+function getHDDPartitions()
+{
+    let dir_options = [];
+    let partitions = System.listDir("hdd0:");
+    let directories = partitions.filter(item => item.name !== "." && item.name !== ".." && item.dir); // All directories
+    let files = partitions.filter(item => !item.dir); // All files
+
+    // Sort directories and files alphabetically by name
+    directories.sort((a, b) => a.name.localeCompare(b.name));
+
+    directories.forEach((item) =>
+    {
+        dir_options.push({
+            Name: item.name,
+            Description: "",
+            Icon: 18,
+            Type: "SUBMENU",
+            get Value() { mountHDDPartition(this.Name); return ParseDirectory(`pfs1:/`); }
+        });
+    });
+
+    return { Options: dir_options, Default: 0, ItemCount: dir_options.length, };
+}
 function GetExplorerOptions() {
     let options = [];
 
@@ -151,6 +141,34 @@ function GetExplorerOptions() {
         Type: "SUBMENU",
         get Value() { return ParseDirectory("mass:/"); }
     });
+
+    if (os.readdir("hdd0:")[0].length > 0)
+    {
+        options.push({
+            Name: HDD_DIR_NAME,
+            Description: "",
+            Icon: 29,
+            Type: "SUBMENU",
+            get Value() { return getHDDPartitions(); }
+        });
+    }
+
+    for (let i = 0; i < 2; i++)
+    {
+        const hasContent = os.readdir(`mmce${i.toString()}:/`)[0].length > 0;
+        if (!hasContent) continue;
+
+        options.push({
+            Name: `MMCE ${i.toString()}`,
+            Description: "",
+            Icon: 21,
+            Type: "SUBMENU",
+            get Value()
+            {
+                return ParseDirectory(`mmce${i.toString()}:/`);
+            }
+        });
+    }
 
     return { Options: options, Default: 0, ItemCount: options.length, };
 }

@@ -180,6 +180,15 @@ function logl(line)
     }
 }
 
+/* Mount a HDD0 partition into the virtual path `pfs1` */
+
+function mountHDDPartition(partition)
+{
+    if (os.readdir("pfs1:/")[1] === 0) { System.fileXioUmount("pfs1:"); }
+
+    System.fileXioMount("pfs1:", `hdd0:${partition}`);
+}
+
 /* Decode a byte array into a UTF-8 string */
 
 function utf8Decode(byteArray) {
@@ -594,11 +603,28 @@ function IconSysDecodeTitle(strIn) {
 
 */
 
-function getPOPSCheat(cheats, game = "")
+function getPOPSCheat(cheats, game = "", device = "mass")
 {
     // Create an array to store whether each cheat is enabled
     const enabledCheats = new Array(cheats.length).fill(false);
-    const path = (os.getcwd()[0].substring(0, 4) === "host") ? `${os.getcwd()[0]}/POPS/${game}` : `mass:/POPS/${game}`;
+    let path = "";
+
+    switch (device)
+    {
+        case "hdd":
+            if (os.readdir("hdd0:")[0].length === 0) { return enabledCheats; }
+            mountHDDPartition("__common");
+            if (!os.readdir("pfs1:/")[0].includes("POPS")) { return enabledCheats; }
+            path = `pfs1:/POPS/${game}`;
+            break;
+        case "mass":
+            path = `mass:/POPS/${game}`;
+            break
+        case "host":
+            path = `${os.getcwd()[0]}/POPS/${game}`;
+            break;
+    }
+
     const dirFiles = os.readdir(path)[0];
     if (dirFiles.includes("CHEATS.TXT"))
     {
@@ -634,9 +660,27 @@ function getPOPSCheat(cheats, game = "")
 
 */
 
-function setPOPSCheat(cheats, game = "")
+function setPOPSCheat(cheats, game = "", device = "mass")
 {
-    const path = (os.getcwd()[0].substring(0, 4) === "host") ? `${os.getcwd()[0]}/POPS/${game}` : `mass:/POPS/${game}`;
+    let path = "";
+
+    switch (device)
+    {
+        case "hdd":
+            if (os.readdir("hdd0:")[0].length === 0) { return; }
+            mountHDDPartition("__common");
+            if (!os.readdir("pfs1:/")[0].includes("POPS")) { return; }
+
+            path = `pfs1:/POPS/${game}`;
+            break;
+        case "mass":
+            path = `mass:/POPS/${game}`;
+            break;
+        case "host":
+            path = `${os.getcwd()[0]}/POPS/${game}`;
+            break;
+    }
+
     const dirFiles = os.readdir(path)[0];
 
     if (dirFiles.includes("CHEATS.TXT"))
@@ -790,7 +834,7 @@ function SelectItem()
                 DATA.DASH_STATE = "NEW_SUBMENU_IN";
                 DASH_SUB[DATA.DASH_CURSUB].Selected = DATA.DASH_CURSUBOPT;
                 DASH_SUB[DATA.DASH_CURSUB + 1] = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value;
-                DATA.DASH_CURSUBOPT = (DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Value.ItemCount < 1) ? -1 : 0;
+                DATA.DASH_CURSUBOPT = (DASH_SUB[DATA.DASH_CURSUB + 1].ItemCount < 1) ? -1 : 0;
                 DATA.DASH_PRVSUB++;
                 DATA.DASH_CURSUB++;
                 break;

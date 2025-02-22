@@ -150,15 +150,31 @@ function getBoolCheatContextInfo(cheat)
     ctx_options.push({ Name: TXT_NO, Icon: -1 });
     ctx_options.push({ Name: TXT_YES, Icon: -1 });
 
-    const cheats = [ cheat ];
-    const defval = getPOPSCheat(cheats);
+    const cheats = [cheat];
+    let defval = getPOPSCheat(cheats);
+
+    if (os.getcwd()[0].substring(0, 4) === "host")
+    {
+        defval = getPOPSCheat(cheats, "", "host");
+    }
+    else if (os.getcwd()[0].substring(0, 4) === "pfs:")
+    {
+        defval = getPOPSCheat(cheats, "", "hdd");
+    }
 
     // Accept Changes Function
     let _a = function(DATA, val)
     {
         let cheats = [];
-        cheats.push({ code: cheat, enabled: (val === 1)});
+        cheats.push({ code: cheat, enabled: (val === 1) });
+
+        if (os.getcwd()[0].substring(0, 4) === "host")
+        {
+            setPOPSCheat(cheats, "", "host");
+        }
+
         setPOPSCheat(cheats);
+        setPOPSCheat(cheats, "", "hdd");
     }
 
     return { Options: ctx_options, Default: ((defval[0]) ? 1 : 0), ItemCount: ctx_options.length, Confirm: _a};
@@ -168,6 +184,16 @@ function getWSContextInfo()
 {
     const cheats = [ "WIDESCREEN", "ULTRA_WIDESCREEN", "EYEFINITY"];
     let statuses = getPOPSCheat(cheats);
+
+    if (os.getcwd()[0].substring(0, 4) === "host")
+    {
+        statuses = getPOPSCheat(cheats, "", "host");
+    }
+    else if (os.getcwd()[0].substring(0, 4) === "pfs:")
+    {
+        statuses = getPOPSCheat(cheats, "", "hdd");
+    }
+
     let defval = (statuses[0]) ? 1 : 0;
     defval = (statuses[1]) ? 2 : defval;
     defval = (statuses[2]) ? 3 : defval;
@@ -185,7 +211,14 @@ function getWSContextInfo()
         cheats.push({ code: "WIDESCREEN", enabled: (val === 1)});
         cheats.push({ code: "ULTRA_WIDESCREEN", enabled: (val === 2)});
         cheats.push({ code: "EYEFINITY", enabled: (val === 3)});
+
+        if (os.getcwd()[0].substring(0, 4) === "host")
+        {
+            setPOPSCheat(cheats, "", "host");
+        }
+
         setPOPSCheat(cheats);
+        setPOPSCheat(cheats, "", "hdd");
     }
 
     return { Options: ctx_options, Default: defval, ItemCount: ctx_options.length, Confirm: _a};
@@ -195,6 +228,16 @@ function getIGRContextInfo()
 {
     const cheats = [ "NOIGR", "IGR0", "IGR1", "IGR2", "IGR3", "IGR4", "IGR5" ]
     let statuses = getPOPSCheat(cheats);
+
+    if (os.getcwd()[0].substring(0, 4) === "host")
+    {
+        statuses = getPOPSCheat(cheats, "", "host");
+    }
+    else if (os.getcwd()[0].substring(0, 4) === "pfs:")
+    {
+        statuses = getPOPSCheat(cheats, "", "hdd");
+    }
+
     let defval = (statuses[0]) ? 7 : 0;
     defval = (statuses[1]) ? 1 : defval;
     defval = (statuses[2]) ? 2 : defval;
@@ -221,8 +264,15 @@ function getIGRContextInfo()
         cheats.push({ code: "IGR3", enabled: (val === 4)});
         cheats.push({ code: "IGR4", enabled: (val === 5)});
         cheats.push({ code: "IGR5", enabled: (val === 6)});
-        cheats.push({ code: "NOIGR", enabled: (val === 7)});
+        cheats.push({ code: "NOIGR", enabled: (val === 7) });
+
+        if (os.getcwd()[0].substring(0, 4) === "host")
+        {
+            setPOPSCheat(cheats, "", "host");
+        }
+
         setPOPSCheat(cheats);
+        setPOPSCheat(cheats, "", "hdd");
     }
 
     return { Options: ctx_options, Default: defval, ItemCount: ctx_options.length, Confirm: _a};

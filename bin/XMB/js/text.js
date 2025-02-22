@@ -232,6 +232,39 @@ const TXT_ENTER_CUR_PASS =
     "Enter your four-digir password",
 ];
 
+const WORK_DIR_NAME = 	// Item 1 Name
+[
+    "Main Directory",
+    "Répertoire principal",
+    "Directorio principal",
+    "Hauptverzeichnis",
+    "Directory principale",
+    "Hoofdmap",
+    "Diretório principal",
+];
+
+const MASS_DIR_NAME = 	// Item 2 Name
+[
+    "USB Drive",
+    "Périphérique USB",
+    "Dispositivo USB",
+    "USB-Gerät",
+    "Dispositivo USB",
+    "USB-apparaat",
+    "Dispositivo USB",
+];
+
+const HDD_DIR_NAME = 	// Item 3 Name
+[
+    "Internal Hard Disk Drive",
+    "Disque Dur Interne",
+    "Disco Duro Interno",
+    "Interne Festplatte",
+    "Disco Rigido Interno",
+    "Internal Hard Disk Drive",
+    "Disco Rígido Interno",
+];
+
 //////////////////////////////////////////////////////////////////////////
 ///*				   	   		PARAMETERS							  *///
 //////////////////////////////////////////////////////////////////////////

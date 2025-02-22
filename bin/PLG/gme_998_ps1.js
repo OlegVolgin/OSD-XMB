@@ -33,12 +33,18 @@ const TXT_VMCMODE = [ "Default", "Slot 2 Only", "Slot 1 Only" ];
 
 let gameList = [];
 let popsPaths = [];
-popsPaths.push(`mass:/`);               // Default Mass Support
-popsPaths.push(`${os.getcwd()[0]}/`);   // For host support
-popsPaths.push(`hdd0:__.`);             // For Future HDD support
+popsPaths.push(`mass:/POPS/`);              // Default Mass Support
+popsPaths.push(`${os.getcwd()[0]}/POPS/`);  // For host support
+popsPaths.push(`pfs1:/`);                    // For HDD support
 
 const cfgPath = "pops.cfg";
 const cfg = DATA.CONFIG.Get(cfgPath);
+
+function SaveLastPlayed()
+{
+    cfg["lastPlayed"] = DASH_SEL.Name;
+    DATA.CONFIG.Set(cfgPath, cfg);
+}
 
 function getGameSettings(path)
 {
@@ -63,7 +69,18 @@ function getGameSettings(path)
         "NOVMC0",
         "NOVMC1",
     ];
-    const statuses = getPOPSCheat(cheats, path);
+
+    let statuses = getPOPSCheat(cheats, path);
+
+    if (os.getcwd()[0].substring(0, 4) === "host")
+    {
+        statuses = getPOPSCheat(cheats, path, "host");
+    }
+    else if (os.getcwd()[0].substring(0, 4) === "pfs:")
+    {
+        statuses = getPOPSCheat(cheats, path, "hdd");
+    }
+
     const settings = [ 0, 0, 0, 0, 0, 0, 0, 0 ];
     settings[0] = (statuses[0]) ? 1 : 0;
     settings[0] = (statuses[1]) ? 2 : settings[0];
@@ -87,18 +104,18 @@ function getGameSettings(path)
     return settings;
 }
 
-function getOptionContextInfo(path)
+function getOptionContextInfo(path, dev)
 {
     const getPreviousPath = p => p.replace(/[^\/]+\/?$/, '') || './';
     const title = getFolderNameFromPath(path);
 
-    if (!os.readdir(path)[0].includes(title))
+    if ((!os.readdir(path)[0].includes(title)) && (path.substring(0, 4) !== "pfs1"))
     {
         os.mkdir(path);
     }
 
     let dir_options = [];
-    dir_options.push({ Name: TXT_INFO, Icon: -1, Title: title });
+    dir_options.push({ Name: TXT_INFO, Icon: -1, Title: title, Device: dev });
 
     let _a = function(DATA, val)
     {
@@ -231,7 +248,11 @@ function getOptionContextInfo(path)
             cheats.push({ code: "NOVMC0", enabled: (DATA.MESSAGE_INFO.Data[8].Selected === 1)});
             cheats.push({ code: "NOVMC1", enabled: (DATA.MESSAGE_INFO.Data[8].Selected === 2) });
             console.log(`POPS: Game Title = ${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Title}/`)
-            setPOPSCheat(cheats, `${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Title}/`);
+
+            const titlepath = `${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Title}/`;
+            const device = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Option.Options[0].Device;
+
+            setPOPSCheat(cheats, titlepath, device);
         };
 
         console.log("POPSETTS: Set Message Screen Parameters");
@@ -251,70 +272,6 @@ function getOptionContextInfo(path)
     }
 
     return { Options: dir_options, Default: 0, ItemCount: dir_options.length, Confirm: _a, };
-}
-
-function PopsParseDirectory(path)
-{
-    let dir = System.listDir(path);
-
-    dir.forEach((item) =>
-    {
-        if (item.name.toLowerCase().endsWith(".vcd"))
-        {
-            // Get Game Item Info
-            let title = getGameName(item.name);
-            let icon = 25;
-            let type = "ELF";
-
-            // Set Launch Settings
-            let prefix = (path.substring(0, 4) == "mass") ? "XX." : "";
-            let basePath = (path.substring(0, 4) === "hdd0") ? "hdd0:/__common/POPS/" : path;
-            let elfPath = `${basePath}${prefix}${item.name.substring(0, item.name.length - 3)}ELF`;
-            let value = { Path: elfPath, Args: [], Code: SaveLastPlayed };
-
-            // Get Game Code
-            let gameCode = "";
-            if (title in cfg) { gameCode = cfg[title]; }
-            else
-            {
-                gameCode = getGameCodeFromOldFormatName(item.name);
-                if (gameCode === "") { gameCode = getVCDGameID(`${path}${item.name}`); }
-                cfg[title] = gameCode;
-                DATA.CONFIG.Push(cfgPath, cfg);
-            }
-
-            let ico = (() => { return dash_icons[25]; });
-            const icoFile = findICO(gameCode);
-            if (icoFile !== "") { ico = new Image(icoFile, RAM, async_list); }
-
-            gameList.push({
-                Name: title,
-                Description: gameCode,
-                Icon: -1,
-                Type: type,
-                Value: value,
-                Option: getOptionContextInfo(`${basePath}${item.name.substring(0, item.name.length - 4)}/`),
-                Art: { ICO: ico },
-                get CustomIcon()
-                {
-                    if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
-                    return this.Art.ICO;
-                }
-            });
-
-            if (!os.readdir(basePath)[0].includes(`${prefix}${item.name.substring(0, item.name.length - 3)}ELF`)) { threadCopyPush(`${getDirectoryName(elfPath)}POPSTARTER.ELF`, elfPath); }
-
-            // Add ART
-            const bgFile = findBG(gameCode);
-            if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
-        }
-    });
-}
-
-function SaveLastPlayed()
-{
-    cfg["lastPlayed"] = DASH_SEL.Name;
-    DATA.CONFIG.Set(cfgPath, cfg);
 }
 
 function getVCDGameID(path)
@@ -352,6 +309,109 @@ function getVCDGameID(path)
     return RET;
 }
 
+function PopsParseDirectory(path)
+{
+    let dir = System.listDir(path);
+
+    dir.forEach((item) =>
+    {
+        if (item.name.toLowerCase().endsWith(".vcd"))
+        {
+            // Get Game Item Info
+            let title = getGameName(item.name);
+            let icon = 25;
+            let type = "ELF";
+
+            // Set Launch Settings
+            let device = (path.substring(0, 4) === "pfs1") ? "hdd" : "mass";
+            device = (path.substring(0, 4) === "host") ? "host" : device;
+
+            let prefix = (device === "mass") ? "XX." : "";
+            let basePath = (path.substring(0, 4) === "pfs1") ? "pfs1:/POPS/" : path;
+            let elfPath = `${basePath}${prefix}${item.name.substring(0, item.name.length - 3)}ELF`;
+            let value = { Partition: "__common", Path: elfPath, Args: [], Code: SaveLastPlayed };
+
+            // Get Game Code
+            let gameCode = "";
+            if (title in cfg) { gameCode = cfg[title]; }
+            else
+            {
+                gameCode = getGameCodeFromOldFormatName(item.name);
+                if (gameCode === "") { gameCode = getVCDGameID(`${path}${item.name}`); }
+                cfg[title] = gameCode;
+                DATA.CONFIG.Push(cfgPath, cfg);
+            }
+
+            let ico = (() => { return dash_icons[25]; });
+            const icoFile = findICO(gameCode);
+            if (icoFile !== "") { ico = new Image(icoFile, RAM, async_list); }
+
+            let gamedesc = (device === "mass") ? `USB - ${gameCode}` : `HDD - ${gameCode}`;
+            gamedesc = (device === "host") ? `HOST - ${gameCode}` : gamedesc;
+
+            gameList.push({
+                Name: title,
+                Description: gamedesc,
+                Icon: -1,
+                Type: type,
+                Value: value,
+                Option: getOptionContextInfo(`${basePath}${item.name.substring(0, item.name.length - 4)}/`, device),
+                Art: { ICO: ico },
+                get CustomIcon()
+                {
+                    if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
+                    return this.Art.ICO;
+                }
+            });
+
+            // Add ART
+            const bgFile = findBG(gameCode);
+            if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
+        }
+    });
+}
+
+function generateELFs()
+{
+    // Get all Game Paths
+    const Paths = [];
+    gameList.forEach((item) => { Paths.push(item.Value.Path); });
+
+    // Filter out pfs1 paths
+    const massPaths = Paths.filter((item) => item.substring(0, 4) !== "pfs1");
+    const hddPaths = Paths.filter((item) => item.substring(0, 4) === "pfs1");
+
+    // Use threadFileCopy for mass paths
+    massPaths.forEach((item) =>
+    {
+        const basePath = getDirectoryName(item);
+        const filename = item.substring(item.lastIndexOf("/") + 1);
+        if (!os.readdir(basePath)[0].includes(filename))
+        {
+            threadCopyPush(`${getDirectoryName(item)}POPSTARTER.ELF`, item);
+        }
+    });
+
+    // Mount the POPSTARTER.ELF partition to copy the ELFs
+    mountHDDPartition("__common");
+
+    // Cannot use threadFileCopy with virtual mounted partitions, using copyFile instead.
+    hddPaths.forEach((item) =>
+    {
+        const basePath = getDirectoryName(item);
+        const filename = item.substring(item.lastIndexOf("/") + 1);
+        if (!os.readdir(basePath)[0].includes(filename))
+        {
+            System.copyFile(`${getDirectoryName(item)}POPSTARTER.ELF`, item);
+        }
+
+        if ((!os.readdir(basePath)[0].includes(filename.substring(0, filename.length - 4))))
+        {
+            os.mkdir(`${basePath}${filename.substring(0, filename.length - 4)}`);
+        }
+    });
+}
+
 function getGames()
 {
     let lastPlayed = 0;
@@ -359,11 +419,7 @@ function getGames()
 
     for (let i = 0; i < popsPaths.length; i++)
     {
-        if (popsPaths[i].endsWith("//"))
-        {
-            popsPaths[i] = popsPaths[i].slice(0, -1);
-        }
-
+        // Skip already scanned paths
         if ((scannedPaths.length > 0) && (scannedPaths.includes(popsPaths[i])))
         {
             continue;
@@ -371,23 +427,31 @@ function getGames()
 
         // Check if POPS files are present
 
-        if (popsPaths[i].substring(0, 4) === "hdd0")
+        if (popsPaths[i].substring(0, 4) === "pfs1")
         {
-            const dirFiles = os.readdir(`hdd0:__common:/POPS/`)[0];
+            // Check if __.POPS partition exists
+            if (!os.readdir("hdd0:")[0].includes("__.POPS")) { continue; }
 
-            if (!dirFiles.includes("POPS.ELF")) { continue; }
-            if (!dirFiles.includes("IOPRP252.IMG")) { continue; }
-            if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
+            // Mount __common partition and get its content
+            mountHDDPartition("__common");
+            const dirFiles = os.readdir(`pfs1:/POPS/`)[0];
+
+            // Check if required files are present
+            if (!dirFiles.includes("POPS.ELF")) { console.log("POPSHDD: Missing POPS.ELF file."); continue; }
+            if (!dirFiles.includes("IOPRP252.IMG")) { console.log("POPSHDD: Missing IOPRP252.IMG file."); continue; }
+            if (!dirFiles.includes("POPSTARTER.ELF")) { console.log("POPSHDD: Missing POPSTARTER.ELF file."); continue; }
+
+            mountHDDPartition("__.POPS");
         }
         else
         {
-            const dirFiles = os.readdir(`${popsPaths[i]}POPS/`)[0];
+            const dirFiles = os.readdir(`${popsPaths[i]}`)[0];
 
             if (!dirFiles.includes("POPS_IOX.PAK")) { continue; }
             if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
         }
 
-        PopsParseDirectory(`${popsPaths[i]}POPS/`);
+        PopsParseDirectory(`${popsPaths[i]}`);
 
         scannedPaths.push(popsPaths[i]);
     }
@@ -400,6 +464,8 @@ function getGames()
         const index = gameList.findIndex(item => item.Name === title);
         if (index > -1) { lastPlayed = index; }
     }
+
+    generateELFs();
 
     return { Options: gameList, Default: lastPlayed, ItemCount: gameList.length };
 }

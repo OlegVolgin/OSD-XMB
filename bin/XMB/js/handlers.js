@@ -347,6 +347,33 @@ function exit()
             }
             else if (DASH_SEL.Type == "ELF")
             {
+                if (DASH_SEL.Value.Path.substring(0, 4) == "pfs1")
+                {
+                    if ("Partition" in DASH_SEL.Value)
+                    {
+                        mountHDDPartition(DASH_SEL.Value.Partition);
+                    }
+                    else
+                    {
+                        // Show Error Message
+                        DATA.DASH_MOVE_FRAME = 0;
+                        DATA.DASH_STATE = "IDLE_MESSAGE_FADE_IN";
+                        DATA.OVSTATE = "MESSAGE_IN";
+                        DATA.MESSAGE_INFO =
+                        {
+                            Icon: -1,
+                            Title: "",
+                            BG: false,
+                            SKIP_INTRO: true,
+                            Type: "TEXT",
+                            Text: "Partition not defined for ELF.",
+                            BACK_BTN: true,
+                            ENTER_BTN: false,
+                        };
+                        console.log("exit: Partition not defined for ELF.");
+                        DATA.CURRENT_STATE = 1;
+                    }
+                }
                 // Check if File Exists.
                 const elfExists = std.exists(DASH_SEL.Value.Path);
                 if (elfExists)
