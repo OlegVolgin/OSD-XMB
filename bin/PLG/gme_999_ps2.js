@@ -23,21 +23,11 @@ const NeutrinoSettingNames =
 ///*				   		CUSTOM FUNCTIONS						  *///
 //////////////////////////////////////////////////////////////////////////
 
-let bootDev = (os.getcwd()[0].substring(0,3) === "pfs") ? "ata" : "usb";
-let bootFs = (os.getcwd()[0].substring(0,3) === "pfs") ? "hdl" : "exfat";
 let cwd = "";
 let gameList = [];
-let devices = [ `${bootDev}`, "usb", "mx4sio", "ata", "udpbd", "mmce", "mmce" ];
-let roots = [ `${os.getcwd()[0]}/`, "mass:/", "mx4sio:/", "hdd0:/", "udpbd:/", "mmce0:/", "mmce1:/" ];
-let fsmodes = [ "exfat", "exfat", "exfat", "hdl", "bd", "exfat", "exfat" ];
 
 // For cases when the executable is placed directly at root.
-let basepath = `${os.getcwd()[0]}/`;
-
-if (basepath.endsWith("//"))
-{
-    basepath = basepath.slice(0, -1);
-}
+let basepath = `${os.getcwd()[0]}/`; if (basepath.endsWith("//")) { basepath = basepath.slice(0, -1); }
 
 const elfPath = `${basepath}APPS/neutrino/`;
 const cfgPath = "neutrino.cfg";
@@ -51,6 +41,8 @@ function SaveLastPlayedAndGetExArgs()
     if (("gc" in config) && (config["gc"] !== "")) { DASH_SEL.Value.Args.push(`-gc=${config["gc"]}`); }
     if (("VMC0" in config) && (config["VMC0"] === "true")) { DASH_SEL.Value.Args.push(`-mc0=${basepath}VMC/${DASH_SEL.Description}_0.vmc`); }
     if (("VMC1" in config) && (config["VMC1"] === "true")) { DASH_SEL.Value.Args.push(`-mc1=${basepath}VMC/${DASH_SEL.Description}_1.vmc`); }
+
+    DASH_SEL.Value.Args.push('-qb');
 
     // Save Last Played
     const cfg = DATA.CONFIG.Get(cfgPath);
@@ -246,85 +238,108 @@ function getISOGameCode(isoPath, isoSize)
     return RET;
 }
 
+// Get Game Launching Arguments to pass to neutrino
+
+function getGameLaunchArgs(device, fs, mt, root, dir, filename)
+{
+    const args = [];
+
+    if (fs === "hdl") { root = "hdl"; dir = ""; }
+
+    // Set Current Working Directory if modules are in a separate dir.
+    if (cwd !== "") { args.push(`-cwd=${cwd}`); }
+    args.push(`-bsd=${device}`);
+    args.push(`-bsdfs=${fs}`);
+    args.push(`-dvd=${root}:${dir}${filename}`);
+
+    // Specify media type if available
+    if (mt !== "") { args.push(`-mt=${mt}`); }
+
+    return args;
+}
+
+// Get Path media type (DVD or CD)
+
+function getMediaType(path)
+{
+    const folderName = getFolderNameFromPath(path).toLowerCase();
+    if ((folderName === "dvd") || (folderName === "cd")) { return folderName; }
+
+    return "";
+}
+
+// Parse Directory to Scan for Games
+
 function ParseDirectory(path, device, fs)
 {
-    let dir = System.listDir(path);
+    // Get Directory Items, return if empty.
+    let dir = System.listDir(path); if (dir.length < 1) { return; }
 
-    if (dir.length < 1) { return; }
+    // Filter out non-ISO files
+    let files = dir.filter(item => item.name.toLowerCase().endsWith(".iso"));
 
+    // Get current neutrino cfg config to get title Game ID faster.
     const cfg = DATA.CONFIG.Get(cfgPath);
 
-    dir.forEach((item) =>
+    files.forEach((item) =>
     {
-        if ((!item.dir) && (item.name.toLowerCase().endsWith(".iso")))
+        // Get Game Item Info
+        const title = getGameName(item.name);
+        const args = getGameLaunchArgs(device, fs, getMediaType(path), getRootName(path), getPathWithoutRoot(path), item.name);
+        const value = { Path: `${elfPath}neutrino.elf`, Args: args, Code: SaveLastPlayedAndGetExArgs };
+
+        // Get Game Code
+        let gameCode = "";
+
+        if (title in cfg) { gameCode = cfg[title]; }
+        else
         {
-            // Get Game Item Info
-            let title = getGameName(item.name);
-            let type = "ELF";
-
-            // Set Launch Settings
-            let args = [];
-
-            // Set Current Working Directory if modules are in a separate dir.
-            if (cwd !== "") { args.push(`-cwd=${cwd}`); }
-            args.push(`-bsd=${device}`);
-            args.push(`-bsdfs=${fs}`);
-            args.push(`-dvd=${getRootName(path)}:${getPathWithoutRoot(path)}${item.name}`);
-            args.push(`-mt=${getFolderNameFromPath(path).toLowerCase()}`);
-
-            let value = { Path: `${elfPath}neutrino.elf`, Args: args, Code: SaveLastPlayedAndGetExArgs };
-
-            // Get Game Code
-            let gameCode = "";
-
-            if (title in cfg) { gameCode = cfg[title]; }
-            else
+            gameCode = getGameCodeFromOldFormatName(item.name);
+            if (gameCode === "")
             {
-                gameCode = getGameCodeFromOldFormatName(item.name);
-                if (gameCode === "")
+                let retval = getISOGameCode(`${path}${item.name}`, item.size);
+                if (retval.success)
                 {
-                    let retval = getISOGameCode(`${path}${item.name}`, item.size);
-                    if (retval.success)
-                    {
-                        gameCode = retval.code;
-                        cfg[title] = gameCode;
-                        DATA.CONFIG.Push(cfgPath, cfg);
-                    }
-                }
-                else
-                {
+                    gameCode = retval.code;
                     cfg[title] = gameCode;
                     DATA.CONFIG.Push(cfgPath, cfg);
                 }
             }
-
-            // Add ART
-            let ico = (() => { return dash_icons[26]; });
-            const icoFile = findICO(gameCode);
-            if (icoFile !== "") { ico = new Image(icoFile, RAM, async_list); }
-
-            gameList.push({
-                Name: title,
-                Description: gameCode,
-                Icon: -1,
-                Type: type,
-                Option: getOptionContextInfo(),
-                Value: value,
-                Art: { ICO: ico },
-                get CustomIcon()
-                {
-                    if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
-                    return this.Art.ICO;
-                }
-            });
-
-            const bgFile = findBG(gameCode);
-            if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
+            else
+            {
+                cfg[title] = gameCode;
+                DATA.CONFIG.Push(cfgPath, cfg);
+            }
         }
+
+        // Add ART
+        let ico = (() => { return dash_icons[26]; });
+        const icoFile = findICO(gameCode);
+        if (icoFile !== "") { ico = new Image(icoFile, RAM, async_list); }
+
+        gameList.push({
+            Name: title,
+            Description: gameCode,
+            Icon: -1,
+            Type: "ELF",
+            Value: value,
+            Option: getOptionContextInfo(),
+            Art: { ICO: ico },
+            get CustomIcon()
+            {
+                if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
+                return this.Art.ICO;
+            }
+        });
+
+        const bgFile = findBG(gameCode);
+        if (bgFile !== "") { gameList[gameList.length - 1].CustomBG = bgFile; }
     });
 }
 
-function getGames()
+// Check if modules path exists on the neutrino directory, scan mc paths if not.
+
+function updateCWD()
 {
     // If modules are not present at Elf Path, scan Memory Cards for them
     if (!os.readdir(elfPath)[0].includes(`modules`))
@@ -335,73 +350,119 @@ function getGames()
         if (!os.readdir("mc0:/")[0].includes("neutrino"))
         {
             // Scan MC1 for neutrino folder
-            if (!os.readdir("mc1:/")[0].includes("neutrino")) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+            if (!os.readdir("mc1:/")[0].includes("neutrino")) { return false; }
 
             // Update assets folder
             cwd = "mc1:/neutrino";
         }
     }
 
-    let lastPlayed = 0;
-    let scannedPaths = [];
+    return true;
+}
 
-    for (let i = 0; i < devices.length; i++)
-    {
-        // If ends with double slashes, trim.
-        if (roots[i].endsWith("//"))
-        {
-            roots[i] = roots[i].slice(0, -1);
-        }
+// Parse the neutrino.cfg file if it exists to get the last played game.
 
-        // if Path was already scanned, skip it
-        if ((scannedPaths.length > 0) && (scannedPaths.includes(roots[i])))
-        {
-            continue;
-        }
-
-        // Scan DVD directory if it exists
-        if (os.readdir(roots[i])[0].includes("DVD"))
-        {
-            ParseDirectory(`${roots[i]}DVD/`, devices[i], fsmodes[i]);
-        }
-
-        // Scan CD directory if it exists
-        if (os.readdir(roots[i])[0].includes("CD"))
-        {
-            ParseDirectory(`${roots[i]}CD/`, devices[i], fsmodes[i]);
-        }
-
-        // Add path to scanned Paths
-        scannedPaths.push(roots[i]);
-    }
-
-    if (gameList.length > 1) { gameList.sort((a, b) => a.Name.localeCompare(b.Name)); }
-
+function getLastPlayed()
+{
     const cfg = DATA.CONFIG.Get(cfgPath);
 
     if ("lastPlayed" in cfg)
     {
         const title = cfg["lastPlayed"];
         const index = gameList.findIndex(item => item.Name === title);
-        if (index > -1) { lastPlayed = index; }
+        if (index > -1) { return index; }
     }
 
-    return { Options: gameList, Default: lastPlayed, ItemCount: gameList.length };
+    return 0;
 }
+
+// Scan a Directory's DVD and CD folders for games
+
+function scanGameFolders(path, dev, fs)
+{
+    // Get Directory Object, Skip if Directory could not be read.
+    const dir = os.readdir(path); if (dir[1] > 0) { return; }
+
+    // Scan DVD directory if it exists
+    if (dir[0].includes("DVD")) { ParseDirectory(`${path}DVD/`, dev, fs); }
+
+    // Scan CD directory if it exists
+    if (dir[0].includes("CD")) { ParseDirectory(`${path}CD/`, dev, fs); }
+}
+
+// Main Function to Initialize the Game List
+
+function getGames()
+{
+    // Update the Current Working Directory if necessary, return empty list if not possible.
+    if (!updateCWD()) { return { Options: {}, Default: 0, ItemCount: 0 }; }
+
+    const bootDev = (os.getcwd()[0].substring(0, 3) === "pfs") ? "ata" : "usb";
+    const devices = [`${bootDev}`, "usb", "mx4sio", "ata", "udpbd", "mmce"];
+    const roots = [`${os.getcwd()[0]}/`, "mass:/", "mx4sio:/", "hdd0:", "bdfs:/", "mmce:/"];
+    const fsmodes = ["exfat", "exfat", "exfat", "hdl", "bd", "exfat"];
+    const scannedPaths = [];
+
+    for (let i = 0; i < devices.length; i++)
+    {
+        // If ends with double slashes, trim.
+        if (roots[i].endsWith("//")) { roots[i] = roots[i].slice(0, -1); }
+
+        // if Path was already scanned, skip it
+        if ((scannedPaths.length > 0) && (scannedPaths.includes(roots[i]))) { continue; }
+
+        // Get Directory Object, Skip if Directory could not be read.
+        const dir = os.readdir(roots[i]); if (dir[1] > 0) { continue; }
+
+        if (fsmodes[i] === "hdl")
+        {
+            // Scan Root Directory
+            ParseDirectory(`${roots[i]}`, devices[i], fsmodes[i]);
+        }
+        else if (roots[i] === "mass:/")
+        {
+            // Scan all possible mass devices
+            for (let j = 0; j < 10; j++)
+            {
+                scanGameFolders(`mass${j.toString()}:/`, devices[i], fsmodes[i]);
+            }
+        }
+        else if (roots[i] === "mmce:/")
+        {
+            // Scan all possible mmce devices
+            scanGameFolders(`mmce0:/`, devices[i], fsmodes[i]);
+            scanGameFolders(`mmce1:/`, devices[i], fsmodes[i]);
+        }
+        else
+        {
+            scanGameFolders(roots[i], devices[i], fsmodes[i]);
+        }
+
+        // Add path to scanned Paths
+        scannedPaths.push(roots[i]);
+    }
+
+    // If more than 1 item in list, sort by alphabetical order.
+    if (gameList.length > 1) { gameList.sort((a, b) => a.Name.localeCompare(b.Name)); }
+
+    return { Options: gameList, Default: getLastPlayed(), ItemCount: gameList.length };
+}
+
+// Get Title Count Description
 
 function getDesc()
 {
     const titleString = gameList.length.toString();
-    const DESC_MAIN = new Array
-    (
+    const DESC_MAIN =
+    [
         `${titleString} ${TXT_TITLES[0]}`,
         `${titleString} ${TXT_TITLES[1]}`,
         `${titleString} ${TXT_TITLES[2]}`,
         `${titleString} ${TXT_TITLES[3]}`,
         `${titleString} ${TXT_TITLES[4]}`,
         `${titleString} ${TXT_TITLES[5]}`,
-        `${titleString} ${TXT_TITLES[6]}`,
-    );
+        `${titleString} ${TXT_TITLES[6]}`
+    ];
 
     return DESC_MAIN;
 }
