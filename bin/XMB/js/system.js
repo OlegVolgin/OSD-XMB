@@ -180,6 +180,32 @@ function logl(line)
     }
 }
 
+function getDiscSystemCNF()
+{
+    // Get current disc root files.
+    const files = os.readdir("cdfs:/")[0];
+
+    // Return empty if no files are found or there is an error reading the disc directory.
+    if (files.length < 1) { return []; }
+
+    // Find index of the system.cnf file to properly get the right file.
+    const index = files.findIndex(file => file.toLowerCase() === 'system.cnf');
+    const systemcnf = std.open(`cdfs:/${files[index]}`, "r");
+
+    // Read CNF file and close.
+    if (systemcnf)
+    {
+        const cnf = [];
+        while (!systemcnf.eof()) { cnf.push(systemcnf.getline()); }
+        systemcnf.close();
+
+        return cnf;
+    }
+
+    // Return empty if failed to load file.
+    return [];
+}
+
 /* Mount a HDD0 partition into the virtual path `pfs1` */
 
 function mountHDDPartition(partition)

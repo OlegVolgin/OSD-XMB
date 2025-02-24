@@ -468,3 +468,242 @@ function custom()
 {
     DATA.CUSTOM_FUNCTION(); // Reassignable function
 }
+
+
+/*
+    Info:
+
+    Selects new Disc Dash Item on Game Category Automatically
+*/
+
+function SelectDiscDashItem()
+{
+    // Go to Item automatically if idle on Game Category.
+    if ((DATA.DASH_CURCAT == 5) && (DATA.DASH_CURSUB == -1) && (DATA.DASH_CURCTXLVL == -1))
+    {
+        DATA.DASH_MOVE_FRAME = 0;
+        DATA.DASH_STATE = "MOVE_DOWN";
+        DATA.DASH_CUROPT = DASH_CAT[5].ItemCount - 1;
+    }
+}
+
+/*  Info:
+
+    This function will initialize a new
+    disctray item on the Game category
+    if the conditions are met for a PS2 game.
+
+*/
+
+function InitPS2DiscDashItem(discType)
+{
+    // Get executable
+    let name = (discType === 9) ? "Playstation 2 CD" : "Playstation 2 DVD";
+    let ico = (() => { return dash_icons[26]; });
+    const systemcnf = getDiscSystemCNF();
+
+    // Do not add item if System.CNF data was not found.
+    if (systemcnf.length < 1) { return; }
+
+    const bootparam = systemcnf[0];
+    const match = bootparam.match(/cdrom0:\\([^;]+)/);
+    const ELFName = (match) ? match[1] : "";
+
+    // Do not add item if executable not found.
+    if (ELFName === "") { return; }
+
+    let ELFPath = `cdfs:/${ELFName}`;
+    let ELFArgs = [];
+
+    // Get Game Title if available
+    const gmecfg = DATA.CONFIG.Get(`${ELFName.toUpperCase()}.cfg`);
+    if ("Title" in gmecfg) { name = gmecfg["Title"]; }
+
+    let basePath = `${os.getcwd()[0]}/`;
+
+    if (basePath.endsWith("//")) { basePath = basePath.substring(0, basePath.length - 1); }
+
+    const neutDir = `${basePath}APPS/neutrino/`;
+    const dirFiles = os.readdir(neutDir)[0];
+
+    if (dirFiles.includes(`neutrino.elf`))
+    {
+        let modFound = true;
+        let cwd = "";
+        if (!dirFiles.includes(`modules`))
+        {
+            let files = os.readdir("mc0:/")[0];
+            let fileExist = files.includes("neutrino");
+            if (fileExist) { cwd = "mc0:/neutrino"; }
+            else
+            {
+                files = os.readdir("mc1:/")[0];
+                fileExist = files.includes("neutrino");
+                if (fileExist) { cwd = "mc1:/neutrino"; }
+                else { modFound = false; }
+            }
+        }
+
+        if (modFound)
+        {
+            ELFPath = `${basePath}APPS/neutrino/neutrino.elf`;
+
+            if (cwd !== "") { ELFArgs = [`-cwd=${cwd}`]; }
+        }
+    }
+
+    // Set new Item in Dashboard
+    DASH_CAT[5].Options[DASH_CAT[5].ItemCount] =
+    {
+        Disctray: true,
+        Name: name,
+        Description: ELFName.toUpperCase(),
+        Icon: -1,
+        Type: "ELF",
+        Value: { Path: ELFPath, Args: ELFArgs },
+        Art: { ICO: ico },
+        get CustomIcon()
+        {
+            if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
+            return this.Art.ICO;
+        }
+    };
+
+    DASH_CAT[5].ItemCount++;
+
+    SelectDiscDashItem();
+}
+
+/*  Info:
+
+    This function will initialize a new
+    disctray item on the Game category
+    if the conditions are met for a PS1 game.
+
+*/
+
+function InitPS1DiscDashItem(discType)
+{
+    let name = (discType === 7) ? "Playstation 1 CD" : "Playstation 1 CDDA";
+    let ico = (() => { return dash_icons[25]; });
+    const systemcnf = getDiscSystemCNF();
+    let bootpath = "???";
+    let ver = "???";
+
+    if (systemcnf.length < 1)
+    {
+        // Identify Special PS1 cases.
+
+        // PENDING //
+    }
+    else
+    {
+        for (let i = 0; i < systemcnf.length - 1; i++)
+        {
+            const line = systemcnf[i];
+
+            if (line.includes("BOOT"))
+            {
+                const match = line.match(/cdrom:\\([^;]+)/);
+                bootpath = (match) ? match[1] : bootpath;
+            }
+            else if (line.includes("VER"))
+            {
+                const [key, value] = line.split('=');
+                ver = value.trim;
+            }
+        }
+    }
+
+    // Do not add item if game could not be identified.
+    if (bootpath === "???") { return; }
+
+    // Get Game Title if available
+    const gmecfg = DATA.CONFIG.Get(`${bootpath.toUpperCase()}.cfg`);
+    if ("Title" in gmecfg) { name = gmecfg["Title"]; }
+
+    // Set new Item in Dashboard
+    DASH_CAT[5].Options[DASH_CAT[5].ItemCount] =
+    {
+        Disctray: true,
+        Name: name,
+        Description: "",
+        Icon: -1,
+        Type: "ELF",
+        Value: { Path: "rom0:PS1DRV", Args: [bootpath, ver] },
+        Art: { ICO: ico },
+        get CustomIcon()
+        {
+            if (typeof this.Art.ICO === "function") { return this.Art.ICO(); }
+            return this.Art.ICO;
+        }
+    };
+
+    DASH_CAT[5].ItemCount++;
+
+    SelectDiscDashItem();
+}
+
+/*  Info:
+
+    This function processes the Disc Tray on each frame
+    to add or delete the Disctray item of the dashboard
+    in case the disctray was opened or closed.
+
+*/
+
+function ProcessDiscTray()
+{
+    const stat = System.checkDiscTray();
+    if ((stat != 0) && (DATA.DISCITEM))
+    {
+        DATA.DISCITEM = false;
+        for (let key in DASH_CAT[5].Options)
+        {
+            if (DASH_CAT[5].Options[key].hasOwnProperty("Disctray"))
+            {
+                if ((DATA.DASH_CURCAT == 5) && (DATA.DASH_CUROPT === (DASH_CAT[5].ItemCount - 1)))
+                {
+                    DATA.DASH_MOVE_FRAME = 0;
+                    DATA.DASH_STATE = "MOVE_UP";
+                    DATA.DASH_CUROPT--;
+                }
+                DASH_CAT[5].ItemCount--;
+                delete DASH_CAT[5].Options[key]; // Remove the item from the table
+                break; // Stop after removing the first match
+            }
+        }
+        return;
+    }
+
+    // I mapped the disc types in case someone wants to do something with them later.
+
+    const discType = System.getDiscType();
+    switch (discType)
+    {
+        case 1: // No Disc
+        case 2: // ??
+        case 3: // CD ?
+        case 4: // DVD-SL ?
+        case 5: // DVD-DL ?
+        case 6: // Unknown
+        case 16: // Unsupported
+            // Clearly do nothing.
+            break;
+        case 7: // PS1 CD
+        case 8: // PS1 CDDA
+            if (!DATA.DISCITEM) { InitPS1DiscDashItem(discType); DATA.DISCITEM = true; }
+            break;
+        case 10: // PS2 CDDA
+        case 12: // ESR DVD (off)
+        case 13: // ESR DVD (on)
+        case 14: // Audio CD
+        case 15: // Video DVD
+            // Maybe do something?.
+            break;
+        case 9: // PS2 CD
+        case 11: // PS2 DVD
+            if (!DATA.DISCITEM) { InitPS2DiscDashItem(discType); DATA.DISCITEM = true; }
+            break;
+    }
+}
