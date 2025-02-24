@@ -107,6 +107,17 @@ const TYPE_2 =
     "Asiático",
 ];
 
+const SYSINFO_MODELNAME =
+[
+    "Console",
+    "Console",
+    "Consola",
+    "Console",
+    "Console",
+    "Console",
+    "Console",
+];
+
 const SYSINFO_BDATE =
 [
     "Build Date",
@@ -149,6 +160,28 @@ const SYSINFO_TYPE_D =
     "Development Kit",
     "Development Kit",
     "Development Kit",
+];
+
+const SYSINFO_BRWVER =
+[
+    "Browser",
+    "Browser",
+    "Navegador",
+    "Browser",
+    "Browser",
+    "Browser",
+    "Browser",
+];
+
+const SYSINFO_CDVER =
+[
+    "CD Player",
+    "CD Player",
+    "Reproductor de CD",
+    "CD Player",
+    "CD Player",
+    "CD Player",
+    "CD Player",
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -198,6 +231,15 @@ function getButtonContextInfo()
 
 function showSysInfoMsg()
 {
+    const test = std.open("rom0:PS1VERA", "r");
+
+    if (test)
+    {
+        test.close();
+        console.log("TEST FILE FOUND");
+        console.log(readFileAsUtf8("rom0:PS1VERA"));
+    }
+
     const tmp = std.open("rom0:ROMVER", "r");
 
     if (tmp)
@@ -283,8 +325,87 @@ function showSysInfoMsg()
             formattedDate = `${extDay}/${extMonth}/${extYear} ${extHour}:${extMin}:${extSec}`;
         }
 
+        let ps1ver = (ConsoleRegion === "Japan") ? "1.01" : "1.10";
+
+        const ps1vera = std.open("rom0:PS1VERA", "r");
+
+        if (ps1vera)
+        {
+            ps1vera.close();
+            ps1ver = readFileAsUtf8("rom0:PS1VERA");
+        }
+        else
+        {
+            const ps1verb = std.open("rom0:PS1VER", "r");
+
+            if (ps1verb)
+            {
+                ps1verb.close();
+                ps1ver = readFileAsUtf8("rom0:PS1VER");
+            }
+        }
+
+        let modelName = "Unknown";
+
+        if ((rawVersion[0] === '0') && (rawVersion[1] === '1') && (rawVersion[2] === '0'))
+        {
+            if (rawVersion[3] === '0') { modelName = "SCPH-10000"; }
+            else
+            {
+                const osdsys = std.open("rom0:OSDSYS", "r");
+
+                if (osdsys)
+                {
+                    osdsys.seek(0x8C808, std.SEEK_SET);
+                    modelName = osdsys.readAsString(17);
+                    osdsys.close();
+                }
+            }
+        }
+
+        let osdver = "";
+        const ps1id = std.open("rom0:PS1ID", "r");
+
+        if (ps1id)
+        {
+            osdver = ps1id.readAsString();
+            ps1id.close();
+        }
+
+        let cdver = "";
+        const osdvf = std.open("rom0:OSDVER", "r");
+
+        if (osdvf)
+        {
+            cdver = osdvf.readAsString(4);
+            osdvf.close();
+
+            // Split the version into major and minor parts
+            const major = cdver.slice(0, 2).replace(/^0/, ''); // Remove leading zero from the major version
+            const minor = cdver.slice(2); // Take the last two characters as is
+
+            // Combine the major and minor versions into the desired format
+            cdver = `${major}.${minor}`;
+        }
+
         // Place all the Data extracted into the object
         const sysInfo = [];
+
+        if (modelName !== "Unknown")
+        {
+            sysInfo.push({
+                Selectable: false,
+                get Name()
+                {
+                    return SYSINFO_MODELNAME[DATA.LANGUAGE];
+                },
+                get Description()
+                {
+                    return modelName;
+                }
+            });
+        }
+
         sysInfo.push({
             Selectable: false,
             Name: "ROMVER",
@@ -293,12 +414,50 @@ function showSysInfoMsg()
             }
         });
 
+        if (osdver !== "")
+        {
+            sysInfo.push({
+                Selectable: false,
+                get Name()
+                {
+                    return SYSINFO_BRWVER[DATA.LANGUAGE];
+                },
+                get Description()
+                {
+                    return osdver;
+                }
+            });
+        }
+
+        if (cdver !== "")
+        {
+            sysInfo.push({
+                Selectable: false,
+                get Name()
+                {
+                    return SYSINFO_CDVER[DATA.LANGUAGE];
+                },
+                get Description()
+                {
+                    return cdver;
+                }
+            });
+        }
+
         sysInfo.push({
             Selectable: false,
-            get Name() {
-                return "Region";
-            },
-            get Description() {
+            Name: "Playstation Driver",
+            get Description()
+            {
+                return ps1ver;
+            }
+        });
+
+        sysInfo.push({
+            Selectable: false,
+            Name: "Region",
+            get Description()
+            {
                 return ConsoleRegion;
             }
         });
