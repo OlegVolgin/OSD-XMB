@@ -399,14 +399,14 @@ function getLastPlayed()
 
 function scanGameFolders(path, dev, fs)
 {
-    // Get Directory Object, Skip if Directory could not be read.
-    const dir = os.readdir(path); if (dir[1] > 0) { return; }
+    // Get Directory Files
+    const dir = os.readdir(path)[0];
 
     // Scan DVD directory if it exists
-    if (dir[0].includes("DVD")) { ParseDirectory(`${path}DVD/`, dev, fs); }
+    if (dir.includes("DVD")) { ParseDirectory(`${path}DVD/`, dev, fs); }
 
     // Scan CD directory if it exists
-    if (dir[0].includes("CD")) { ParseDirectory(`${path}CD/`, dev, fs); }
+    if (dir.includes("CD")) { ParseDirectory(`${path}CD/`, dev, fs); }
 }
 
 // Main Function to Initialize the Game List
@@ -431,12 +431,22 @@ function getGames()
         if ((scannedPaths.length > 0) && (scannedPaths.includes(roots[i]))) { continue; }
 
         // Get Directory Object, Skip if Directory could not be read.
-        const dir = os.readdir(roots[i]); if (dir[1] > 0) { continue; }
+        const dir = os.readdir(roots[i]);
+
+        console.log(`PS2GAMES: Root = ${roots[i]}`);
+        console.log(`PS2GAMES: Device = ${devices[i]}`);
+        console.log(`PS2GAMES: FS = ${fsmodes[i]}`);
 
         if (fsmodes[i] === "hdl")
         {
             // Scan Root Directory
             ParseDirectory(`${roots[i]}`, devices[i], fsmodes[i]);
+        }
+        else if (devices[i] === "mmce")
+        {
+            // Scan all possible mmce devices
+            scanGameFolders(`mmce0:/`, devices[i], fsmodes[i]);
+            scanGameFolders(`mmce1:/`, devices[i], fsmodes[i]);
         }
         else if (roots[i] === "mass:/")
         {
@@ -445,12 +455,6 @@ function getGames()
             {
                 scanGameFolders(`mass${j.toString()}:/`, devices[i], fsmodes[i]);
             }
-        }
-        else if (roots[i] === "mmce:/")
-        {
-            // Scan all possible mmce devices
-            scanGameFolders(`mmce0:/`, devices[i], fsmodes[i]);
-            scanGameFolders(`mmce1:/`, devices[i], fsmodes[i]);
         }
         else
         {
