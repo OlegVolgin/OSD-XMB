@@ -195,8 +195,21 @@ function getDiscSystemCNF()
     // Read CNF file and close.
     if (systemcnf)
     {
-        const cnf = [];
-        while (!systemcnf.eof()) { cnf.push(systemcnf.getline()); }
+        let cnf = {};
+
+        while (!systemcnf.eof())
+        {
+            let line = systemcnf.getline();
+
+            // Ensure the line is not empty and contains an '='
+            if (line && line.includes('='))
+            {
+                line = line.trim(); // Read and trim whitespace
+                const [key, value] = line.split('='); // Split into key and value
+                cnf[key.trim()] = value.trim(); // Trim and store in the config object
+            }
+        }
+
         systemcnf.close();
 
         return cnf;

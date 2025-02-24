@@ -505,7 +505,7 @@ function InitPS2DiscDashItem(discType)
     // Do not add item if System.CNF data was not found.
     if (systemcnf.length < 1) { return; }
 
-    const bootparam = systemcnf[0];
+    const bootparam = systemcnf["BOOT2"];
     const match = bootparam.match(/cdrom0:\\([^;]+)/);
     const ELFName = (match) ? match[1] : "";
 
@@ -594,29 +594,39 @@ function InitPS1DiscDashItem(discType)
     {
         // Identify Special PS1 cases.
 
-        // PENDING //
+        const GameDict = DATA.CONFIG.Get("PS1DRV.cfg");
+
+        Object.entries(GameDict).forEach(([key, value]) =>
+        {
+            const _f = std.open(value, "r");
+            if (_f)
+            {
+                _f.close();
+                bootpath = key;
+                return;
+            }
+        });
     }
     else
     {
-        for (let i = 0; i < systemcnf.length - 1; i++)
+        if ("BOOT" in systemcnf)
         {
-            const line = systemcnf[i];
-
-            if (line.includes("BOOT"))
-            {
-                const match = line.match(/cdrom:\\([^;]+)/);
-                bootpath = (match) ? match[1] : bootpath;
-            }
-            else if (line.includes("VER"))
-            {
-                const [key, value] = line.split('=');
-                ver = value.trim;
-            }
+            const match = systemcnf["BOOT"].match(/cdrom:\\([^;]+)/);
+            bootpath = (match) ? match[1] : bootpath;
+        }
+        if ("VER" in systemcnf)
+        {
+            ver = systemcnf["VER"];
         }
     }
 
-    // Do not add item if game could not be identified.
-    if (bootpath === "???") { return; }
+    // If everything failed, check if the disc has PSX.EXE, do not add an item if not.
+    if (bootpath === "???")
+    {
+        const files = os.readdir("cdfs:/")[0];
+        const index = files.findIndex(file => file.toLowerCase() === 'PSX.EXE');
+        if (index === -1) { return; }
+    }
 
     // Get Game Title if available
     const gmecfg = DATA.CONFIG.Get(`${bootpath.toUpperCase()}.cfg`);
