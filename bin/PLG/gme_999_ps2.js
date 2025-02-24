@@ -42,7 +42,7 @@ function SaveLastPlayedAndGetExArgs()
     if (("VMC0" in config) && (config["VMC0"] === "true")) { DASH_SEL.Value.Args.push(`-mc0=${basepath}VMC/${DASH_SEL.Description}_0.vmc`); }
     if (("VMC1" in config) && (config["VMC1"] === "true")) { DASH_SEL.Value.Args.push(`-mc1=${basepath}VMC/${DASH_SEL.Description}_1.vmc`); }
 
-    DASH_SEL.Value.Args.push('-qb');
+    if (DASH_SEL.Value.Path.substring(0, 3) !== "hdl") { DASH_SEL.Value.Args.push('-qb'); }
 
     // Save Last Played
     const cfg = DATA.CONFIG.Get(cfgPath);
@@ -76,11 +76,9 @@ function getOptionContextInfo()
 
     let _a = function(DATA, val)
     {
-        console.log("NEUTSETTS: Get Current Game Settings");
         const gameData = [];
         const currSett = getGameSettings(DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description);
 
-        console.log("NEUTSETTS: Set Game Title");
         gameData.push({
             Selectable: false,
             get Name() {
@@ -91,7 +89,18 @@ function getOptionContextInfo()
             }
         });
 
-        console.log("NEUTSETTS: Set Neutrino Setting Options");
+        gameData.push({
+            Selectable: false,
+            get Name()
+            {
+                return TXT_DEVICE[DATA.LANGUAGE];
+            },
+            get Description()
+            {
+                return DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Device;
+            }
+        });
+
         for (let i = 0; i < NeutrinoSettingNames.length; i++)
         {
             gameData.push({
@@ -105,19 +114,18 @@ function getOptionContextInfo()
             });
         }
 
-        console.log("NEUTSETTS: Set Confirm Function");
         let saveGameSettings = function()
         {
             const code = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description;
             const config = DATA.CONFIG.Get(`${code}.cfg`);
-            config["VMC0"] = (DATA.MESSAGE_INFO.Data[1].Selected === 1).toString();
-            config["VMC1"] = (DATA.MESSAGE_INFO.Data[2].Selected === 1).toString();
+            config["VMC0"] = (DATA.MESSAGE_INFO.Data[2].Selected === 1).toString();
+            config["VMC1"] = (DATA.MESSAGE_INFO.Data[3].Selected === 1).toString();
             let gcModes = "";
-            if (DATA.MESSAGE_INFO.Data[3].Selected === 1) { gcModes += "0"; }
-            if (DATA.MESSAGE_INFO.Data[4].Selected === 1) { gcModes += "2"; }
-            if (DATA.MESSAGE_INFO.Data[5].Selected === 1) { gcModes += "5"; }
-            if (DATA.MESSAGE_INFO.Data[6].Selected === 1) { gcModes += "7"; }
-            if (DATA.MESSAGE_INFO.Data[7].Selected === 1) { gcModes += "3"; }
+            if (DATA.MESSAGE_INFO.Data[4].Selected === 1) { gcModes += "0"; }
+            if (DATA.MESSAGE_INFO.Data[5].Selected === 1) { gcModes += "2"; }
+            if (DATA.MESSAGE_INFO.Data[6].Selected === 1) { gcModes += "5"; }
+            if (DATA.MESSAGE_INFO.Data[7].Selected === 1) { gcModes += "7"; }
+            if (DATA.MESSAGE_INFO.Data[8].Selected === 1) { gcModes += "3"; }
             config["gc"] = gcModes;
             DATA.CONFIG.Push(`${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description}.cfg`, config);
 
@@ -125,7 +133,7 @@ function getOptionContextInfo()
             const vmcfiles = os.readdir(`${basepath}VMC/`)[0];
             for (let i = 0; i < 2; i++)
             {
-                if ((DATA.MESSAGE_INFO.Data[i + 1].Selected === 1) && (!vmcfiles.includes(`${code}_${i}.vmc`)))
+                if ((config[`VMC${i.toString()}`] === "true") && (!vmcfiles.includes(`${code}_${i}.vmc`)))
                 {
                     threadCopyPush(`${basepath}VMC/blank.vmc`, `${basepath}VMC/${code}_${i}.vmc`);
                     setCopyMessage = true;
@@ -297,10 +305,20 @@ function ParseDirectory(path, device, fs)
             gameCode = getGameCodeFromOldFormatName(item.name);
             if (gameCode === "")
             {
-                let retval = getISOGameCode(`${path}${item.name}`, item.size);
-                if (retval.success)
+                let found = false;
+                if (fs === "hdl")
                 {
-                    gameCode = retval.code;
+                    // Pending.
+                }
+                else
+                {
+                    let retval = getISOGameCode(`${path}${item.name}`, item.size);
+                    found = retval.success
+                    gameCode = (retval.success) ? retval.code : "";
+                }
+
+                if (found)
+                {
                     cfg[title] = gameCode;
                     DATA.CONFIG.Push(cfgPath, cfg);
                 }
@@ -320,6 +338,7 @@ function ParseDirectory(path, device, fs)
         gameList.push({
             Name: title,
             Description: gameCode,
+            Device: device.toUpperCase(),
             Icon: -1,
             Type: "ELF",
             Value: value,

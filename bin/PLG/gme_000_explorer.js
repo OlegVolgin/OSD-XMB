@@ -50,14 +50,15 @@ function ParseDirectory(path)
 
     files.forEach((item) =>
     {
+        let customIcon = false;
         let icon = 24; // default icon for files
         let type = "";
         let value = {};
 
         switch(getFileExtension(item.name).toLowerCase())
         {
-            case "vcd": icon = 25; break;
-            case "iso": icon = 26; break;
+            case "vcd": customIcon = true; icon = 25; break;
+            case "iso": customIcon = true; icon = 26; break;
             case "elf": icon = 27; type = "ELF"; value = { Path: (`${path}${item.name}`), Args: [], }; break;
             case "png":
             case "jpg":
@@ -70,7 +71,23 @@ function ParseDirectory(path)
             case "avi": icon = 4; break;
         }
 
-        dir_options.push({ Name: item.name, Description: formatFileSize(item.size), Icon: icon, Type: type, Value: value, });
+        dir_options.push({
+            Name: item.name,
+            Description: formatFileSize(item.size),
+            Icon: icon,
+            Type: type,
+            Value: value
+        });
+
+        if (customIcon)
+        {
+            Object.defineProperty(dir_options[dir_options.length - 1], 'CustomIcon', {
+                get()
+                {
+                    return dash_icons[icon];
+                }
+            });
+        }
     });
 
     return { Options: dir_options, Default:0, ItemCount: dir_options.length, };
@@ -100,11 +117,14 @@ function getHDDPartitions()
 
     files.forEach((item) =>
     {
+
+        let customIcon = false;
         let icon = 24; // default icon for files
+
         switch (getFileExtension(item.name).toLowerCase())
         {
-            case "vcd": icon = 25; break;
-            case "iso": icon = 26; break;
+            case "vcd": customIcon = true; icon = 25; break;
+            case "iso": customIcon = true; icon = 26; break;
             case "elf": icon = 27; break;
             case "png":
             case "jpg":
@@ -119,10 +139,19 @@ function getHDDPartitions()
 
         dir_options.push({
             Name: item.name,
-            Description: "",
+            Description: formatFileSize(item.size),
             Icon: icon,
-            Type: "",
         });
+
+        if (customIcon)
+        {
+            Object.defineProperty(dir_options[dir_options.length - 1], 'CustomIcon', {
+                get()
+                {
+                    return dash_icons[icon];
+                }
+            });
+        }
     });
 
     return { Options: dir_options, Default: 0, ItemCount: dir_options.length, };

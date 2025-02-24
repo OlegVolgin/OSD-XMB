@@ -373,14 +373,23 @@ function formatFileSize(size)
 function getGameName(path)
 {
     // Regular expression to match the identifier and game name
-    const match = path.match(/[A-Z]{4}[-_][0-9]{3}\.[0-9]{2}\.(.+)\.[^/]+$/);
-    if (match && match[1]) {
-        return match[1].trim(); // Return the "Game Name" part
+    let match = path.match(/[A-Z]{4}[-_][0-9]{3}\.[0-9]{2}\.(.+)\.[^/]+$/);
+    if (match && match[1])
+    {
+        return match[1].trim();
+    }
+
+    // Check if the string starts with "PP.HDL." and extract the game name without extension
+    let ppHdlMatch = path.match(/^PP\.HDL\.(.+)\.[^/.]+$/);
+    if (ppHdlMatch && ppHdlMatch[1])
+    {
+        return ppHdlMatch[1].trim();
     }
 
     // If no match, extract the file name without the extension
-    const fileNameMatch = path.match(/([^/]+)\.[^/.]+$/); // Match the file name and remove extension
-    if (fileNameMatch && fileNameMatch[1]) {
+    let fileNameMatch = path.match(/([^/]+)\.[^/.]+$/);
+    if (fileNameMatch && fileNameMatch[1])
+    {
         return fileNameMatch[1].trim();
     }
 

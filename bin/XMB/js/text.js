@@ -265,6 +265,17 @@ const HDD_DIR_NAME = 	// Item 3 Name
     "Disco Rígido Interno",
 ];
 
+const TXT_DEVICE = 	// Item 3 Name
+[
+    "Device",
+    "Device",
+    "Dispositivo",
+    "Device",
+    "Device",
+    "Device",
+    "Device",
+];
+
 //////////////////////////////////////////////////////////////////////////
 ///*				   	   		PARAMETERS							  *///
 //////////////////////////////////////////////////////////////////////////

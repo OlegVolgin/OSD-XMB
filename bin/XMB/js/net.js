@@ -22,6 +22,7 @@ function NetInit()
     try
     {
         console.log("NETWORK: Initializing Network");
+        IOP.loadDefaultModule(IOP.network);
         Network.init();
 
         // Check if Valid IP found
