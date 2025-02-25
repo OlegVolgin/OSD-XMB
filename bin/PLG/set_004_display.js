@@ -130,8 +130,7 @@ function getTvTypeContextInfo()
     let _a = function(DATA, val)
     {
         DATA.WIDESCREEN = (val == 1);
-        DATA.CANVAS.width = (DATA.WIDESCREEN) ? 736 : 640;
-        Screen.setMode(DATA.CANVAS);
+        setScreenWidth();
 
         let config = DATA.CONFIG.Get("main.cfg");
         config["aspect"] = DATA.WIDESCREEN.toString();

@@ -210,19 +210,16 @@ function boot()
         case 2: // FADE IN BG + LOGO
             DATA.OVCOL = Color.new(0, 0, 0,  128 - DATA.FADE_FRAME);
             DATA.BOOT_STATE = (DATA.FADE_FRAME > 127) ? (DATA.BOOT_STATE + 1) : DATA.BOOT_STATE;
-            boot_logo.color = Color.new(255,255,255, (DATA.FADE_FRAME - 64));
-            boot_logo.draw((DATA.WIDESCREEN * 32),-10);
+            drawBootLogo((DATA.FADE_FRAME - 64));
             break;
         case 3: // FADE IN LOGO
-            boot_logo.color = Color.new(255,255,255, 64 + (DATA.FADE_FRAME - 128));
-            boot_logo.draw((DATA.WIDESCREEN * 32),-10);
+            drawBootLogo(64 + (DATA.FADE_FRAME - 128));
             if (DATA.FADE_FRAME > 191) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; }
             break;
         case 4: // FADE OUT LOGO
             let logo_a = (DATA.FADE_FRAME > 195) ? (128 - (DATA.FADE_FRAME - 196)) : 128;
             logo_a = (logo_a < 0) ? 0 : logo_a;
-            boot_logo.color = Color.new(255,255,255, logo_a);
-            boot_logo.draw((DATA.WIDESCREEN * 32),-10);
+            drawBootLogo(logo_a);
             if (DATA.FADE_FRAME > 380) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; }
             break;
         case 5: // FADE IN WARNING TEXT

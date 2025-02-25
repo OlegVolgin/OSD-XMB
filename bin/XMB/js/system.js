@@ -487,6 +487,12 @@ function isExtensionMatching(filePath, ...filterExtensions)
     );
 }
 
+function setScreenWidth()
+{
+    DATA.CANVAS.width = (DATA.WIDESCREEN) ? 704 : 640;
+    Screen.setMode(DATA.CANVAS);
+}
+
 /*
     For moving element animations
     easeOutCubic will return an increasing value
@@ -535,7 +541,7 @@ function interpolateColorObj(color1, color2, t)
 
 function neutralizeOverlayWithAlpha()
 {
-    const ovA = Color.getA(DATA.OVCOL) / 128;
+    const ovA = 0.15625f;
     const OvR = Color.getR(DATA.OVCOL);
     const OvG = Color.getG(DATA.OVCOL);
     const OvB = Color.getB(DATA.OVCOL);

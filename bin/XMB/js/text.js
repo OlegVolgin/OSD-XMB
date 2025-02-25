@@ -181,11 +181,11 @@ const TXT_TITLE =
 [
     "Title",
     "Titre",
-    "Título",
+    "Titulo",
     "Titel",
     "Titoli",
     "Titel",
-    "Título",
+    "Titulo",
 ];
 
 const TXT_TITLES =
@@ -485,7 +485,7 @@ let BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]
 // Function exclusively made to render the Boot Warning Text at Boot.
 function DisplayBootWarningText(alpha)
 {
-    TxtPrint(BOOT_WARNING_TEXT, {r: 255, g: 255, b: 255, a: alpha }, { x: (DATA.WIDESCREEN * 32), y: -20 }, "CENTER");
+    TxtPrint(BOOT_WARNING_TEXT, { r: 255, g: 255, b: 255, a: alpha }, { x: 10 + (DATA.WIDESCREEN * 32), y: -20 }, "CENTER");
 }
 
 // Function exclusively made to render the Debug Info at the bottom of the screen.

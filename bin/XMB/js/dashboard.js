@@ -229,18 +229,12 @@ function DrawDashElementBackground(Obj, draw)
             DATA.BGIMGTMP = new Image(Obj.CustomBG);
             DATA.BGIMGTMP.optimize();
             DATA.BGIMGTMP.filter = LINEAR;
-            DATA.BGIMGTMP.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+            DATA.BGIMGTMP.width = DATA.CANVAS.width;
             DATA.BGIMGTMP.height = DATA.CANVAS.height;
             DATA.BGIMGTMP.color = Color.new(col.r, col.g, col.b, 0);
             DATA.BGIMGTMPSTATE = 16;
         }
-        else if (DATA.BGIMGTMPSTATE > 15)
-        {
-            DATA.BGIMGTMPSTATE = (DATA.BGIMGTMPSTATE > 143) ? 143 : DATA.BGIMGTMPSTATE;
-            DATA.BGIMGTMP.color = Color.new(col.r, col.g, col.b, DATA.BGIMGTMPSTATE - 15);
-            DATA.BGIMGTMPSTATE+=6;
-        }
-        else
+        else if (DATA.BGIMGTMPSTATE < 15)
         {
             DATA.BGIMGTMPSTATE++;
         }
@@ -299,10 +293,10 @@ function DrawOptionBox(direction = 1)
         const alpha = ((optBoxA - 300) > 0) ? (optBoxA - 300) : 0;
         dash_opt_box.width = 80 + ((TXT_OPTION[DATA.LANGUAGE].length + 6) / 2);
         dash_opt_box.color = Color.new(col.r, col.g, col.b, alpha);
-        dash_opt_box.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 100, DATA.CANVAS.height - 70);
+        dash_opt_box.draw(DATA.CANVAS.width - 100, DATA.CANVAS.height - 70);
         dash_opt_triangle.color = Color.new(col.r, col.g, col.b, alpha);
-        dash_opt_triangle.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 93, DATA.CANVAS.height - 34);
-        TxtPrint(TXT_OPTION[DATA.LANGUAGE], { r: 255, g: 255, b: 255, a: alpha }, { x: DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 73, y: DATA.CANVAS.height - 47 }, "LEFT", font_ss);
+        dash_opt_triangle.draw(DATA.CANVAS.width - 93, DATA.CANVAS.height - 34);
+        TxtPrint(TXT_OPTION[DATA.LANGUAGE], { r: 255, g: 255, b: 255, a: alpha }, { x: DATA.CANVAS.width - 73, y: DATA.CANVAS.height - 47 }, "LEFT", font_ss);
     }
 }
 
@@ -351,7 +345,7 @@ function DrawContextMenu(a = 0, x = 0, y = 0)
     if (90 + a > 0)
     {
         dash_context.color = Color.new(225,225,225,90 + a);
-        dash_context.draw((DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 205) + x, y);
+        dash_context.draw((DATA.CANVAS.width - 205) + x, y);
     }
 }
 
@@ -1240,7 +1234,7 @@ function DrawContextArrows(aMod = 0, xMod = 0)
     if (DATA.DASH_CURCTXITMFIRST > 0)
     {
         dash_arrow.angle = -0.5f;
-        dash_arrow.draw((DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 179) + xMod, 217);
+        dash_arrow.draw((DATA.CANVAS.width - 179) + xMod, 217);
         dash_arrow.angle = 0.0f;
     }
 
@@ -1248,7 +1242,7 @@ function DrawContextArrows(aMod = 0, xMod = 0)
     if (DATA.DASH_CURCTXITMLAST < DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount)
     {
         dash_arrow.angle = 0.5f;
-        dash_arrow.draw((DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 179) + xMod, 390);
+        dash_arrow.draw((DATA.CANVAS.width - 179) + xMod, 390);
         dash_arrow.angle = 0.0f;
     }
 }
@@ -1261,7 +1255,7 @@ function DrawContextOptions(aMod = 0, xMod = 0)
 
     for (let i = DATA.DASH_CURCTXITMFIRST; i < DATA.DASH_CURCTXITMLAST; i++)
     {
-        DrawContextOption((DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 185) + xMod, y, DATA.DASH_CURCTXLVL, i, aMod);
+        DrawContextOption((DATA.CANVAS.width - 185) + xMod, y, DATA.DASH_CURCTXLVL, i, aMod);
         y+=20;
     }
 

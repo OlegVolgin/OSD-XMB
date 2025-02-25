@@ -8,9 +8,9 @@ dashboard by Howling Wolf & Chelsea.
 - Plugin System where you can make your own plugins to show items on the
 	dashboard.
 
-- **Launch PS2 games from USB Drive**:
-    - The App will automatically list all ISO format games that are either
-	at "mass:/DVD/" or "mass:/CD/" on the "Playstation 2" folder. 
+- **Launch PS2 games from USB Drive or MMCE**:
+    - The App will automatically list all ISO format games that are on your
+	"DVD/" or "CD/" folders at the root of your device, on the "Playstation 2" folder. 
 	You can customize your preferred settings for your games if you open the
 	"Option" menu while highlighting the game and select "Information". 
 	Remember to use the confirmation button to save changes.

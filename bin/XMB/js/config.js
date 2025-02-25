@@ -158,12 +158,7 @@ function ParseMainCFG()
     if ("aspect" in mainCFG)
     {
         DATA.WIDESCREEN = (mainCFG["aspect"].toLowerCase() === "true");
-
-        if (DATA.WIDESCREEN)
-        {
-            DATA.CANVAS.width = 736;
-            Screen.setMode(DATA.CANVAS);
-        }
+        setScreenWidth();
     }
 
     // Get the user's preferred Parental Settings.

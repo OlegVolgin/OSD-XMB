@@ -83,7 +83,6 @@ const Waves = (() => {
     const wave2Amplitude = 32.0f;
     const waveLength = 0.005f;
     const wave2Speed = 0.021f;
-    const baseYStart = DATA.CANVAS.height - 128;
 
     // Precompute x-wave values
     const precomputedXWave = [];
@@ -112,6 +111,7 @@ const Waves = (() => {
     {
         const width = DATA.CANVAS.width;
         const height = DATA.CANVAS.height;
+        const baseYStart = Math.round(height / 2) + 96;
 
         if (width !== screenWidth) { screenWidth = width; precomputeValues(); }
 
@@ -155,8 +155,8 @@ Waves.setThemeColor(currentBgColor);
 
 function DrawMessageLines(a)
 {
-    Draw.line((DATA.WIDESCREEN * 32), 80, DATA.CANVAS.width - (DATA.WIDESCREEN * 32), 80, Color.new(196,196,196, a));
-    Draw.line((DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), DATA.CANVAS.width - (DATA.WIDESCREEN * 32), (DATA.CANVAS.height - 73), Color.new(196,196,196, a));
+    Draw.line(0, 80, DATA.CANVAS.width, 80, Color.new(196,196,196, a));
+    Draw.line(0, (DATA.CANVAS.height - 73), DATA.CANVAS.width, (DATA.CANVAS.height - 73), Color.new(196,196,196, a));
 }
 
 // This draws the Icon and Title for the Message Screen if there are any.
@@ -168,13 +168,13 @@ function DrawMessageTop(alpha)
         dash_icons[DATA.MESSAGE_INFO.Icon].width = 24
         dash_icons[DATA.MESSAGE_INFO.Icon].height = 24;
         dash_icons[DATA.MESSAGE_INFO.Icon].color = Color.new(255,255,255, alpha);
-        dash_icons[DATA.MESSAGE_INFO.Icon].draw(40 + (DATA.WIDESCREEN * 32), 55);
+        dash_icons[DATA.MESSAGE_INFO.Icon].draw(40, 55);
     }
 
     if (("Title" in DATA.MESSAGE_INFO) && (DATA.MESSAGE_INFO.Title != ""))
     {
         let txt = (Array.isArray(DATA.MESSAGE_INFO.Title)) ? DATA.MESSAGE_INFO.Title[DATA.LANGUAGE] : DATA.MESSAGE_INFO.Title;
-        TxtPrint(txt, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 72 + (DATA.WIDESCREEN * 32), y:48 });
+        TxtPrint(txt, {r: textColor.r, g: textColor.g, b: textColor.b, a: alpha }, {x: 72, y:48 });
     }
 }
 
@@ -327,7 +327,7 @@ function InitMessageInfoScreenSettings()
 
 function DrawMessageInfoScreen(txtColor, arrAlpha)
 {
-    const nameX = -(Math.round(DATA.CANVAS.width / 2) + 16 - (DATA.WIDESCREEN * 96));
+    const nameX = -(Math.round(DATA.CANVAS.width / 2) + 16 - (DATA.WIDESCREEN * 64));
     const descX = (Math.round(DATA.CANVAS.width / 2) - 24);
     const baseY = Math.round(DATA.CANVAS.height / 2) - (DATA.MESSAGE_INFO.Data.length * 8)
     for (let i = 0; i < DATA.MESSAGE_INFO.Data.length; i++)
@@ -368,16 +368,22 @@ function DrawProgressFadeInText()
     TxtPrint("0%", txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 30 }, "CENTER");
 }
 
+function UpdateOvColor(dir)
+{
+    let colA = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
+    let colB = { r: 0, g: 0, b: 0, a: ((DATA.MESSAGE_INFO.BG) ? 112 : 48) };
+    if (dir > 0) { let tmp = colA; colA = colB; colB = tmp; }
+    let NewOvCol = interpolateColorObj(colA, colB, Math.fround(DATA.DASH_MOVE_FRAME / 20));
+    DATA.OVCOL = Color.new(NewOvCol.r, NewOvCol.g, NewOvCol.b, NewOvCol.a);
+}
+
 // Message Screen Fade In Animation.
 
 function DrawMessageFadeIn()
 {
-    if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
-    let prevOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
-    let ovAlpha = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
-    let tempColor = interpolateColorObj(prevOvColor, { r: 0, g: 0, b: 0, a: ovAlpha }, Math.fround(DATA.DASH_MOVE_FRAME / 20));
-    let txtFadeColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: DATA.DASH_MOVE_FRAME * 6 };
-    DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+    if (DATA.MESSAGE_TIMER != false) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = false; }
+    let txtFadeColor = { r: textColor.r, g: textColor.g, b: textColor.b, a: DATA.DASH_MOVE_FRAME * 6 };
+    UpdateOvColor(0);
     DrawMessageLines(DATA.DASH_MOVE_FRAME * 6);
     DrawMessageTop(DATA.DASH_MOVE_FRAME * 6);
     DrawMessageBottom(DATA.DASH_MOVE_FRAME * 6);
@@ -397,7 +403,7 @@ function DrawMessageFadeIn()
             if (!DATA.MESSAGE_INFO.Processed) { InitVModeMessageSettings();	}
             TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: -40}, "CENTER");
             TxtPrint(`${TXT_VMODE_REMTIME[DATA.LANGUAGE]}`, txtFadeColor, { x: (DATA.WIDESCREEN * 32), y: 20}, "CENTER");
-            TxtPrint(`10 ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, txtFadeColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
+            TxtPrint(`25 ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, txtFadeColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
             TxtPrint(`${TXT_YES[DATA.LANGUAGE]}`, txtFadeColor, { x: -40 + (DATA.WIDESCREEN * 32), y: 70}, "CENTER");
             TxtPrint(`${TXT_NO[DATA.LANGUAGE]}`, txtFadeColor, { x: 30 + (DATA.WIDESCREEN * 32), y: 70}, "CENTER");
             break;
@@ -445,11 +451,11 @@ function DrawMessageIdle()
             DATA.DASH_MOVE_FRAME++; if (DATA.DASH_MOVE_FRAME > 19) { DATA.MESSAGE_INFO.Type = "TEXT"; }
             break;
         case "VMODE":
-            if (DATA.MESSAGE_TIMER == null) { DATA.MESSAGE_TIMER = Timer.new(); }
+            if (DATA.MESSAGE_TIMER == false) { DATA.MESSAGE_TIMER = Timer.new(); }
 
             let time = Math.round(Timer.getTime(DATA.MESSAGE_TIMER) / 1000000);
 
-            if (time > 10)
+            if (time > 25)
             {
                 let def_val = 0;
                 switch(DATA.SCREEN_PREVMODE)
@@ -473,7 +479,7 @@ function DrawMessageIdle()
 
             TxtPrint(DATA.MESSAGE_INFO.Processed, textColor, { x: (DATA.WIDESCREEN * 32), y: -40}, "CENTER");
             TxtPrint(`${TXT_VMODE_REMTIME[DATA.LANGUAGE]}`, textColor, { x: (DATA.WIDESCREEN * 32), y: 20}, "CENTER");
-            TxtPrint(`${(10 - time).toString()} ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, textColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
+            TxtPrint(`${(25 - time).toString()} ${TXT_VMODE_SEC[DATA.LANGUAGE]}`, textColor, { x: -5 + (DATA.WIDESCREEN * 32), y: 40}, "CENTER");
             TxtPrint(TXT_YES[DATA.LANGUAGE], textColor, {x: -40 + (DATA.WIDESCREEN * 32), y: 70 }, "CENTER", undefined, (DATA.MESSAGE_INFO.Selected == 0));
             TxtPrint(TXT_NO[DATA.LANGUAGE], textColor, {x: 30 + (DATA.WIDESCREEN * 32), y: 70 }, "CENTER", undefined, (DATA.MESSAGE_INFO.Selected == 1));
 
@@ -511,11 +517,8 @@ function DrawMessageIdle()
 
 function DrawMessageFadeOut()
 {
-    let newOvColor = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
-    let ovAlphaOut = (DATA.MESSAGE_INFO.BG) ? 112 : 32;
-    let prevtempColor = interpolateColorObj({ r: 0, g: 0, b: 0, a: ovAlphaOut }, newOvColor, Math.fround(DATA.DASH_MOVE_FRAME / 20));
-    let txtFadeOutColor = { r:textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * 6) };
-    DATA.OVCOL = Color.new(prevtempColor.r, prevtempColor.g, prevtempColor.b, prevtempColor.a);
+    let txtFadeOutColor = { r: textColor.r, g: textColor.g, b: textColor.b, a: 128 - (DATA.DASH_MOVE_FRAME * 6) };
+    UpdateOvColor(1);
     DrawMessageLines(128 - (DATA.DASH_MOVE_FRAME * 6));
 
     switch(DATA.MESSAGE_INFO.Type)
@@ -524,7 +527,7 @@ function DrawMessageFadeOut()
             TxtPrint(DATA.MESSAGE_INFO.Processed, txtFadeOutColor, { x: (DATA.WIDESCREEN * 32), y: -10}, "CENTER");
             break;
         case "VMODE":
-            if (DATA.MESSAGE_TIMER != null) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = null; }
+            if (DATA.MESSAGE_TIMER != false) { Timer.destroy(DATA.MESSAGE_TIMER); DATA.MESSAGE_TIMER = false; }
             break;
     }
 
@@ -617,33 +620,37 @@ function drawBg()
         }
 
         // Main Background color element. A single rectangle with the theme color.
-        Draw.rect((DATA.WIDESCREEN * 32), 0, DATA.CANVAS.width - (DATA.WIDESCREEN * 64), DATA.CANVAS.height, themeColor);
+        Draw.rect(0, 0, DATA.CANVAS.width, DATA.CANVAS.height, themeColor);
 
         // Above the color draw the Waves.
         if (DATA.BGWAVES) { Waves.renderWaves(); }
 
         // Then overlay the background Texture.
-        bg.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
-        bg.draw((DATA.WIDESCREEN * 32), 0);
+        bg.width = DATA.CANVAS.width;
+        bg.draw(0, 0);
 
         // Finally, set the background brightness with the gradient texture.
-        bg_daily.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+        bg_daily.width = DATA.CANVAS.width;
         bg_daily.color = Color.new(190, 190, 190, DATA.BGBRIGHTNESS);
-        bg_daily.draw((DATA.WIDESCREEN * 32), 0);
+        bg_daily.draw(0, 0);
     }
+
+    const col = neutralizeOverlayWithAlpha();
 
     if ((DATA.BGIMGA > 0) && (DATA.BGIMG) && (DATA.BOOT_STATE > 7))
     {
-        const col = neutralizeOverlayWithAlpha();
-        DATA.BGIMG.width = DATA.CANVAS.width - (DATA.WIDESCREEN * 64);
+        DATA.BGIMG.width = DATA.CANVAS.width;
         DATA.BGIMG.height = DATA.CANVAS.height;
         DATA.BGIMG.color = Color.new(col.r, col.g, col.b, DATA.BGIMGA);
-        DATA.BGIMG.draw((DATA.WIDESCREEN * 32), 0);
+        DATA.BGIMG.draw(0, 0);
     }
 
-    if ((DATA.BGIMGTMP) && (DATA.BGIMGTMPSTATE > 16))
+    if ((DATA.BGIMGTMP) && (DATA.BGIMGTMPSTATE > 15))
     {
-        DATA.BGIMGTMP.draw((DATA.WIDESCREEN * 32), 0);
+        DATA.BGIMGTMPSTATE = (DATA.BGIMGTMPSTATE > 143) ? 143 : DATA.BGIMGTMPSTATE;
+        DATA.BGIMGTMP.color = Color.new(col.r, col.g, col.b, DATA.BGIMGTMPSTATE - 15);
+        DATA.BGIMGTMPSTATE += 6;
+        DATA.BGIMGTMP.draw(0, 0);
     }
 }
 
@@ -667,7 +674,7 @@ function drawOv()
 
     // Draw a partially visible theme color overlay to tint the whole interface.
     // Fade In/Out screens also use this with a Full Black color.
-    Draw.rect((DATA.WIDESCREEN * 32),0,DATA.CANVAS.width - (DATA.WIDESCREEN * 64), DATA.CANVAS.height, DATA.OVCOL);
+    Draw.rect(0,0,DATA.CANVAS.width, DATA.CANVAS.height, DATA.OVCOL);
 
     // If a message screen should be displayed, this takes care of it.
 
@@ -677,15 +684,12 @@ function drawOv()
         case "MESSAGE_IDLE": DrawMessageIdle(); break;
         case "MESSAGE_OUT": DrawMessageFadeOut(); break;
     }
+}
 
-    // Draw Black bars at the sides of the screen if Widescreen mode is enabled.
-    // This is done because elements drawn at the edges will flicker or look weird.
-
-    if (DATA.WIDESCREEN)
-    {
-        Draw.rect(0,0,32,DATA.CANVAS.height, Color.new(0,0,0,128));
-        Draw.rect(DATA.CANVAS.width - 32,0,DATA.CANVAS.width,DATA.CANVAS.height, Color.new(0,0,0,128));
-    }
+function drawBootLogo(a)
+{
+    boot_logo.color = Color.new(255, 255, 255, a);
+    boot_logo.draw(DATA.CANVAS.width - 492, 160);
 }
 
 // Draws the Clock elements.
@@ -704,16 +708,16 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
     dash_clock_outline.width = 32;
     dash_clock_outline.startx = 2;
     dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
-    dash_clock_outline.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 158, 35);
+    dash_clock_outline.draw(DATA.CANVAS.width - 158, 35);
 
     // Draw End of Clock Outline
     dash_clock_outline.width = 180;
     dash_clock_outline.startx = 32;
     dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
-    dash_clock_outline.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 128, 35);
+    dash_clock_outline.draw(DATA.CANVAS.width - 128, 35);
 
     dash_clock.color = Color.new(255,255,255,ICOFULLA + icoAlphaMod);
-    dash_clock.draw(DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 25, 42);
+    dash_clock.draw(DATA.CANVAS.width - 25, 42);
 
     // Get current date and time
     const currentDate = new Date();
@@ -744,7 +748,7 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
         case 1: dateText = `${padnum(month)}/${padnum(day)}`; break;
     }
 
-    TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - (DATA.WIDESCREEN * 32) - 145, y:32 })
+    TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - 145, y:32 })
 }
 
 console.log("INIT: BACKGROUND GRAPHICS INIT COMPLETE");
