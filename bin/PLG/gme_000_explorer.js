@@ -111,7 +111,7 @@ function getHDDPartitions()
             Description: "",
             Icon: 18,
             Type: "SUBMENU",
-            get Value() { mountHDDPartition(this.Name); return ParseDirectory(`pfs1:/`); }
+            get Value() { const part = mountHDDPartition(this.Name); return ParseDirectory(`${part}:/`); }
         });
     });
 
@@ -169,14 +169,6 @@ function GetExplorerOptions()
         get Value() { return ParseDirectory(`${os.getcwd()[0]}/`); }
     });
 
-    options.push({
-        Name: MASS_DIR_NAME,
-        Description: "",
-        Icon: 21,
-        Type: "SUBMENU",
-        get Value() { return ParseDirectory("mass:/"); }
-    });
-
     if (os.readdir("hdd0:")[0].length > 0)
     {
         options.push({
@@ -190,11 +182,48 @@ function GetExplorerOptions()
 
     for (let i = 0; i < 2; i++)
     {
+        const hasContent = os.readdir(`mc${i.toString()}:/`)[0].length > 0;
+        if (!hasContent) continue;
+
+        options.push({
+            Name: `Memory Card ${(i + 1).toString()}`,
+            Description: "",
+            Icon: 16 + i,
+            Type: "SUBMENU",
+            get Value()
+            {
+                return ParseDirectory(`mc${i.toString()}:/`);
+            }
+        });
+    }
+
+    for (let i = 0; i < 10; i++)
+    {
+        const dirContent = os.readdir(`mass${i.toString()}:/`);
+        const hasContent = dirContent.length > 0 && dirContent[0].length > 0;
+        if (!hasContent) break;
+        let desc = System.getbdminfo(`mass${i.toString()}:/`);
+        desc = (desc) ?  `${desc.driverName.toUpperCase()} ${desc.deviceNumber}` : "";
+
+        options.push({
+            get Name() { return `${MASS_DIR_NAME[DATA.LANGUAGE]} ${(i + 1).toString()}`; },
+            Description: desc,
+            Icon: 21,
+            Type: "SUBMENU",
+            get Value()
+            {
+                return ParseDirectory(`mass${i.toString()}:/`);
+            }
+        });
+    }
+
+    for (let i = 0; i < 2; i++)
+    {
         const hasContent = os.readdir(`mmce${i.toString()}:/`)[0].length > 0;
         if (!hasContent) continue;
 
         options.push({
-            Name: `MMCE ${i.toString()}`,
+            Name: `MMCE ${(i + 1).toString()}`,
             Description: "",
             Icon: 21,
             Type: "SUBMENU",

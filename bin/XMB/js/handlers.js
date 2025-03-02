@@ -450,6 +450,13 @@ function launch()
 {
     if ("Code" in DASH_SEL.Value) { DASH_SEL.Value.Code(); }
 
+    if ("Partition" in DASH_SEL.Value) { DASH_SEL.Value.Path = `hdd0:${DASH_SEL.Value.Partition}:${DASH_SEL.Value.Path}`; }
+    else if (DASH_SEL.Value.Path.substring(0, 4) === "pfs:")
+    {
+        const cwdpart = getCWDPartition();
+        if (cwdpart != "") { DASH_SEL.Value.Path = `hdd0:${cwdpart}:${DASH_SEL.Value.Path}`; }
+    }
+
     console.log(`Launching ELF: ${DASH_SEL.Value.Path}`);
     console.log(`   With Args: ${DASH_SEL.Value.Args}`);
 

@@ -33,9 +33,10 @@ const TXT_VMCMODE = [ "Default", "Slot 2 Only", "Slot 1 Only" ];
 
 let gameList = [];
 let popsPaths = [];
+let commpart = "pfs1";
 popsPaths.push(`mass:/POPS/`);              // Default Mass Support
 popsPaths.push(`${os.getcwd()[0]}/POPS/`);  // For host support
-popsPaths.push(`pfs1:/`);                    // For HDD support
+popsPaths.push(`hdd`);                    // For HDD support
 
 const cfgPath = "pops.cfg";
 const cfg = DATA.CONFIG.Get(cfgPath);
@@ -311,6 +312,8 @@ function getVCDGameID(path)
 
 function PopsParseDirectory(path)
 {
+    console.log("Parsing POPS dir: " + path);
+
     let dir = System.listDir(path);
 
     dir.forEach((item) =>
@@ -323,11 +326,11 @@ function PopsParseDirectory(path)
             let type = "ELF";
 
             // Set Launch Settings
-            let device = (path.substring(0, 4) === "pfs1") ? "hdd" : "mass";
+            let device = (path.substring(0, 3) === "pfs") ? "hdd" : "mass";
             device = (path.substring(0, 4) === "host") ? "host" : device;
 
             let prefix = (device === "mass") ? "XX." : "";
-            let basePath = (path.substring(0, 4) === "pfs1") ? "pfs1:/POPS/" : path;
+            let basePath = (path.substring(0, 3) === "pfs") ? `${commpart}:/POPS/` : path;
             let elfPath = `${basePath}${prefix}${item.name.substring(0, item.name.length - 3)}ELF`;
             let value = { Partition: "__common", Path: elfPath, Args: [], Code: SaveLastPlayed };
 
@@ -378,8 +381,8 @@ function generateELFs()
     gameList.forEach((item) => { Paths.push(item.Value.Path); });
 
     // Filter out pfs1 paths
-    const massPaths = Paths.filter((item) => item.substring(0, 4) !== "pfs1");
-    const hddPaths = Paths.filter((item) => item.substring(0, 4) === "pfs1");
+    const massPaths = Paths.filter((item) => item.substring(0, 3) !== "pfs");
+    const hddPaths = Paths.filter((item) => item.substring(0, 3) === "pfs");
 
     // Use threadFileCopy for mass paths
     massPaths.forEach((item) =>
@@ -392,14 +395,15 @@ function generateELFs()
         }
     });
 
-    // Mount the POPSTARTER.ELF partition to copy the ELFs
-    mountHDDPartition("__common");
+    // Mount the POPSTARTER.ELF partition to copy the ELFs if needed
+    if (commpart !== "pfs0") { mountHDDPartition("__common"); }
 
     // Cannot use threadFileCopy with virtual mounted partitions, using copyFile instead.
     hddPaths.forEach((item) =>
     {
         const basePath = getDirectoryName(item);
         const filename = item.substring(item.lastIndexOf("/") + 1);
+
         if (!os.readdir(basePath)[0].includes(filename))
         {
             System.copyFile(`${getDirectoryName(item)}POPSTARTER.ELF`, item);
@@ -419,41 +423,39 @@ function getGames()
 
     for (let i = 0; i < popsPaths.length; i++)
     {
-        // Skip already scanned paths
-        if ((scannedPaths.length > 0) && (scannedPaths.includes(popsPaths[i])))
-        {
-            continue;
-        }
+        // Skip already scanned paths.
+        if ((scannedPaths.length > 0) && (scannedPaths.includes(popsPaths[i]))) { continue; }
 
-        // Check if POPS files are present
+        // Add path to already processed paths.
+        scannedPaths.push(popsPaths[i]);
 
-        if (popsPaths[i].substring(0, 4) === "pfs1")
+        // Check if POPS files are present.
+
+        if (popsPaths[i].substring(0, 3) === "hdd")
         {
             // Check if __.POPS partition exists
             if (!os.readdir("hdd0:")[0].includes("__.POPS")) { continue; }
 
             // Mount __common partition and get its content
-            mountHDDPartition("__common");
-            const dirFiles = os.readdir(`pfs1:/POPS/`)[0];
+            commpart = mountHDDPartition("__common");
+            const dirFiles = os.readdir(`${commpart}:/POPS/`)[0];
 
             // Check if required files are present
             if (!dirFiles.includes("POPS.ELF")) { console.log("POPSHDD: Missing POPS.ELF file."); continue; }
             if (!dirFiles.includes("IOPRP252.IMG")) { console.log("POPSHDD: Missing IOPRP252.IMG file."); continue; }
             if (!dirFiles.includes("POPSTARTER.ELF")) { console.log("POPSHDD: Missing POPSTARTER.ELF file."); continue; }
 
-            mountHDDPartition("__.POPS");
+            popsPaths[i] = `${mountHDDPartition("__.POPS") }:/`;
         }
         else
         {
-            const dirFiles = os.readdir(`${popsPaths[i]}`)[0];
+            const dirFiles = os.readdir(popsPaths[i])[0];
 
             if (!dirFiles.includes("POPS_IOX.PAK")) { continue; }
             if (!dirFiles.includes("POPSTARTER.ELF")) { continue; }
         }
 
-        PopsParseDirectory(`${popsPaths[i]}`);
-
-        scannedPaths.push(popsPaths[i]);
+        PopsParseDirectory(popsPaths[i]);
     }
 
     if (gameList.length > 1) { gameList.sort((a, b) => a.Name.localeCompare(b.Name)); }

@@ -164,7 +164,6 @@ function getOptionContextInfo()
             }
         };
 
-        console.log("NEUTSETTS: Set Message Screen Parameters");
         DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
         DATA.OVSTATE = "MESSAGE_IN";
         DATA.MESSAGE_INFO =
@@ -376,6 +375,11 @@ function updateCWD()
         }
     }
 
+    if ((cwd === "") && (basepath.substring(0, 3) === "pfs"))
+    {
+        cwd = `${basepath}APPS/neutrino`;
+    }
+
     return true;
 }
 
@@ -432,10 +436,6 @@ function getGames()
 
         // Get Directory Object, Skip if Directory could not be read.
         const dir = os.readdir(roots[i]);
-
-        console.log(`PS2GAMES: Root = ${roots[i]}`);
-        console.log(`PS2GAMES: Device = ${devices[i]}`);
-        console.log(`PS2GAMES: FS = ${fsmodes[i]}`);
 
         if (fsmodes[i] === "hdl")
         {

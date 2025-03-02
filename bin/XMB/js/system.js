@@ -219,13 +219,59 @@ function getDiscSystemCNF()
     return [];
 }
 
-/* Mount a HDD0 partition into the virtual path `pfs1` */
+/* Mount a HDD0 partition into the virtual path `pfs1` and returns its partition path. */
+/* returns 'pfs0' partition if already mounted. */
 
 function mountHDDPartition(partition)
 {
     if (os.readdir("pfs1:/")[1] === 0) { System.fileXioUmount("pfs1:"); }
 
-    System.fileXioMount("pfs1:", `hdd0:${partition}`);
+    try
+    {
+        System.fileXioMount("pfs1:", `hdd0:${partition}`);
+    }
+    catch (e)
+    {
+        console.log(`Failed Mounting Partition: ${e}`);
+        if (e != "InternalError: fileXioMount failed with error code -16")
+        {
+            console.log("Error does not match, return pfs1");
+            return "pfs1";
+        }
+
+        console.log("Return pfs0");
+        return "pfs0";
+    }
+
+
+    console.log("Return pfs1");
+    return "pfs1";
+}
+
+/* returns partition mounted on pfs0. */
+
+function getCWDPartition(partition)
+{
+    // return empty if cwd is not a virtual hdd partition.
+
+    if (os.getcwd()[0].substring(0, 3) !== "pfs") { return ""; }
+
+    console.log("Get CWD HDD Partition");
+    const partitions = System.listDir("hdd0:").filter(item => item.name !== "." && item.name !== ".." && item.dir);
+    for (let i = 0; i < partitions.length; i++)
+    {
+        const item = partitions[i];
+        console.log("Mounting Partition: " + item.name);
+        const part = mountHDDPartition(item.name);
+        if (part === "pfs0")
+        {
+            console.log("Partition Found: " + item.name);
+            return item.name;
+        }
+    }
+
+    // partition not found?
+    return "";
 }
 
 /* Decode a byte array into a UTF-8 string */
@@ -667,9 +713,9 @@ function getPOPSCheat(cheats, game = "", device = "mass")
     {
         case "hdd":
             if (os.readdir("hdd0:")[0].length === 0) { return enabledCheats; }
-            mountHDDPartition("__common");
-            if (!os.readdir("pfs1:/")[0].includes("POPS")) { return enabledCheats; }
-            path = `pfs1:/POPS/${game}`;
+            const part = mountHDDPartition("__common");
+            if (!os.readdir(`${part}:/`)[0].includes("POPS")) { return enabledCheats; }
+            path = `${part}:/POPS/${game}`;
             break;
         case "mass":
             path = `mass:/POPS/${game}`;
@@ -722,10 +768,10 @@ function setPOPSCheat(cheats, game = "", device = "mass")
     {
         case "hdd":
             if (os.readdir("hdd0:")[0].length === 0) { return; }
-            mountHDDPartition("__common");
-            if (!os.readdir("pfs1:/")[0].includes("POPS")) { return; }
+            const part = mountHDDPartition("__common");
+            if (!os.readdir(`${part}:/`)[0].includes("POPS")) { return; }
 
-            path = `pfs1:/POPS/${game}`;
+            path = `${part}:/POPS/${game}`;
             break;
         case "mass":
             path = `mass:/POPS/${game}`;
