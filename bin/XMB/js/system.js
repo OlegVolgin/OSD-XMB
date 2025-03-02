@@ -425,14 +425,21 @@ function getGameName(path)
         return match[1].trim();
     }
 
-    // Check if the string starts with "PP.HDL." and extract the game name without extension
+    // Check for "PP.HDL." format
     let ppHdlMatch = path.match(/^PP\.HDL\.(.+)\.[^/.]+$/);
     if (ppHdlMatch && ppHdlMatch[1])
     {
         return ppHdlMatch[1].trim();
     }
 
-    // If no match, extract the file name without the extension
+    // Check for "PP.Game-ID.." format
+    let ppGameIdMatch = path.match(/^PP\.[A-Z]{4}[-_][0-9]+\.\.(.+)\.[^/]+$/);
+    if (ppGameIdMatch && ppGameIdMatch[1])
+    {
+        return ppGameIdMatch[1].trim();
+    }
+
+    // Extract file name without the extension
     let fileNameMatch = path.match(/([^/]+)\.[^/.]+$/);
     if (fileNameMatch && fileNameMatch[1])
     {
