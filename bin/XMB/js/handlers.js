@@ -347,6 +347,9 @@ function exit()
             }
             else if (DASH_SEL.Type == "ELF")
             {
+                // Resolve Path if dynamic.
+                DASH_SEL.Value.Path = resolveFilePath(DASH_SEL.Value.Path);
+
                 if (DASH_SEL.Value.Path.substring(0, 4) == "pfs1")
                 {
                     if ("Partition" in DASH_SEL.Value)

@@ -48,6 +48,8 @@ function SaveLastPlayedAndGetExArgs()
     const cfg = DATA.CONFIG.Get(cfgPath);
     cfg["lastPlayed"] = DASH_SEL.Name;
     DATA.CONFIG.Set(cfgPath, cfg);
+
+    setHistoryEntry(DASH_SEL.Description);
 }
 
 function getGameSettings(code)

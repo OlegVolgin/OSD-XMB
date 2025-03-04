@@ -142,7 +142,11 @@ const DATA =
 ///*				   			 FUNCTIONS							  *///
 //////////////////////////////////////////////////////////////////////////
 
-/* Write all text on 'txt' to 'path' file */
+/**
+ * Write all text on 'txt' to 'path' file
+ * @param {String} path The path to write the text file.
+ * @param {String} txt The text to write to the file.
+ */
 
 function ftxtWrite(path, txt)
 {
@@ -160,7 +164,10 @@ function ftxtWrite(path, txt)
     }
 }
 
-/* Write 'line' text to the 'log.txt' file */
+/**
+ * Write 'line' text to the 'log.txt' file
+ * @param {String} line The text to write to the log file.
+ */
 
 function logl(line)
 {
@@ -179,6 +186,188 @@ function logl(line)
         file.close();
     }
 }
+
+function getSystemDataPath()
+{
+    const tmp = std.open("rom0:ROMVER", "r");
+    const ROMVER = tmp.readAsString();
+    tmp.close();
+
+    switch (ROMVER[4])
+    {
+        case 'C': return "BCDATA-SYSTEM";
+        case 'E': return "BEDATA-SYSTEM";
+        case 'X':
+        case 'H':
+        case 'A': return "BADATA-SYSTEM";
+        case 'T':
+        case 'J': return "BIDATA-SYSTEM";
+    }
+}
+
+function getCurrentDOSDate()
+{
+    const now = new Date();
+    const year = now.getFullYear() - 1980; // DOS date starts at 1980
+    const month = now.getMonth() + 1; // JS months are 0-based
+    const day = now.getDate();
+    return (year << 9) | (month << 5) | day;
+}
+
+function getMcHistory()
+{
+    const file = os.open(`mc0:/${getSystemDataPath()}/history`, os.O_RDONLY);
+    if (file < 0)
+    {
+        console.log(`ERROR: Could not open history file`);
+        return [];
+    }
+
+    const objects = [];
+    const entrySize = 0x16;
+    const buffer = new Uint8Array(entrySize);
+
+    while (os.read(file, buffer.buffer, 0, entrySize) === entrySize)
+    {
+        const name = String.fromCharCode(...buffer.subarray(0, 0x10)).replace(/\x00+$/, '');
+        const playCount = buffer[0x10];
+        const bitmask = buffer[0x11];
+        const bitshift = buffer[0x12];
+        const dosDate = (buffer[0x14] | (buffer[0x15] << 8)); // Little-endian
+
+        objects.push({ name, playCount, bitmask, bitshift, dosDate });
+    }
+
+    os.close(file);
+    return objects;
+}
+
+function setMcHistory(entries)
+{
+    const systemDataPath = getSystemDataPath();
+    if (!os.readdir("mc0:/")[0].includes("systemDataPath")) { os.mkdir(`mc0:/${systemDataPath}`); }
+
+    const file = os.open(`mc0:/${systemDataPath}/history`, os.O_WRONLY | os.O_CREAT);
+    if (file < 0)
+    {
+        console.log(`ERROR: Could not create history file on mc0:/${systemDataPath}`);
+        return false;
+    }
+
+    const entrySize = 0x16;
+    const buffer = new Uint8Array(entrySize);
+
+    for (const obj of entries)
+    {
+        buffer.fill(0);
+        for (let i = 0; i < obj.name.length; i++)
+        {
+            buffer[i] = obj.name.charCodeAt(i);
+        }
+        buffer[0x10] = obj.playCount;
+        buffer[0x11] = obj.bitmask;
+        buffer[0x12] = obj.bitshift;
+        buffer[0x13] = 0x00; // Padding zero
+        buffer[0x14] = obj.dosDate & 0xFF;
+        buffer[0x15] = (obj.dosDate >> 8) & 0xFF;
+
+        os.write(file, buffer.buffer, 0, entrySize);
+    }
+
+    os.close(file);
+    return true;
+}
+
+function setHistoryEntry(name)
+{
+    const objects = getMcHistory();
+    const currentDate = getCurrentDOSDate();
+    let found = false;
+    let emptySlot = false;
+
+    for (const obj of objects)
+    {
+        if (obj.name === name)
+        {
+            // If name exists, update play count and date
+            obj.playCount = Math.min(obj.playCount + 1, 0x3F);
+            obj.dosDate = currentDate;
+            found = true;
+            break;
+        } else if (!emptySlot && obj.name === "")
+        {
+            // Store the first empty slot found
+            emptySlot = obj;
+        }
+    }
+
+    if (!found)
+    {
+        if (emptySlot)
+        {
+            // Reuse an empty slot
+            emptySlot.name = name;
+            emptySlot.playCount = 0x01;
+            emptySlot.bitmask = 0x01;
+            emptySlot.bitshift = 0x00;
+            emptySlot.dosDate = currentDate;
+        }
+        else if (objects.length < 21)
+        {
+            // Append a new entry if the list is not full
+            objects.push({
+                name: name,
+                playCount: 0x01,
+                bitmask: 0x01,
+                bitshift: 0x00,
+                dosDate: currentDate
+            });
+        }
+        else
+        {
+            console.log("ERROR: No space left to add a new entry.");
+        }
+    }
+
+    return setMcHistory(objects);
+}
+
+/**
+ * If path is dynamic, resolve it to a valid path.
+ * @param {String} path The path to the file.
+ * @returns {String} First possible validated path.
+*/
+
+function resolveFilePath(filePath)
+{
+    if (!filePath.includes('?')) return filePath; // Literal path, return as is
+
+    const prefixes = {
+        'mass': Array.from({ length: 10 }, (_, i) => `mass${i}`),
+        'mc': ['mc0', 'mc1'],
+        'mmce': ['mmce0', 'mmce1']
+    };
+
+    const match = filePath.match(/^(mass|mc|mmce)\?:\/(.*)/);
+    if (!match) return '';
+
+    const [, root, subPath] = match;
+    for (const variant of prefixes[root])
+    {
+        const fullPath = `${variant}:/${subPath}`;
+        if (std.exists(fullPath))
+        {
+            return fullPath;
+        }
+    }
+
+    return ''; // File not found in any of the checked paths
+}
+
+/**
+ * Get the system.cnf key pairs parsed from the disc root.
+ * @returns {Object} The system.cnf file contents.
+ */
 
 function getDiscSystemCNF()
 {
@@ -219,8 +408,11 @@ function getDiscSystemCNF()
     return [];
 }
 
-/* Mount a HDD0 partition into the virtual path `pfs1` and returns its partition path. */
-/* returns 'pfs0' partition if already mounted. */
+/**
+ * Mount a HDD0 partition into the virtual path `pfs1` and returns its partition path.
+ * @param {String} partition The partition to mount.
+ * @returns {String} The partition path mounted (`pfs1` or 'pfs0').
+ */
 
 function mountHDDPartition(partition)
 {
