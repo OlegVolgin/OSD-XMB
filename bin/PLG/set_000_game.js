@@ -120,13 +120,13 @@ const DESC_SET1 =
 
 const NAME_SET2 =
 [
-    "Debug Colors",
-    "Debug Colors",
-    "Colores de Depuración",
-    "Debug-Farben",
-    "Colori di debug",
-    "Debug Colors",
-    "Debug Colors",
+    "PS2 - Debug Colors",
+    "PS2 - Debug Colors",
+    "PS2 - Colores de Depuración",
+    "PS2 - Debug-Farben",
+    "PS2 - Colori di debug",
+    "PS2 - Debug Colors",
+    "PS2 - Debug Colors",
 ];
 
 const DESC_SET2 =
@@ -138,6 +138,28 @@ const DESC_SET2 =
     "Mostra i colori di debug nei giochi digitali.",
     "Show the debug colors on digital games",
     "Show the debug colors on digital games",
+];
+
+const NAME_SET3 =
+[
+    "PS2 - Force Progressive",
+    "PS2 - Force Progressive",
+    "PS2 - Forzar Progresivo",
+    "PS2 - Force Progressive",
+    "PS2 - Force Progressive",
+    "PS2 - Force Progressive",
+    "PS2 - Force Progressive",
+];
+
+const DESC_SET3 =
+[
+    "Force progressive scan mode on digital games.",
+    "Force progressive scan mode on digital games.",
+    "Forzar modo de escaneo progresivo en juegos digitales.",
+    "Force progressive scan mode on digital games.",
+    "Force progressive scan mode on digital games.",
+    "Force progressive scan mode on digital games.",
+    "Force progressive scan mode on digital games.",
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -314,6 +336,24 @@ function getDbcContextInfo()
     return { Options: ctx_options, Default: ((DATA.GAMESETS.DBC) ? 1 : 0), ItemCount: ctx_options.length, Confirm: _a};
 }
 
+function getPS2GSMContextInfo()
+{
+    let ctx_options = [];
+    ctx_options.push({ Name: TXT_NO, Icon: -1 });
+    ctx_options.push({ Name: TXT_YES, Icon: -1 });
+
+    // Accept Changes Function
+    let _a = function (DATA, val)
+    {
+        DATA.GAMESETS.GSM = (val == 1);
+        let config = DATA.CONFIG.Get("neutrino.cfg");
+        config["gsm"] = DATA.GAMESETS.GSM.toString();
+        DATA.CONFIG.Push("neutrino.cfg", config);
+    };
+
+    return { Options: ctx_options, Default: ((DATA.GAMESETS.GSM) ? 1 : 0), ItemCount: ctx_options.length, Confirm: _a };
+}
+
 function addOption(options, name, desc, val)
 {
     options.push({
@@ -338,6 +378,7 @@ function getOptions()
 
     options = addOption(options, NAME_SET1, DESC_SET1, getLogoContextInfo());
     options = addOption(options, NAME_SET2, DESC_SET2, getDbcContextInfo());
+    options = addOption(options, NAME_SET3, DESC_SET3, getPS2GSMContextInfo());
     options = addOption(options, NAME_SETA, "", getBoolCheatContextInfo("480p"));
     options = addOption(options, NAME_SETB, "", getBoolCheatContextInfo("SMOOTH"));
     options = addOption(options, NAME_SETC, "", getIGRContextInfo());

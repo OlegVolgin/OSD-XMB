@@ -135,7 +135,7 @@ const DATA =
     CUSTOM_FUNCTION: () => { console.log("Default function"); },
     CONFIG: null,
     CPYQUEUE: [],
-    GAMESETS: { LOGO: false, DBC: false},
+    GAMESETS: { LOGO: false, DBC: false, GSM: false},
 };
 
 //////////////////////////////////////////////////////////////////////////

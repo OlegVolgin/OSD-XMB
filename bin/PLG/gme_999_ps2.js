@@ -36,6 +36,7 @@ function SaveLastPlayedAndGetExArgs()
 {
     if (DATA.GAMESETS.LOGO) { DASH_SEL.Value.Args.push('-logo'); }
     if (DATA.GAMESETS.DBC) { DASH_SEL.Value.Args.push('-dbc'); }
+    if (DATA.GAMESETS.GSM) { DASH_SEL.Value.Args.push('-gsm=fp'); }
     const config = DATA.CONFIG.Get(`${DASH_SEL.Description}.cfg`);
 
     if (("gc" in config) && (config["gc"] !== "")) { DASH_SEL.Value.Args.push(`-gc=${config["gc"]}`); }
