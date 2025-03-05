@@ -39,8 +39,8 @@ function SaveLastPlayedAndGetExArgs()
     const config = DATA.CONFIG.Get(`${DASH_SEL.Description}.cfg`);
 
     if (("gc" in config) && (config["gc"] !== "")) { DASH_SEL.Value.Args.push(`-gc=${config["gc"]}`); }
-    if (("VMC0" in config) && (config["VMC0"] === "true")) { DASH_SEL.Value.Args.push(`-mc0=${basepath}VMC/${DASH_SEL.Description}_0.vmc`); }
-    if (("VMC1" in config) && (config["VMC1"] === "true")) { DASH_SEL.Value.Args.push(`-mc1=${basepath}VMC/${DASH_SEL.Description}_1.vmc`); }
+    if (("VMC0" in config) && (config["VMC0"] !== "no")) { DASH_SEL.Value.Args.push(`-mc0=${basepath}VMC/${config["VMC0"]}_0.vmc`); }
+    if (("VMC1" in config) && (config["VMC1"] !== "no")) { DASH_SEL.Value.Args.push(`-mc1=${basepath}VMC/${config["VMC1"]}_1.vmc`); }
 
     if (DASH_SEL.Device !== "ATA") { DASH_SEL.Value.Args.push('-qb'); }
 
@@ -118,10 +118,13 @@ function getOptionContextInfo()
 
         let saveGameSettings = function()
         {
+            // Get Game ID, return if empty.
             const code = DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description;
+            if (code === "") { return; }
+
+            // Get Game Settings
             const config = DATA.CONFIG.Get(`${code}.cfg`);
-            config["VMC0"] = (DATA.MESSAGE_INFO.Data[2].Selected === 1).toString();
-            config["VMC1"] = (DATA.MESSAGE_INFO.Data[3].Selected === 1).toString();
+
             let gcModes = "";
             if (DATA.MESSAGE_INFO.Data[4].Selected === 1) { gcModes += "0"; }
             if (DATA.MESSAGE_INFO.Data[5].Selected === 1) { gcModes += "2"; }
@@ -129,16 +132,20 @@ function getOptionContextInfo()
             if (DATA.MESSAGE_INFO.Data[7].Selected === 1) { gcModes += "7"; }
             if (DATA.MESSAGE_INFO.Data[8].Selected === 1) { gcModes += "3"; }
             config["gc"] = gcModes;
-            DATA.CONFIG.Push(`${DASH_SUB[DATA.DASH_CURSUB].Options[DATA.DASH_CURSUBOPT].Description}.cfg`, config);
 
             let setCopyMessage = false;
+            let vmcgameid = code;
             const vmcfiles = os.readdir(`${basepath}VMC/`)[0];
+            const vmcgroups = DATA.CONFIG.Get("VMCGRP.cfg");
+            if (code in vmcgroups) { vmcgameid = vmcgameid[code]; }
+
             for (let i = 0; i < 2; i++)
             {
-                if ((config[`VMC${i.toString()}`] === "true") && (!vmcfiles.includes(`${code}_${i}.vmc`)))
+                if ((DATA.MESSAGE_INFO.Data[2 + i].Selected === 1) && (!vmcfiles.includes(`${vmcgameid}_${i}.vmc`)))
                 {
-                    threadCopyPush(`${basepath}VMC/blank.vmc`, `${basepath}VMC/${code}_${i}.vmc`);
+                    threadCopyPush(`${basepath}VMC/blank.vmc`, `${basepath}VMC/${vmcgameid}_${i}.vmc`);
                     setCopyMessage = true;
+                    config[`VMC${i.toString()}`] = vmcgameid;
                 }
             }
 
@@ -164,6 +171,8 @@ function getOptionContextInfo()
                     }
                 };
             }
+
+            DATA.CONFIG.Push(`${code}.cfg`, config);
         };
 
         DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
