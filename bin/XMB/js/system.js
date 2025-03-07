@@ -151,7 +151,7 @@ const DATA =
 function ftxtWrite(path, txt)
 {
     let errObj = {};
-    const file = std.open(path, "w", errObj);
+    const file = std.open(path, "w+", errObj);
     if (file)
     {
         file.puts(txt);

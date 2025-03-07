@@ -40,6 +40,7 @@ popsPaths.push(`hdd`);                    // For HDD support
 
 const cfgPath = "pops.cfg";
 const cfg = DATA.CONFIG.Get(cfgPath);
+const vmcgrps = DATA.CONFIG.Get("PS1VMCGRP.cfg");
 
 function SaveLastPlayed()
 {
@@ -355,6 +356,7 @@ function PopsParseDirectory(path)
             gameList.push({
                 Name: title,
                 Description: gamedesc,
+                GameID: gameCode,
                 Icon: -1,
                 Type: type,
                 Value: value,
@@ -416,6 +418,27 @@ function generateELFs()
     });
 }
 
+function generateVMCs()
+{
+    gameList.forEach((item) =>
+    {
+        const basePath = getDirectoryName(item.Value.Path);
+        const vcdname = item.Name;
+
+        if (item.GameID in vmcgrps)
+        {
+            if (!os.readdir(basePath)[0].includes(vmcgrps[item.GameID]))
+            {
+                os.mkdir(`${basePath}${vmcgrps[item.GameID]}`);
+            }
+            if (!os.readdir(`${basePath}${vcdname}/`)[0].includes("VMCDIR.TXT"))
+            {
+                ftxtWrite(`${basePath}${vcdname}/VMCDIR.TXT`, vmcgrps[item.GameID]);
+            }
+        }
+    });
+}
+
 function getGames()
 {
     let lastPlayed = 0;
@@ -468,6 +491,7 @@ function getGames()
     }
 
     generateELFs();
+    generateVMCs();
 
     return { Options: gameList, Default: lastPlayed, ItemCount: gameList.length };
 }

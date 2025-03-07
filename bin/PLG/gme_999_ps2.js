@@ -137,7 +137,7 @@ function getOptionContextInfo()
             let setCopyMessage = false;
             let vmcgameid = code;
             const vmcfiles = os.readdir(`${basepath}VMC/`)[0];
-            const vmcgroups = DATA.CONFIG.Get("VMCGRP.cfg");
+            const vmcgroups = DATA.CONFIG.Get("PS2VMCGRP.cfg");
             if (code in vmcgroups) { vmcgameid = vmcgameid[code]; }
 
             for (let i = 0; i < 2; i++)
