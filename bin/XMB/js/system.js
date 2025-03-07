@@ -1040,6 +1040,8 @@ function setPOPSCheat(cheats, game = "", device = "mass")
     {
         let lines = [];
 
+        lines.push("$SAFEMODE");
+
         for (let i = 0; i < cheats.length; i++)
         {
             if (cheats[i].enabled) { lines.push(`$${cheats[i].code}`); }
