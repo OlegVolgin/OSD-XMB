@@ -93,6 +93,12 @@ function GetMcOptions()
     options = TryAddMCApps(options, "mc0:/");
     options = TryAddMCApps(options, "mc1:/");
 
+    if (os.readdir("hdd0:").includes("__common"))
+    {
+        const part = mountHDDPartition("__common");
+        options = TryAddMCApps(options, `${part}:APPS/`);
+    }
+
     options.sort((a, b) => a.Name.localeCompare(b.Name));
 
     return { Options: options, Default: 0, ItemCount: options.length, };
