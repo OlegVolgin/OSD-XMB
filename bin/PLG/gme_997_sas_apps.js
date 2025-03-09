@@ -77,10 +77,7 @@ function TryAddMCApps(options, path)
         if ((item.dir) && (item.name !== ".") && (item.name !== "..") && (item.name.includes('_')))
         {
             const app = parseTitleCfg(`${path}${item.name}/`);
-            if ('Name' in app)
-            {
-                options.push(app);
-            }
+            if ('Name' in app) { options.push(app); }
         }
     });
 

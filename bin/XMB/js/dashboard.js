@@ -10,6 +10,8 @@ const DASH_CAT = [];	// Category Object Array.
 const DASH_SUB = [];	// Sub Menu Object Array.
 const DASH_CTX = [];	// Context Menu Object Array
 let DASH_SEL = {};		// Temporary Object to hold the current Selected Item Object.
+let DASH_CTX_PRWIMG = false;
+let DASH_CTX_PRWALPHA = 0;
 
 // Boot Logo
 let boot_logo = new Image(`./XMB/dash/dash_logo.png`);
@@ -422,7 +424,6 @@ function DrawInterfaceFade(frm, direction = 1)
 
     if ((DATA.DISPLAYBG) && (DATA.BGIMG) && (direction > 0) && (DATA.BGIMGA < 128))
     {
-        console.log(DATA.BGIMGA);
         DATA.BGIMGA = frm * 12;
         if (DATA.BGIMGA > 128) { DATA.BGIMGA = 128; }
     }
@@ -1146,6 +1147,8 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
                 glowText.Value = glowText.Value + glowText.Dir;
             }
 
+            DrawContextPreviewImage();
+
             dash_ctx_ico.color = Color.new(255,255,255, glowText.Value * 2);
             dash_ctx_ico.draw(x - 8, y + 4);
         }
@@ -1263,6 +1266,33 @@ function DrawContextOptions(aMod = 0, xMod = 0)
     { DrawContextArrows(aMod, xMod); }
 }
 
+function DrawContextPreviewImage()
+{
+    let time = Math.round(Timer.getTime(DATA.DASH_CTX_TIMER) / 100000);
+    if (("PreviewImage" in DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected]) && (time > 6))
+    {
+        if (!DASH_CTX_PRWIMG)
+        {
+            DASH_CTX_PRWALPHA = 0;
+            DASH_CTX_PRWIMG = new Image(DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected].PreviewImage);
+        }
+
+        if (DASH_CTX_PRWALPHA > 20) { DASH_CTX_PRWALPHA = 20; }
+        let easedProgress = easeOutCubic(Math.min(DASH_CTX_PRWALPHA++ / 20, 1));
+        let col = neutralizeOverlayWithAlpha();
+        let a = Math.round(easedProgress * 128);
+        DASH_CTX_PRWIMG.width = 240;
+        DASH_CTX_PRWIMG.height = 135;
+        DASH_CTX_PRWIMG.color = Color.new(col.r, col.g, col.b, a);
+        DASH_CTX_PRWIMG.draw(DATA.CANVAS.width - 450, 300);
+    }
+    else
+    {
+        DASH_CTX_PRWALPHA = 0;
+        DASH_CTX_PRWIMG = false;
+    }
+}
+
 // Executes a custom function (if available) on the Context Menu
 // after an Item has been highlighted for a period of time, while Idle.
 
@@ -1271,7 +1301,6 @@ function ExecutePreviewFunc()
     let time = Math.round(Timer.getTime(DATA.DASH_CTX_TIMER) / 100000);
     if (("Preview" in DASH_CTX[DATA.DASH_CURCTXLVL]) && (time > 10))
     {
-        Timer.reset(DATA.DASH_CTX_TIMER);
         Timer.pause(DATA.DASH_CTX_TIMER);
         let _f = DASH_CTX[DATA.DASH_CURCTXLVL].Preview;
         _f(DATA, DASH_CTX[DATA.DASH_CURCTXLVL].Selected);

@@ -195,10 +195,130 @@ function GetThemeContextInfo()
             Icon: ico,
         });
 
+        if (dirFiles.includes("thmprw.png")) { dir_options[dir_options.length - 1].PreviewImage = `./THM/${item.name}/thmprw.png`; }
+
         if (item.name == CURTHEME) { defItem = dir_options.length - 1; }
     });
 
-    return { Options: dir_options, Default: defItem, ItemCount: dir_options.length, };
+    let _a = function (DATA, val)
+    {
+        DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
+        DATA.OVSTATE = "MESSAGE_IN";
+        DATA.MESSAGE_INFO =
+        {
+            Icon: 9,
+            Title: NAME_SET1,
+            BG: false,
+            Type: "TEXT",
+            Text: thmSett_Wait,
+            BACK_BTN: false,
+            ENTER_BTN: false,
+            BgFunction: () =>
+            {
+                let config = DATA.CONFIG.Get("main.cfg");
+                if (DATA.THEME_PATH !== `THM/${config["Theme"]}/`)
+                {
+                    DATA.THEME_PATH = `THM/${config["Theme"]}/`;
+
+                    if (os.readdir(DATA.THEME_PATH)[0].includes("thm.js"))
+                    {
+                        std.loadScript(`${DATA.THEME_PATH}thm.js`);
+                    }
+
+                    let bgComplete = false;
+                    let imgsLoaded = false;
+                    let fntLoaded = false;
+                    let sndLoaded = false;
+
+                    loaded_icons = 0;
+
+                    if (config["Theme"] === "Original")
+                    {
+                        DATA.DISPLAYBG = false;
+                        DATA.BGIMG = false;
+                        DATA.BGIMGA = 0;
+                    }
+
+                    let intervalID = os.setInterval(() =>
+                    {
+                        let finished = false;
+
+                        if (DATA.DISPLAYBG) { DATA.BGIMGA += 12; if (DATA.BGIMGA >= 128) { bgComplete = true; } }
+                        else { bgComplete = true; }
+
+                        if (imgsLoaded === false)
+                        {
+                            if ((os.readdir(`${DATA.THEME_PATH}`)[0].includes("icons")))
+                            {
+                                if (loaded_icons < dash_icons_names.length)
+                                {
+                                    if (os.readdir(`${DATA.THEME_PATH}icons/`)[0].includes(`${dash_icons_names[loaded_icons]}`))
+                                    {
+                                        let icon = new Image(`${DATA.THEME_PATH}icons/${dash_icons_names[loaded_icons]}`);
+                                        icon.optimize();
+                                        icon.filter = LINEAR;
+                                        dash_icons[loaded_icons] = icon;
+                                    }
+
+                                    loaded_icons++;
+                                }
+                                else
+                                {
+                                    imgsLoaded = true;
+                                }
+                            }
+                            else
+                            {
+                                loaded_icons = dash_icons_names.length;
+                                imgsLoaded = true;
+                            }
+                        }
+
+                        if (fntLoaded === false)
+                        {
+                            // Reload Font
+
+                            if ((os.readdir(`${DATA.THEME_PATH}`)[0].includes("text")) && (os.readdir(`${DATA.THEME_PATH}text/`)[0].includes("font.ttf")))
+                            {
+                                font_m = new Font(`${DATA.THEME_PATH}text/font.ttf`);
+                                font_s = new Font(`${DATA.THEME_PATH}text/font.ttf`);
+                                font_ss = new Font(`${DATA.THEME_PATH}text/font.ttf`);
+                                font_m.scale = 0.65f;
+                                font_s.scale = 0.5f;
+                                font_ss.scale = 0.44f;
+                            }
+
+                            fntLoaded = true;
+                        }
+
+                        if (sndLoaded === false)
+                        {
+                            // Pending
+
+                            sndLoaded = true;
+                        }
+
+                        if ((bgComplete) && (imgsLoaded) && (fntLoaded) && (sndLoaded)) { finished = true; }
+
+                        if (finished)
+                        {
+                            DATA.OVSTATE = "MESSAGE_OUT";
+                            DATA.DASH_STATE = "SUBMENU_MESSAGE_FADE_IN";
+                            DATA.DASH_MOVE_FRAME = 0;
+                            SetDashPadEvents(0);
+                            os.clearInterval(intervalID);
+                        }
+                    }, 0, );
+                }
+            },
+        };
+
+        let config = DATA.CONFIG.Get("main.cfg");
+        config["Theme"] = DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected].Name;
+        DATA.CONFIG.Push("main.cfg", config);
+    };
+
+    return { Options: dir_options, Default: defItem, ItemCount: dir_options.length, Confirm: _a };
 }
 
 function GetThemeColorContextInfo()

@@ -173,10 +173,7 @@ function ParseMainCFG()
     if ("dateFormat" in mainCFG) { DATA.DATE_FORMAT = Number(mainCFG["dateFormat"]); }
     if ("hourFormat" in mainCFG) { DATA.HOUR_FORMAT = Number(mainCFG["hourFormat"]); }
 
-    // Get the user's preferred Theme.
-    if ("Theme" in mainCFG) { DATA.THEME_PATH = `THM/${mainCFG["Theme"]}/`; }
-
-    // Parse the user preferred background color.
+    // Set the user preferred Background Color.
 
     if ("BgColor" in mainCFG)
     {
@@ -189,11 +186,11 @@ function ParseMainCFG()
         DATA.BGSWITCH = true;
     }
 
-    // Parse the main Configuration file to set the display of background waves.
+    // Set Background Waves
 
     if ("waves" in mainCFG) { DATA.BGWAVES = (mainCFG["waves"].toLowerCase() === "true"); }
 
-    // Set the Background Image if any
+    // Set Background Image settings.
 
     if ("customBg" in mainCFG) {
         DATA.CUSTOMBG_PATH = mainCFG["customBg"];
@@ -204,13 +201,20 @@ function ParseMainCFG()
         }
     }
 
-    if ("displayBg" in mainCFG) {
-        DATA.DISPLAYBG = (mainCFG["displayBg"] === "true");
-    }
+    if ("displayBg" in mainCFG) { DATA.DISPLAYBG = (mainCFG["displayBg"] === "true"); }
 
-    if (("net" in mainCFG) && (mainCFG["net"].toLowerCase() === "true"))
+    // Init Network
+
+    if (("net" in mainCFG) && (mainCFG["net"].toLowerCase() === "true")) { NetInit(); }
+
+    // Get the user's preferred Theme and execute the Theme's code if any.
+    if ("Theme" in mainCFG)
     {
-        NetInit();
+        DATA.THEME_PATH = `THM/${mainCFG["Theme"]}/`;
+        if (os.readdir(DATA.THEME_PATH)[0].includes("thm.js"))
+        {
+            std.loadScript(`${DATA.THEME_PATH}thm.js`);
+        }
     }
 }
 

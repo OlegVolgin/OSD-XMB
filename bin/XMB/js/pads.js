@@ -366,6 +366,7 @@ function SetPadEvents_Context()
     {
         if ((DASH_CTX[DATA.DASH_CURCTXLVL].Selected - 1) > -1)
         {
+            DASH_CTX_PRWIMG = false;
             Timer.reset(DATA.DASH_CTX_TIMER);
             Timer.resume(DATA.DASH_CTX_TIMER);
             scrollIndex = 0;
@@ -384,6 +385,7 @@ function SetPadEvents_Context()
     {
         if ((DASH_CTX[DATA.DASH_CURCTXLVL].Selected + 1) < DASH_CTX[DATA.DASH_CURCTXLVL].ItemCount)
         {
+            DASH_CTX_PRWIMG = false;
             Timer.reset(DATA.DASH_CTX_TIMER);
             Timer.resume(DATA.DASH_CTX_TIMER);
             scrollIndex = 0;
