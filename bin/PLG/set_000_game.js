@@ -375,6 +375,7 @@ function getOptions()
 
     if ("logo" in config) { DATA.GAMESETS.LOGO = (config["logo"] === "true"); }
     if ("dbc" in config) { DATA.GAMESETS.DBC = (config["dbc"] === "true"); }
+    if ("gsm" in config) { DATA.GAMESETS.GSM = (config["gsm"] === "true"); }
 
     options = addOption(options, NAME_SET1, DESC_SET1, getLogoContextInfo());
     options = addOption(options, NAME_SET2, DESC_SET2, getDbcContextInfo());

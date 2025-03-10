@@ -161,7 +161,7 @@ function drawDashIcon(i, w, h, a, x, y, r = 0.0)
     {
         dash_icons[i].width = w;
         dash_icons[i].height = h;
-        dash_icons[i].color = Color.new(255,255,255,a);
+        dash_icons[i].color = Color.new(128,128,128,a);
         dash_icons[i].angle = r;
         dash_icons[i].draw(x, y);
     }
@@ -179,7 +179,7 @@ function drawDashLoadIcon(w, h, a, x, y)
         const yRes = Math.round((h - 78) / 2);
         dash_load_ico.width = w;
         dash_load_ico.height = h;
-        dash_load_ico.color = Color.new(255,255,255,a);
+        dash_load_ico.color = Color.new(128,128,128,a);
         dash_load_ico.angle = spining;
         dash_load_ico.draw(x + 39 + xRes, y + yRes + 39);
     }

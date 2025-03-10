@@ -202,6 +202,11 @@ function GetThemeContextInfo()
 
     let _a = function (DATA, val)
     {
+        if (DATA.THEME_PATH === `THM/${DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected].Name}/`)
+        {
+            return;
+        }
+
         DATA.DASH_STATE = "SUBMENU_CONTEXT_MESSAGE_FADE_OUT";
         DATA.OVSTATE = "MESSAGE_IN";
         DATA.MESSAGE_INFO =
@@ -237,6 +242,11 @@ function GetThemeContextInfo()
                         DATA.DISPLAYBG = false;
                         DATA.BGIMG = false;
                         DATA.BGIMGA = 0;
+                        DATA.OVALPHA = 20;
+                    }
+                    else
+                    {
+                        DATA.OVALPHA = 0;
                     }
 
                     let intervalID = os.setInterval(() =>
@@ -252,14 +262,11 @@ function GetThemeContextInfo()
                             {
                                 if (loaded_icons < dash_icons_names.length)
                                 {
-                                    if (os.readdir(`${DATA.THEME_PATH}icons/`)[0].includes(`${dash_icons_names[loaded_icons]}`))
-                                    {
-                                        let icon = new Image(`${DATA.THEME_PATH}icons/${dash_icons_names[loaded_icons]}`);
-                                        icon.optimize();
-                                        icon.filter = LINEAR;
-                                        dash_icons[loaded_icons] = icon;
-                                    }
-
+                                    const imgPath = (os.readdir(`${DATA.THEME_PATH}icons/`)[0].includes(`${dash_icons_names[loaded_icons]}`)) ? `${DATA.THEME_PATH}icons/${dash_icons_names[loaded_icons]}` : `./THM/Original/icons/${dash_icons_names[loaded_icons]}`;
+                                    let icon = new Image(imgPath);
+                                    icon.optimize();
+                                    icon.filter = LINEAR;
+                                    dash_icons[loaded_icons] = icon;
                                     loaded_icons++;
                                 }
                                 else

@@ -215,6 +215,8 @@ function ParseMainCFG()
         {
             std.loadScript(`${DATA.THEME_PATH}thm.js`);
         }
+
+        if (mainCFG["Theme"] !== "Original") { DATA.OVALPHA = 0; }
     }
 }
 

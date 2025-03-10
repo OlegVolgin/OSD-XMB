@@ -243,8 +243,8 @@ function boot()
             if (DATA.FADE_FRAME > 63) { DATA.FADE_FRAME = 0;  DATA.BOOT_STATE++; DATA.DASH_MOVE_FRAME = 0; }
             break;
         case 8: // FADE IN INTERFACE
-
-            DATA.OVCOL = Color.new(Color.getR(themeColor), Color.getG(themeColor), Color.getB(themeColor), DATA.DASH_MOVE_FRAME);
+            const OV_A = (DATA.OVALPHA > 0) ? DATA.DASH_MOVE_FRAME : 0;
+            DATA.OVCOL = Color.new(Color.getR(themeColor), Color.getG(themeColor), Color.getB(themeColor), OV_A);
             drawDate(-128 + (DATA.FADE_FRAME * 4), -146 + (DATA.FADE_FRAME * 4), -146 + (DATA.FADE_FRAME * 4));
 
             if (DATA.DASH_MOVE_FRAME < 21)

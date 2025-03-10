@@ -370,7 +370,7 @@ function DrawProgressFadeInText()
 
 function UpdateOvColor(dir)
 {
-    let colA = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: 20 };
+    let colA = { r: currentBgColor.r, g: currentBgColor.g, b: currentBgColor.b, a: DATA.OVALPHA };
     let colB = { r: 0, g: 0, b: 0, a: ((DATA.MESSAGE_INFO.BG) ? 112 : 48) };
     if (dir > 0) { let tmp = colA; colA = colB; colB = tmp; }
     let NewOvCol = interpolateColorObj(colA, colB, Math.fround(DATA.DASH_MOVE_FRAME / 20));
@@ -605,7 +605,7 @@ function drawBg()
 
             let tempColor = interpolateColorObj(prevColor, monthColors[DATA.BGCOL], DATA.BGFRAME);
             themeColor = Color.new(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
-            DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, 20);
+            DATA.OVCOL = Color.new(tempColor.r, tempColor.g, tempColor.b, DATA.OVALPHA);
             Waves.setThemeColor(tempColor);
 
             // If interpolation ended, update current parameters with new ones.

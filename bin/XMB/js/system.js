@@ -111,6 +111,7 @@ const DATA =
     BGIMGA: 0,
     DISPLAYBG: false,
     BGWAVES: true,
+    OVALPHA: 20,
     OVCOL: Color.new(0, 0, 0, 0),
     OVSTATE: "BOOT",
     MESSAGE_INFO: null,
@@ -786,6 +787,8 @@ function interpolateColorObj(color1, color2, t)
 
 function neutralizeOverlayWithAlpha()
 {
+    if (DATA.OVALPHA === 0) { return { r: 128, g: 128, b: 128 }; }
+
     const ovA = 0.15625f;
     const OvR = Color.getR(DATA.OVCOL);
     const OvG = Color.getG(DATA.OVCOL);
