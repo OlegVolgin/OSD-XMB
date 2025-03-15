@@ -101,7 +101,7 @@ const DATA =
     BGBRIGHTNESS: 0,
     BGCUSTOMBRIGHT: 0,
     BGSWITCH: false,
-    BGFRAME: 0,
+    BGFRAME: 0.0f,
     BGVAL: 0,
     BGTMP: 0,
     BGCOL: 0,

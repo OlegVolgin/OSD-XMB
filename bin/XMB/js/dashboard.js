@@ -111,6 +111,10 @@ const dash_icons_names =
 
 const ICOFULLA = 100;
 const TXTFULLA = 128;
+const ICOTINT = { r: 128, g: 128, b: 128 };
+let ICOSELCOL = { r: 128, g: 128, b: 128 };
+let TXTSELCOL = { r: 255, g: 255, b: 255 };
+let CTXTINT = { r: 128, g: 128, b: 128 };
 
 //////////////////////////////////////////////////////////////////////////
 ///*				   		    FUNCTIONS							  *///
@@ -155,13 +159,13 @@ function getDashFrameEasedMovement(direction)
 
 */
 
-function drawDashIcon(i, w, h, a, x, y, r = 0.0)
+function drawDashIcon(i, w, h, a, x, y, r = 0.0, tint)
 {
     if ((i > -1) && (a > 0))
     {
         dash_icons[i].width = w;
         dash_icons[i].height = h;
-        dash_icons[i].color = Color.new(128,128,128,a);
+        dash_icons[i].color = Color.new(tint.r, tint.g, tint.b, a);
         dash_icons[i].angle = r;
         dash_icons[i].draw(x, y);
     }
@@ -187,7 +191,7 @@ function drawDashLoadIcon(w, h, a, x, y)
 
 // Draws an interface element's icon.
 
-function DrawDashElementIcon(Obj, size, x, y, a)
+function DrawDashElementIcon(Obj, size, x, y, a, tint = ICOTINT)
 {
     if (ICOFULLA + a < 0) { a = -ICOFULLA; } else if (ICOFULLA + a > ICOFULLA) { a = 0; }
 
@@ -213,7 +217,21 @@ function DrawDashElementIcon(Obj, size, x, y, a)
     }
     else
     {
-        drawDashIcon(Obj.Icon, size, size, ICOFULLA + a, x, y);
+        drawDashIcon(Obj.Icon, size, size, ICOFULLA + a, x, y, undefined, tint);
+    }
+}
+
+// Draws the Focus Icon overlay
+
+function DrawFocusIcon(x, y, a, s)
+{
+    if (a < 0) { a = 0; } else if (a > ICOFULLA) { a = ICOFULLA; }
+    if (("DASH_FOCUS" in DATA) && (DATA.DASH_FOCUS) && (a > 0))
+    {
+        DATA.DASH_FOCUS.width = 84 + s;
+        DATA.DASH_FOCUS.height = 76 + s;
+        DATA.DASH_FOCUS.color = Color.new(128, 128, 128, a);
+        DATA.DASH_FOCUS.draw(x, y);
     }
 }
 
@@ -245,9 +263,16 @@ function DrawDashElementBackground(Obj, draw)
 
 // Draws an interface element's text.
 
-function DrawDashElementText(obj, glow, nameInfo, descInfo = -1, cntxInfo = -1)
+function DrawDashElementText(obj, glow, nameInfo, descInfo = -1, cntxInfo = -1, txtCol = { r: textColor.r, g: textColor.g, b: textColor.b, a: 0 })
 {
-    let txtCol = { r: 255, g: 255, b: 255, a: 0 };
+    if ((descInfo != -1) && ((TXTFULLA + descInfo.a) > 0) && (obj.Description !== ""))
+    {
+        txtCol.a = TXTFULLA + descInfo.a;
+        const desc = (Array.isArray(obj.Description)) ? obj.Description[DATA.LANGUAGE] : obj.Description;
+        const pos = { x: descInfo.x, y: descInfo.y };
+        TxtPrint(desc, txtCol, pos, "LEFT", font_ss);
+    }
+
     if ((TXTFULLA + nameInfo.a) > 0)
     {
         txtCol.a = TXTFULLA + nameInfo.a;
@@ -260,20 +285,15 @@ function DrawDashElementText(obj, glow, nameInfo, descInfo = -1, cntxInfo = -1)
             const defItem = obj.Value.Default;
             if ((defItem > -1) && ((TXTFULLA + cntxInfo.a) > 0))
             {
+                txtCol.r = textColor.r;
+                txtCol.g = textColor.g;
+                txtCol.b = textColor.b;
                 txtCol.a = TXTFULLA + cntxInfo.a;
                 const opttext = (Array.isArray(obj.Value.Options[defItem].Name)) ? obj.Value.Options[defItem].Name[DATA.LANGUAGE] : obj.Value.Options[defItem].Name;
                 const ctxpos = { x: cntxInfo.x, y: cntxInfo.y};
                 TxtPrint(opttext, txtCol, ctxpos, "RIGHT", font_ss);
             }
         }
-    }
-
-    if ((descInfo !== -1) && ((TXTFULLA + descInfo.a) > 0))
-    {
-        txtCol.a = TXTFULLA + descInfo.a;
-        const desc = (Array.isArray(obj.Description)) ? obj.Description[DATA.LANGUAGE] : obj.Description;
-        const pos = { x: descInfo.x, y: descInfo.y };
-        TxtPrint(desc, txtCol, pos, "LEFT", font_ss);
     }
 }
 
@@ -346,7 +366,7 @@ function DrawContextMenu(a = 0, x = 0, y = 0)
     if (90 + a > 90) { a = 0; } else if (90 + a < 0) { a = -90; }
     if (90 + a > 0)
     {
-        dash_context.color = Color.new(225,225,225,90 + a);
+        dash_context.color = Color.new(CTXTINT.r, CTXTINT.g, CTXTINT.b, 90 + a);
         dash_context.draw((DATA.CANVAS.width - 205) + x, y);
     }
 }
@@ -433,7 +453,7 @@ function DrawInterfaceFade(frm, direction = 1)
 
 function DrawSelectedCat(cat = DATA.DASH_CURCAT, sizeMod = 0, xMod = 0, yMod = 0, aMod = 0, txtAmod = 0)
 {
-    DrawDashElementIcon(DASH_CAT[cat], 72 + sizeMod, 142 + xMod, 104 + yMod, aMod);
+    DrawDashElementIcon(DASH_CAT[cat], 72 + sizeMod, 142 + xMod, 104 + yMod, aMod, ICOSELCOL);
     const yPos = (Math.round((DATA.CANVAS.height - 328) / 2));
     TxtPrint(DASH_CAT[cat].Name[DATA.LANGUAGE], { r:255, g: 255, b: 255, a: TXTFULLA + txtAmod }, { x: (-142 + xMod), y: -yPos }, "CENTER");
 }
@@ -442,7 +462,7 @@ function DrawSelectedCat(cat = DATA.DASH_CURCAT, sizeMod = 0, xMod = 0, yMod = 0
 
 function DrawUnselectedCat(cat = DATA.DASH_CURCAT, basePos, xPosMod, yMod = 0, aMod = 0)
 {
-    drawDashIcon(DASH_CAT[cat].Icon, 48, 48, ICOFULLA + aMod, basePos + xPosMod, 119 + yMod);
+    drawDashIcon(DASH_CAT[cat].Icon, 48, 48, ICOFULLA + aMod, basePos + xPosMod, 119 + yMod, undefined, ICOTINT);
 }
 
 // Draw all the Unselected Categories while Idle.
@@ -541,9 +561,11 @@ function DrawSelectedItem(cat = DATA.DASH_CURCAT, opt = DATA.DASH_CUROPT, sizeMo
     const descInfo = { x: 242 + txtXmod, y: 226 + txtYmod, a: descTxtAmod };
     const glow = ((opt == DATA.DASH_CUROPT) && (txtAmod == 0));
     const drawBg = ((sizeMod === 0) && (aMod === 0));
+    const textCol = { r: TXTSELCOL.r, g: TXTSELCOL.g, b: TXTSELCOL.b, a: 0 };
     DrawDashElementIcon(DASH_CAT[cat].Options[opt], 78 + sizeMod, 140 + xMod, 190 + yMod, aMod);
-    DrawDashElementText(DASH_CAT[cat].Options[opt], glow, nameInfo, descInfo)
+    DrawDashElementText(DASH_CAT[cat].Options[opt], glow, nameInfo, descInfo, undefined, textCol)
     DrawDashElementBackground(DASH_CAT[cat].Options[opt], drawBg);
+    if (DATA.DASH_CURSUB < 0) { DrawFocusIcon(138 + xMod, 192 + yMod, ICOFULLA + aMod, sizeMod); }
 }
 
 // Draw an Unselected Item's Icon and Text.
@@ -749,9 +771,11 @@ function DrawSubMenuSelectedItem(sub = DATA.DASH_CURSUB, opt = DATA.DASH_CURSUBO
     const cntxPpts = { x: -35 + txtXmod, y: 215 + txtYmod, a: contxtA };
     const glow = ((opt === DATA.DASH_CURSUBOPT) && (txtAmod === 0));
     const drawBg = ((txtYmod === 0) && (aMod === 0));
+    const textCol = { r: TXTSELCOL.r, g: TXTSELCOL.g, b: TXTSELCOL.b, a: 0 };
     DrawDashElementIcon(DASH_SUB[sub].Options[opt], 78 + sizeMod, 175 + xMod, 195 + yMod, aMod);
-    DrawDashElementText(DASH_SUB[sub].Options[opt], glow, namePpts, descPpts, cntxPpts);
+    DrawDashElementText(DASH_SUB[sub].Options[opt], glow, namePpts, descPpts, cntxPpts, textCol);
     DrawDashElementBackground(DASH_SUB[sub].Options[opt], drawBg);
+    if (sub === DATA.DASH_CURSUB) { DrawFocusIcon(172 + xMod, 196 + yMod, ICOFULLA + aMod, sizeMod); }
 }
 
 // Draws a Sub Menu unselected Item Icon and Text.
@@ -1147,8 +1171,6 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
                 glowText.Value = glowText.Value + glowText.Dir;
             }
 
-            DrawContextPreviewImage();
-
             dash_ctx_ico.color = Color.new(255,255,255, glowText.Value * 2);
             dash_ctx_ico.draw(x - 8, y + 4);
         }
@@ -1164,9 +1186,14 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
     {
         let nameText = (Array.isArray(DASH_CTX[lvl].Options[opt].Name)) ? DASH_CTX[lvl].Options[opt].Name[DATA.LANGUAGE] : DASH_CTX[lvl].Options[opt].Name;
         let displayText = (nameText.length > 24) ? (nameText.substring(0, 24) + "...") : nameText;
+        let colorText = { r: textColor.r, g: textColor.g, b: textColor.b, a: TXTFULLA + a };
 
         if (currentSelected)
         {
+            colorText.r = TXTSELCOL.r;
+            colorText.g = TXTSELCOL.g;
+            colorText.b = TXTSELCOL.b;
+
             if (nameText.length > 24)
             {
                 if ((scrollIndex == 0) && (!DATA.DASH_TXT_TIMER))
@@ -1201,9 +1228,11 @@ function DrawContextOption(x, y, lvl = DATA.DASH_CURCTXLVL, opt = DASH_CTX[DATA.
                     DATA.DASH_TXT_TIMER = false;
                 }
             }
+
+            DrawContextPreviewImage();
         }
 
-        TxtPrint(displayText, { r: 255, g: 255, b: 255, a: TXTFULLA + a }, { x: x + xIcnMod, y: y }, "LEFT", font_ss, currentSelected);
+        TxtPrint(displayText, colorText, { x: x + xIcnMod, y: y }, "LEFT", font_ss, currentSelected);
     }
 }
 
@@ -1269,6 +1298,7 @@ function DrawContextOptions(aMod = 0, xMod = 0)
 function DrawContextPreviewImage()
 {
     let time = Math.round(Timer.getTime(DATA.DASH_CTX_TIMER) / 100000);
+
     if (("PreviewImage" in DASH_CTX[DATA.DASH_CURCTXLVL].Options[DASH_CTX[DATA.DASH_CURCTXLVL].Selected]) && (time > 6))
     {
         if (!DASH_CTX_PRWIMG)
@@ -1301,9 +1331,12 @@ function ExecutePreviewFunc()
     let time = Math.round(Timer.getTime(DATA.DASH_CTX_TIMER) / 100000);
     if (("Preview" in DASH_CTX[DATA.DASH_CURCTXLVL]) && (time > 10))
     {
-        Timer.pause(DATA.DASH_CTX_TIMER);
-        let _f = DASH_CTX[DATA.DASH_CURCTXLVL].Preview;
-        _f(DATA, DASH_CTX[DATA.DASH_CURCTXLVL].Selected);
+        if (Timer.isPlaying(DATA.DASH_CTX_TIMER))
+        {
+            Timer.pause(DATA.DASH_CTX_TIMER);
+            let _f = DASH_CTX[DATA.DASH_CURCTXLVL].Preview;
+            _f(DATA, DASH_CTX[DATA.DASH_CURCTXLVL].Selected);
+        }
     }
 }
 

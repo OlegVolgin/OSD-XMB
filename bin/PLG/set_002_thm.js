@@ -223,13 +223,6 @@ function GetThemeContextInfo()
                 let config = DATA.CONFIG.Get("main.cfg");
                 if (DATA.THEME_PATH !== `THM/${config["Theme"]}/`)
                 {
-                    DATA.THEME_PATH = `THM/${config["Theme"]}/`;
-
-                    if (os.readdir(DATA.THEME_PATH)[0].includes("thm.js"))
-                    {
-                        std.loadScript(`${DATA.THEME_PATH}thm.js`);
-                    }
-
                     let bgComplete = false;
                     let imgsLoaded = false;
                     let fntLoaded = false;
@@ -237,23 +230,27 @@ function GetThemeContextInfo()
 
                     loaded_icons = 0;
 
-                    if (config["Theme"] === "Original")
+                    DATA.DASH_FOCUS = false;
+                    ICOSELCOL = { r: 128, g: 128, b: 128 };
+                    TXTSELCOL = { r: 255, g: 255, b: 255 };
+                    CTXTINT = { r: 128, g: 128, b: 128 };
+                    DATA.DISPLAYBG = false;
+                    DATA.BGIMG = false;
+                    DATA.BGIMGA = 0;
+                    DATA.OVALPHA = 20;
+
+                    DATA.THEME_PATH = `THM/${config["Theme"]}/`;
+
+                    if (os.readdir(DATA.THEME_PATH)[0].includes("thm.js"))
                     {
-                        DATA.DISPLAYBG = false;
-                        DATA.BGIMG = false;
-                        DATA.BGIMGA = 0;
-                        DATA.OVALPHA = 20;
-                    }
-                    else
-                    {
-                        DATA.OVALPHA = 0;
+                        std.loadScript(`${DATA.THEME_PATH}thm.js`);
                     }
 
                     let intervalID = os.setInterval(() =>
                     {
                         let finished = false;
 
-                        if (DATA.DISPLAYBG) { DATA.BGIMGA += 12; if (DATA.BGIMGA >= 128) { bgComplete = true; } }
+                        if (DATA.DISPLAYBG) { DATA.BGIMGA += 12; if (DATA.BGIMGA >= 128) { DATA.BGIMGA = 128; bgComplete = true; } }
                         else { bgComplete = true; }
 
                         if (imgsLoaded === false)
@@ -281,22 +278,8 @@ function GetThemeContextInfo()
                             }
                         }
 
-                        if (fntLoaded === false)
-                        {
-                            // Reload Font
-
-                            if ((os.readdir(`${DATA.THEME_PATH}`)[0].includes("text")) && (os.readdir(`${DATA.THEME_PATH}text/`)[0].includes("font.ttf")))
-                            {
-                                font_m = new Font(`${DATA.THEME_PATH}text/font.ttf`);
-                                font_s = new Font(`${DATA.THEME_PATH}text/font.ttf`);
-                                font_ss = new Font(`${DATA.THEME_PATH}text/font.ttf`);
-                                font_m.scale = 0.65f;
-                                font_s.scale = 0.5f;
-                                font_ss.scale = 0.44f;
-                            }
-
-                            fntLoaded = true;
-                        }
+                        // Reload Font
+                        if (fntLoaded === false) { LoadFONT(); fntLoaded = true; }
 
                         if (sndLoaded === false)
                         {
@@ -345,7 +328,7 @@ function GetThemeColorContextInfo()
         DATA.BGTMP = val;
         DATA.BGCOL = (val == 0) ? (OSDATE.getMonth() + 1) : val;
         DATA.BGSWITCH = true;
-        DATA.BGFRAME = 0;
+        DATA.BGFRAME = 0.0f;
     }
 
     // Accept Changes Function
@@ -356,7 +339,7 @@ function GetThemeColorContextInfo()
         DATA.BGTMP = val;
         DATA.BGCOL = (val == 0) ? (OSDATE.getMonth() + 1) : val;
         DATA.BGSWITCH = true;
-        DATA.BGFRAME = 0;
+        DATA.BGFRAME = 0.0f;
         let config = DATA.CONFIG.Get("main.cfg");
         config["BgColor"] = val.toString();
         DATA.CONFIG.Push("main.cfg", config);

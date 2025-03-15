@@ -600,7 +600,8 @@ function drawBg()
         DATA.BGBRIGHTNESS = updateBGBrightness();
 
         // If there was a change on the background color, interpolate it with the current one.
-        if (DATA.BGSWITCH) {
+        if (DATA.BGSWITCH)
+        {
             DATA.BGFRAME += 0.02f;
 
             let tempColor = interpolateColorObj(prevColor, monthColors[DATA.BGCOL], DATA.BGFRAME);
@@ -609,7 +610,7 @@ function drawBg()
             Waves.setThemeColor(tempColor);
 
             // If interpolation ended, update current parameters with new ones.
-            if (DATA.BGFRAME > 0.9f)
+            if (DATA.BGFRAME > 0.99f)
             {
                 currentBgColor = monthColors[DATA.BGCOL];
                 prevColor = { r: monthColors[DATA.BGCOL].r, g: monthColors[DATA.BGCOL].g, b: monthColors[DATA.BGCOL].b, a: monthColors[DATA.BGCOL].a };
@@ -708,13 +709,13 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
     dash_clock_outline.width = 32;
     dash_clock_outline.startx = 2;
     dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
-    dash_clock_outline.draw(DATA.CANVAS.width - 158, 35);
+    dash_clock_outline.draw(DATA.CANVAS.width - 164, 35);
 
     // Draw End of Clock Outline
     dash_clock_outline.width = 180;
     dash_clock_outline.startx = 32;
     dash_clock_outline.color = Color.new(255,255,255,ICOFULLA + boxAlphaMod);
-    dash_clock_outline.draw(DATA.CANVAS.width - 128, 35);
+    dash_clock_outline.draw(DATA.CANVAS.width - 134, 35);
 
     dash_clock.color = Color.new(255,255,255,ICOFULLA + icoAlphaMod);
     dash_clock.draw(DATA.CANVAS.width - 25, 42);
@@ -748,7 +749,7 @@ function drawDate(icoAlphaMod = 0, boxAlphaMod = 0, textAlphaMod = 0)
         case 1: dateText = `${padnum(month)}/${padnum(day)}`; break;
     }
 
-    TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - 145, y:32 })
+    TxtPrint(`${dateText}  ${hourText}`, modColor, { x: DATA.CANVAS.width - 152, y:32 })
 }
 
 console.log("INIT: BACKGROUND GRAPHICS INIT COMPLETE");

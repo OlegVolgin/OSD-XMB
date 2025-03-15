@@ -176,6 +176,8 @@ function InitDashboard()
         const colr_icon = new Image(`./XMB/color/ico${i.toString()}.png`, RAM, async_list);
         colr_icons.push(colr_icon);
     }
+
+    LoadFONT();
 }
 
 /*	Info:

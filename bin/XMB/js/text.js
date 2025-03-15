@@ -294,13 +294,26 @@ const glowText = { Dir: 1, Value: 1, Min: 0, Max: 64, };
 //////////////////////////////////////////////////////////////////////////
 
 // Init Font System
-const fnt_path = (std.exists(`${DATA.THEME_PATH}text/font.ttf`)) ? `${DATA.THEME_PATH}text/font.ttf` : `./THM/Original/text/font.ttf`;
-let font_m = new Font(fnt_path);
-let font_s = new Font(fnt_path);
-let font_ss = new Font(fnt_path);
-font_m.scale = 0.65f;
-font_s.scale = 0.5f;
-font_ss.scale = 0.44f;
+
+let font_m = false;
+let font_s = false;
+let font_ss = false;
+
+function LoadFONT()
+{
+    let font_path = `./THM/Original/text/font.ttf`; // Default Font
+    if ((os.readdir(`${DATA.THEME_PATH}`)[0].includes("text")) && (os.readdir(`${DATA.THEME_PATH}text/`)[0].includes("font.ttf")))
+    {
+        font_path = `${DATA.THEME_PATH}text/font.ttf`
+    }
+
+    font_m = new Font(font_path);
+    font_s = new Font(font_path);
+    font_ss = new Font(font_path);
+    font_m.scale = 0.65f;
+    font_s.scale = 0.5f;
+    font_ss.scale = 0.44f;
+}
 
 //////////////////////////////////////////////////////////////////////////
 ///*				   	   	   TEXT RENDERER						  *///
@@ -445,7 +458,6 @@ const TextRender = {
 
 // Set Text Renderer Initial Parameters
 TextRender.SetScreenDimensions();
-TextRender.SetFont(font_s);
 
 /*	Info:
 
@@ -480,11 +492,17 @@ function TxtPrint(txt, clr, pos, align = "LEFT", font = font_s, glow = false)
 }
 
 // Pre-Process Epilepsy Warning Text for fast rendering on screen
-let BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]);
+let BOOT_WARNING_TEXT = false;
 
 // Function exclusively made to render the Boot Warning Text at Boot.
 function DisplayBootWarningText(alpha)
 {
+    if (BOOT_WARNING_TEXT === false)
+    {
+        TextRender.SetFont(font_s);
+        BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]);
+    }
+
     TxtPrint(BOOT_WARNING_TEXT, { r: 255, g: 255, b: 255, a: alpha }, { x: 10 + (DATA.WIDESCREEN * 32), y: -20 }, "CENTER");
 }
 

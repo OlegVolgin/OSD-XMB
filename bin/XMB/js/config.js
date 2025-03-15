@@ -166,7 +166,7 @@ function ParseMainCFG()
     if ("prntcode" in mainCFG) { DATA.PRNTCODE = JSON.parse(mainCFG["prntcode"]); }
 
     // Get the user's preferred System Settings.
-    if ("lang" in mainCFG) { DATA.LANGUAGE = Number(mainCFG["lang"]); BOOT_WARNING_TEXT = TextRender.ProcessText(BOOT_WARNING_ARRAY[DATA.LANGUAGE]); }
+    if ("lang" in mainCFG) { DATA.LANGUAGE = Number(mainCFG["lang"]); }
     if ("btnType" in mainCFG) { DATA.BTNTYPE = Number(mainCFG["btnType"]); }
 
     // Get the user's preferred Date and Hour Formats.
