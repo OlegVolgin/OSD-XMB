@@ -17,6 +17,7 @@ const NAME_MAIN = 		// Displayed name on the Main Interface
     "Image Viewer",
     "Image Viewer",
     "Image Viewer",
+    "Просмотр изображений"
 ];
 
 const TXT_SETASBG =
@@ -28,6 +29,7 @@ const TXT_SETASBG =
     "Imposta come sfondo",
     "Instellen als achtergrond",
     "Definir como papel de parede",
+    "Установить как обои"
 ];
 
 //////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,7 @@ const NAME_MAIN = 		// Displayed name on the Main Interface
     "Utilità della Memory Card",
     "Diensten voor Memory Card",
     "Utilitário do Memory Card",
+    "Утилита управления Memory Card"
 ];
 
 //////////////////////////////////////////////////////////////////////////

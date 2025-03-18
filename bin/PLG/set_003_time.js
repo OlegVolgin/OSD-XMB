@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Impostazioni di data e ora",
     "Datum- en tijdinstellingen",
     "Definições de Data e Hora",
+    "Настройки даты и времени"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Regola le impostazioni di data e ora.",
     "Pas de instellingen voor datum en tijd aan.",
     "Ajuste as configurações de data e hora.",
+    "Изменяет настройки даты и времени."
 ];
 
 const NAME_SET1 =
@@ -39,6 +41,7 @@ const NAME_SET1 =
     "Formato della data",
     "Datumweergave",
     "Formato da Data",
+    "Формат даты"
 ];
 
 const DESC_SET1 =
@@ -50,6 +53,7 @@ const DESC_SET1 =
     "Seleziona l'ordine di visualizzazione.",
     "Set the order of display.",
     "Define a ordem de apresentação.",
+    "Устанавливает порядок отображения года, месяца, и дня."
 ];
 
 const NAME_SET2 =
@@ -61,6 +65,7 @@ const NAME_SET2 =
     "Formato dell'ora",
     "Tijdweergave",
     "Formato da Hora",
+    "Формат времени"
 ];
 
 const DESC_SET2 =
@@ -72,6 +77,7 @@ const DESC_SET2 =
     "Seleziona il formato dell'ora.",
     "De tijdweergave op een 12- of 24-uursklok instellen.",
     "Define a apresentação da hora em relógio de 12 ou de 24 horas.",
+    "Устанавливает 12- или 24- формат отображения времени для часов."
 ];
 
 //////////////////////////////////////////////////////////////////////////

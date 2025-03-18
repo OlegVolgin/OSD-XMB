@@ -17,6 +17,7 @@ const NAME_MAIN = 		// Displayed name on the Main Interface
     "Esplora file",
     "Bestandsverkenner",
     "Explorador de arquivos",
+    "Файловый проводник"
 ];
 
 //////////////////////////////////////////////////////////////////////////

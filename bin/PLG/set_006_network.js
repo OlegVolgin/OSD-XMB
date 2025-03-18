@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Impostazioni di rete",
     "Netwerkinstellingen",
     "Definições de Rede"
+    "Настройки сети"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Adjusts settings for the internet connection.",
     "Adjusts settings for the internet connection.",
     "Adjusts settings for the internet connection.",
+    "Изменяет настройки соединения с Интернетом."
 ];
 
 const NAME_SET1 =
@@ -39,6 +41,7 @@ const NAME_SET1 =
     "Elenco delle impostazioni e dello stato di connessione",
     "Instellingen en verbindingsstatus",
     "Lista de Definições e Estado das Ligações",
+    "Список настроек и состояний соединения"
 ];
 
 const DESC_SET1 =
@@ -50,6 +53,7 @@ const DESC_SET1 =
     "È possibile visualizzare le impostazioni di rete correnti.",
     "De huidige netwerkinstellingen en de status van de internetverbinding weergeven.",
     "Visualize as definições de rede e o estado das ligações de Internet actuais.",
+    "Показывает текущие настройки сети."
 ];
 
 const NAME_SET2 =
@@ -61,6 +65,7 @@ const NAME_SET2 =
     "Connessione Internet",
     "Internetverbinding",
     "Ligação à Internet",
+    "Соединение с Интернетом"
 ];
 
 const DESC_SET2 =
@@ -72,6 +77,7 @@ const DESC_SET2 =
     "È possibile abilitare o disabilitare la connessione a Internet del sistema.",
     "De internetverbinding van het systeem in- of uitschakelen.",
     "Active ou desactive a ligação do sistema à Internet.",
+    "Устанавливает соединение этой системы с интернетом."
 ];
 
 const INFO_1 =
@@ -83,6 +89,7 @@ const INFO_1 =
     "Internet Connection",
     "Internet Connection",
     "Internet Connection",
+    "Соединение с Интернетом"
 ];
 
 const INIT_MSG =
@@ -94,6 +101,7 @@ const INIT_MSG =
     "Tentativo di connessione, attendere prego...",
     "Bezig met verbinden, even geduld a.u.b...",
     "A tentar conectar, por favor aguarde...",
+    "Попытка подключения, подождите..."
 ];
 
 const INIT_COMPLETE_MSG =
@@ -105,6 +113,7 @@ const INIT_COMPLETE_MSG =
     "Connessione riuscita.",
     "Verbinding geslaagd.",
     "Conexão bem-sucedida.",
+    "Успешное подключение."
 ];
 
 const ERR_1 =
@@ -116,6 +125,7 @@ const ERR_1 =
     "Impossibile inizializzare la rete.\nControlla la tua connessione e riavvia la console.",
     "Kan netwerk niet initialiseren.\nControleer uw verbinding en start de console opnieuw op.",
     "Não foi possível inicializar a Rede.\nVerifique a sua ligação e reinicie a consola.",
+    "Не получается инициализировать Сеть. Пожалуйста проверьте Ваше подключение и перезапустите консоль."
 ];
 
 //////////////////////////////////////////////////////////////////////////
