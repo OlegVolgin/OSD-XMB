@@ -16,7 +16,8 @@ const NAME_MAIN =
     "Sicherheits-Einstellungen",
     "Impostazioni di sicurezza",
     "Beveiligingsinstellingen",
-    "Definições de Segurança"
+    "Definições de Segurança",
+    "Настройки безопасности"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Regola le impostazioni di controllo parentale.",
     "Pas de instellingen voor ouderlijk toezicht aan.",
     "Ajuste as configurações de controle parental.",
+    "Изменяет настройки родительского контроля"
 ];
 
 const NAME_SET1 =
@@ -39,6 +41,7 @@ const NAME_SET1 =
     "Modifica la password",
     "Wachtwoord wijzigen",
     "Mudar a palavra-passe",
+    "Изменить пароль"
 ];
 
 const NAME_SET2 =
@@ -50,6 +53,7 @@ const NAME_SET2 =
     "Filtro contenuti",
     "Ouderlijk toezicht",
     "Controlo parental",
+    "Родительский контроль"
 ];
 
 //////////////////////////////////////////////////////////////////////////

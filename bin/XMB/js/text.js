@@ -13,13 +13,13 @@
 // Category Names, one for each category on the 7 different languages.
 
 const CAT_NAMES = [];
-CAT_NAMES.push([ "User", "Utilisateur", "Usuario", "Benutzer", "Utente", "Gebruiker", "Usuário" ]);
-CAT_NAMES.push([ "Settings", "Paramètres", "Opciones", "Optionen", "Opzioni", "Opties", "Opções" ]);
-CAT_NAMES.push([ "Photo", "Photo", "Foto", "Foto", "Foto", "Foto", "Fotografia" ]);
-CAT_NAMES.push([ "Music", "Musique", "Música", "Musik", "Musica", "Muziek", "Música" ]);
-CAT_NAMES.push([ "Video", "Video", "Video", "Video", "Video", "Video", "Video" ]);
-CAT_NAMES.push([ "Game", "Jeu", "Juego", "Spiel", "Giochi", "Spel", "Jogo" ]);
-CAT_NAMES.push([ "Network", "Réseau", "Red", "Netzwerk", "Rete", "Netwerk", "Rede" ]);
+CAT_NAMES.push([ "User", "Utilisateur", "Usuario", "Benutzer", "Utente", "Gebruiker", "Usuário", "Пользователь" ]);
+CAT_NAMES.push([ "Settings", "Paramètres", "Opciones", "Optionen", "Opzioni", "Opties", "Opções", "Настройки"]);
+CAT_NAMES.push([ "Photo", "Photo", "Foto", "Foto", "Foto", "Foto", "Fotografia", "Фото" ]);
+CAT_NAMES.push([ "Music", "Musique", "Música", "Musik", "Musica", "Muziek", "Música", "Фото" ]);
+CAT_NAMES.push([ "Video", "Video", "Video", "Video", "Video", "Video", "Video", "Видео" ]);
+CAT_NAMES.push([ "Game", "Jeu", "Juego", "Spiel", "Giochi", "Spel", "Jogo", "Игра" ]);
+CAT_NAMES.push([ "Network", "Réseau", "Red", "Netzwerk", "Rete", "Netwerk", "Rede", "Сеть" ]);
 
 // The Boot Epilepsy Warning Text.
 
@@ -32,6 +32,7 @@ const BOOT_WARNING_ARRAY =
     "EPILESSIA FOTOSENSIBILE\nSE SI SOFFRE DI CRISI EPILETTICHE O DI DISTURBI ASSOCIATI, CONSULTARE UN MEDICO PRIMA DELL'USO. ALCUNI EFFETTI POSSONO CAUSARE CRISI EPILETTICHE ANCHE IN ASSENZA DI EPISODI PREGRESSI. PRIMA DI UTILIZZARE IL PRODOTTO, LEGGERE ATTENTAMENTE IL MANUALE DI ISTRUZIONI.",
     "FOTOSENSITIEVE EPILEPSIE\nALS U EEN GESCHIEDENIS HEEFT VAN EPILEPSIE OF AANVALLEN, RAADPLEEG DAN EEN ARTS VOORDAT U HET PRODUCT GEBRUIKT. BEPAALDE PATRONEN KUNNEN AANVALLEN VEROORZAKEN ZONDER EERDERE VOORGESCHIEDENIS. LEES VOORDAT U DIT PRODUCT GEBRUIKT ZORGVULDIG DE HANDLEIDING.",
     "EPILEPSIA FOTOSSENSÍVEL\nSE VOCÊ TEM HISTÓRICO DE EPILEPSIA OU CONVULSÕES, CONSULTE UM MÉDICO ANTES DE USAR. CERTOS PADRÕES PODEM DESENCADEAR CONVULSÕES SEM HISTÓRICO PRÉVIO. ANTES DE USAR ESTE PRODUTO, LEIA ATENTAMENTE O MANUAL DE INSTRUÇÕES.",
+    "ПРЕДУПРЕЖДЕНИЕ ОБ ЭПИЛЕПСИИ\nЕСЛИ У ВАС КОГДА-ЛИБО БЫЛИ ЭПИЛЕПТИЧЕСКИЕ ПРИСТУПЫ, ПЕРЕД ИГРОЙ ПРОКОНСУЛЬТИРУЙТЕСЬ\nС ВРАЧОМ. МИГАЮЩЕЕ ИЗОБРАЖЕНИЕ МОЖЕТ ВЫЗВАТЬ ПРИСТУП, ДАЖЕ ЕСЛИ РАНЕЕ НЕ БЫЛО\nСИМПТОМОВ ЭПИЛЕПСИИ. ПЕРЕД ИСПОЛЬЗОВАНИЕМ УСТРОЙСТВА ВНИМАТЕЛЬНО ПРОЧИТАЙТЕ\nРУКОВОДСТВО ПОЛЬЗОВАТЕЛЯ."
 ];
 
 const TXT_WAIT =
@@ -42,7 +43,8 @@ const TXT_WAIT =
     "Bitte warten...",
     "Attendere prego...",
     "Even geduld...",
-    "Aguarde..."
+    "Aguarde...",
+    "Подождите..."
 ];
 
 const TXT_YES =
@@ -54,6 +56,7 @@ const TXT_YES =
     "Sì",
     "Ja",
     "Sim",
+    "Да"
 ];
 
 const TXT_NO =
@@ -64,7 +67,8 @@ const TXT_NO =
     "Nein",
     "No",
     "Nee",
-    "Não"
+    "Não",
+    "Нет"
 ];
 
 const TXT_ENABLED =
@@ -76,6 +80,7 @@ const TXT_ENABLED =
     "Abilitato",
     "Ingeschakeld",
     "Ativado",
+    "Включено"
 ]
 
 const TXT_DISABLED =
@@ -87,6 +92,7 @@ const TXT_DISABLED =
     "Disabilitato",
     "Uitgeschakeld",
     "Desativado",
+    "Отключено"
 ]
 
 const TXT_INFO =
@@ -97,7 +103,8 @@ const TXT_INFO =
     "Information",
     "Informazioni",
     "Informatie",
-    "Informação"
+    "Informação",
+    "Информация"
 ];
 
 const TXT_DELETE =
@@ -109,6 +116,7 @@ const TXT_DELETE =
     "Elimina",
     "Verwijderen",
     "Eliminar",
+    "Удалить"
 ];
 
 const MSG_SUBMENU_EMPTY =
@@ -120,6 +128,7 @@ const MSG_SUBMENU_EMPTY =
     "Non ci sono elementi.",
     "Er zijn geen elementen.",
     "Não há elementos.",
+    "Элементы отсутствуют."
 ];
 
 const TXT_MESSAGE_BACK =
@@ -130,7 +139,8 @@ const TXT_MESSAGE_BACK =
     "Zurück",
     "Indietro",
     "Terug",
-    "Voltar"
+    "Voltar",
+    "Назад"
 ];
 
 const TXT_MESSAGE_ENTER =
@@ -141,7 +151,8 @@ const TXT_MESSAGE_ENTER =
     "Akzeptieren",
     "Accetta",
     "Accepteren",
-    "Aceitar"
+    "Aceitar",
+    "Принять"
 ];
 
 const TXT_VMODE_SEC =
@@ -153,6 +164,7 @@ const TXT_VMODE_SEC =
     "secondi",
     "seconds",
     "seconds",
+    "секунд"
 ];
 
 const TXT_VMODE_REMTIME =
@@ -164,6 +176,7 @@ const TXT_VMODE_REMTIME =
     "Tempo rimanente",
     "Resterende tijd",
     "Tempo restante",
+    "Оставшееся время"
 ];
 
 const TXT_VMODE_MSG =
@@ -175,6 +188,7 @@ const TXT_VMODE_MSG =
     "Questo testo è visibile?\nSeleziona [Si] per mantenere l'impostazione altrimenti il sistema tornerà automaticamente all'impostazione precedente.\n \n \n \n \n",
     "Kun je dit scherm lezen?\nSelecteer [Ja] als je dat kunt.\nAls je geen knoppen indrukt, gaat het systeem automatisch terug naar de vorige instelling.\n \n \n \n \n",
     "Você consegue ler esta tela?\nSelecione [Sim] se puder.\nSe você não pressionar nenhum botão, o sistema voltará automaticamente à configuração anterior.\n \n \n \n \n",
+    "Можете ли вы прочитать текст на этом экране?\nЕсли можете, выберите [Да].\nЕсли вы не нажмете никаких кнопок, система автоматически вернётся к предыдущим настройкам.\n \n \n \n \n"
 ];
 
 const TXT_TITLE =
@@ -186,6 +200,7 @@ const TXT_TITLE =
     "Titoli",
     "Titel",
     "Titulo",
+    "Название"
 ];
 
 const TXT_TITLES =
@@ -197,6 +212,7 @@ const TXT_TITLES =
     "Titoli",
     "Titels",
     "Títulos",
+    "Названия"
 ];
 
 const TXT_OPTION =
@@ -208,6 +224,7 @@ const TXT_OPTION =
     "Opzioni",
     "Options",
     "Options",
+    "Настройки"
 ];
 
 const TXT_ENTER_NEW_PASS =
@@ -219,6 +236,7 @@ const TXT_ENTER_NEW_PASS =
     "Enter your new password",
     "Enter your new password",
     "Enter your new password",
+    "Введите новый пароль"
 ];
 
 const TXT_ENTER_CUR_PASS =
@@ -230,6 +248,7 @@ const TXT_ENTER_CUR_PASS =
     "Enter your four-digir password",
     "Enter your four-digir password",
     "Enter your four-digir password",
+    "Введите свой четырёхзначный пароль"
 ];
 
 const WORK_DIR_NAME = 	// Item 1 Name
@@ -241,6 +260,7 @@ const WORK_DIR_NAME = 	// Item 1 Name
     "Directory principale",
     "Hoofdmap",
     "Diretório principal",
+    "Главная директория"
 ];
 
 const MASS_DIR_NAME = 	// Item 2 Name
@@ -252,6 +272,7 @@ const MASS_DIR_NAME = 	// Item 2 Name
     "Dispositivo USB",
     "USB-apparaat",
     "Dispositivo USB",
+    "USB носитель"
 ];
 
 const HDD_DIR_NAME = 	// Item 3 Name
@@ -263,6 +284,7 @@ const HDD_DIR_NAME = 	// Item 3 Name
     "Disco Rigido Interno",
     "Internal Hard Disk Drive",
     "Disco Rígido Interno",
+    "Внутренний жесткий диск"
 ];
 
 const TXT_DEVICE = 	// Item 3 Name
@@ -274,6 +296,7 @@ const TXT_DEVICE = 	// Item 3 Name
     "Device",
     "Device",
     "Device",
+    "Устройство"
 ];
 
 //////////////////////////////////////////////////////////////////////////

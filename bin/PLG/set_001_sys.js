@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Impostazioni del sistema",
     "Systeeminstellingen",
     "Definições de Sistema",
+    "Настройки системы"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Regola le impostazioni di questo sistema PS2.",
     "Pas de instellingen van dit PS2-systeem aan.",
     "Ajuste as configurações deste sistema PS2.",
+    "Изменяет настройки этой системы PS2."
 ];
 
 const NAME_SET1 =
@@ -39,6 +41,7 @@ const NAME_SET1 =
     "Lingua",
     "Taal",
     "Idioma",
+    "Язык"
 ];
 
 const DESC_SET1 =
@@ -50,6 +53,7 @@ const DESC_SET1 =
     "Seleziona la lingua del sistema",
     "Stel de systeemtaal in",
     "Definir o idioma do sistema",
+    "Устанавливает язык системы."
 ];
 
 const NAME_SET2 =
@@ -61,6 +65,7 @@ const NAME_SET2 =
     "Pulsante di conferma",
     "Bevestigingsknop",
     "Botão de Confirmação",
+    "Кнопка подтверждения"
 ];
 
 const DESC_SET2 =
@@ -72,6 +77,7 @@ const DESC_SET2 =
     "Imposta il tipo di pulsante di conferma.",
     "Stelt het type bevestigingsknop.",
     "Define o tipo de botão de confirmação.",
+    "Устанавливает тип кнопки подтверждения"
 ];
 
 const NAME_SET3 =
@@ -83,6 +89,7 @@ const NAME_SET3 =
     "System Information",
     "System Information",
     "System Information",
+    "Информация о системе"
 ];
 
 const TYPE_1 =
@@ -94,6 +101,7 @@ const TYPE_1 =
     "Occidentale",
     "Westers",
     "Ocidental",
+    "Западный"
 ];
 
 const TYPE_2 =
@@ -105,6 +113,7 @@ const TYPE_2 =
     "Asiatico",
     "Aziatisch",
     "Asiático",
+    "Азиатский"
 ];
 
 const SYSINFO_MODELNAME =
@@ -116,6 +125,7 @@ const SYSINFO_MODELNAME =
     "Console",
     "Console",
     "Console",
+    "Консоль"
 ];
 
 const SYSINFO_BDATE =
@@ -127,6 +137,7 @@ const SYSINFO_BDATE =
     "Build Date",
     "Build Date",
     "Build Date",
+    "Дата сборки"
 ];
 
 const SYSINFO_TYPE =
@@ -138,6 +149,7 @@ const SYSINFO_TYPE =
     "Console Type",
     "Console Type",
     "Console Type",
+    "Тип консоли"
 ];
 
 const SYSINFO_TYPE_C =
@@ -149,6 +161,7 @@ const SYSINFO_TYPE_C =
     "Retail",
     "Retail",
     "Retail",
+    "Выпуск"
 ];
 
 const SYSINFO_TYPE_D =
@@ -160,6 +173,7 @@ const SYSINFO_TYPE_D =
     "Development Kit",
     "Development Kit",
     "Development Kit",
+    "Набор разработчика"
 ];
 
 const SYSINFO_BRWVER =
@@ -171,6 +185,7 @@ const SYSINFO_BRWVER =
     "Browser",
     "Browser",
     "Browser",
+    "Браузер"
 ];
 
 const SYSINFO_CDVER =
@@ -182,6 +197,7 @@ const SYSINFO_CDVER =
     "CD Player",
     "CD Player",
     "CD Player",
+    "CD плеер"
 ];
 
 //////////////////////////////////////////////////////////////////////////
@@ -198,6 +214,7 @@ function getLanguagetContextInfo()
     ctx_options.push({ Name: "Italiano", Icon: -1 });
     ctx_options.push({ Name: "Nederlands", Icon: -1 });
     ctx_options.push({ Name: "Português", Icon: -1 });
+    ctx_options.push({ Name: "Русский", Icon: -1});
 
     // Accept Changes Function
     let _a = function(DATA, val)

@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Restart Interface",
     "Restart Interface",
     "Restart Interface",
+    "Перезапустить интерфейс"
 ];
 
 //////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Esci al Browser",
     "Verlaten naar de browser",
     "Sair para o Navegador",
+    "Выйти в Обозреватель PS2"
 ];
 
 //////////////////////////////////////////////////////////////////////////

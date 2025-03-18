@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Impostazioni del gioco",
     "Game-instellingen",
     "Definições de jogo",
+    "Настройки игры"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Regola le impostazioni dei giochi.",
     "Pas de instellingen voor games aan.",
     "Ajuste as configurações dos jogos.",
+    "Изменяет настройки игр"
 ];
 
 const NAME_SETA =
@@ -39,6 +41,7 @@ const NAME_SETA =
     "PS - Potenziatore risoluzione",
     "PS - Upscalen",
     "PS - Melhorar resolução",
+    "PS - Апскейлер"
 ];
 
 const NAME_SETB =
@@ -50,6 +53,7 @@ const NAME_SETB =
     "PS - Smussatura",
     "PS - Smoothing",
     "PS - Suavização",
+    "PS - Сглаживание"
 ];
 
 const NAME_SETC =
@@ -61,6 +65,7 @@ const NAME_SETC =
     "PS - In-Game Reset Mode",
     "PS - In-Game Reset Mode",
     "PS - In-Game Reset Mode",
+    "PS - Режим сброса внутри игры"
 ];
 
 const NAME_SETD =
@@ -72,6 +77,7 @@ const NAME_SETD =
     "PS - HD TV Fix",
     "PS - HD TV Fix",
     "PS - HD TV Fix",
+    "PS - Исправление для HD TV"
 ];
 
 const NAME_SETE =
@@ -83,6 +89,7 @@ const NAME_SETE =
     "PS - Widescreen Mode",
     "PS - Widescreen Mode",
     "PS - Widescreen Mode",
+    "PS - Широкоэкранный режим"
 ];
 
 const NAME_SETF =
@@ -94,6 +101,7 @@ const NAME_SETF =
     "PS - Scanlines",
     "PS - Scanlines",
     "PS - Scanlines",
+    "PS - Строки развёртки"
 ];
 
 const NAME_SET1 =
@@ -105,6 +113,7 @@ const NAME_SET1 =
     "Logo PS2 (Digitali)",
     "PS2 Logo (Digital)",
     "PS2 Logo (Digital)",
+    "Логотип PS2 (Цифровой)"
 ];
 
 const DESC_SET1 =
@@ -116,6 +125,7 @@ const DESC_SET1 =
     "Mostra il logo PS2 nei giochi digitali.",
     "Show the PS2 logo on digital games",
     "Show the PS2 logo on digital games",
+    "Отображать логотип PS2 на цифровых играх"
 ];
 
 const NAME_SET2 =
@@ -127,6 +137,7 @@ const NAME_SET2 =
     "PS2 - Colori di debug",
     "PS2 - Debug Colors",
     "PS2 - Debug Colors",
+    "PS2 - Цвета отладки"
 ];
 
 const DESC_SET2 =
@@ -138,6 +149,7 @@ const DESC_SET2 =
     "Mostra i colori di debug nei giochi digitali.",
     "Show the debug colors on digital games",
     "Show the debug colors on digital games",
+    "Отображать отладочные цвета в цифровых играх"
 ];
 
 const NAME_SET3 =
@@ -149,6 +161,7 @@ const NAME_SET3 =
     "PS2 - Force Progressive",
     "PS2 - Force Progressive",
     "PS2 - Force Progressive",
+    "PS2 - Принудительная прогрессивная развёртка"
 ];
 
 const DESC_SET3 =
@@ -160,6 +173,7 @@ const DESC_SET3 =
     "Force progressive scan mode on digital games.",
     "Force progressive scan mode on digital games.",
     "Force progressive scan mode on digital games.",
+    "Принудительно использовать прогрессивную развёртку в цифровых играх"
 ];
 
 //////////////////////////////////////////////////////////////////////////

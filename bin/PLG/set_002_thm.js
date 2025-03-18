@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Impostazioni del tema",
     "Thema-instellingen",
     "Configurações de tema",
+    "Настройки темы"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Regola le impostazioni relative all'aspetto dello schermo XMB.",
     "Pas instellingen aan die verband houden met het uiterlijk van het XMB-scherm.",
     "Ajuste as configurações relacionadas à aparência da tela XMB.",
+    "Изменяет настройки, связанные с внешним видом экрана XMB"
 ];
 
 const NAME_SET1 =
@@ -39,6 +41,7 @@ const NAME_SET1 =
     "Tema",
     "Thema",
     "Tema",
+    "Тема"
 ];
 
 const DESC_SET1 =
@@ -50,6 +53,7 @@ const DESC_SET1 =
     "Seleziona lo stile dell'interfaccia.",
     "Stel de interface-stijl in.",
     "Definir o estilo da interface.",
+    "Устанавливает оформление интерфейса"
 ];
 
 const NAME_SET2 =
@@ -61,6 +65,7 @@ const NAME_SET2 =
     "Colore",
     "Kleur",
     "Cor",
+    "Цвет"
 ];
 
 const DESC_SET2 =
@@ -72,6 +77,7 @@ const DESC_SET2 =
     "Seleziona il colore dello sfondo.",
     "Stel de achtergrondkleur in.",
     "Definir a cor de fundo.",
+    "Устанавливает цвет фона"
 ];
 
 const NAME_SET3 =
@@ -83,6 +89,7 @@ const NAME_SET3 =
     "Sfondo",
     "Achtergrond",
     "Fundo",
+    "Фон"
 ];
 
 const DESC_SET3 =
@@ -94,6 +101,7 @@ const DESC_SET3 =
     "Seleziona lo sfondo dell'interfaccia.",
     "Stel de achtergrond van de interface in.",
     "Definir o fundo da interface.",
+    "Устанавливает фон интерфейса"
 ];
 
 const NAME_SET4 =
@@ -105,6 +113,7 @@ const NAME_SET4 =
     "Waves",
     "Waves",
     "Waves",
+    "Волны"
 ];
 
 const DESC_SET4 =
@@ -116,6 +125,7 @@ const DESC_SET4 =
     "Set the Background Waves On or Off.",
     "Set the Background Waves On or Off.",
     "Set the Background Waves On or Off.",
+    "Включить или выключить волны на фоне."
 ];
 
 const thmSett_NoWpSet =
@@ -126,7 +136,8 @@ const thmSett_NoWpSet =
     "Kein Hintergrundbild gesetzt. \nNavigiere zu [Foto], öffne ein Bild und wähle [Als Hintergrundbild festlegen].",
     "Nessuno sfondo impostato. \nVai in [Foto], apri un'immagine e seleziona [Imposta come sfondo].",
     "Geen achtergrond ingesteld. \nGa naar [Foto], open een afbeelding en kies [Instellen als achtergrond].",
-    "Nenhum papel de parede definido. \nVá para [Foto], abra uma imagem e escolha [Definir como papel de parede]."
+    "Nenhum papel de parede definido. \nVá para [Foto], abra uma imagem e escolha [Definir como papel de parede].",
+    "Обои не установлены.\nПерейдите в [Фото], откройте изображение, и затем выберите [Установить как обои] в панели управления чтобы сохранить изображение."
 ];
 
 const setting1 =
@@ -138,6 +149,7 @@ const setting1 =
     "Originale",
     "Origineel",
     "Original",
+    "Исходный"
 ];
 
 const setting2 =
@@ -149,6 +161,7 @@ const setting2 =
     "Sfondo personalizzato",
     "Achtergrondafbeelding",
     "Fundo personalizado",
+    "Обои"
 ];
 
 const thmSett_Wait =
@@ -160,6 +173,7 @@ const thmSett_Wait =
     "Attendere prego...",
     "Even geduld...",
     "Aguarde...",
+    "Подождите..."
 ];
 
 //////////////////////////////////////////////////////////////////////////

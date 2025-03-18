@@ -17,6 +17,7 @@ const NAME_MAIN =
     "Impostazioni di visualizzazione",
     "Beeldscherminstellingen",
     "Definições de Apresentação",
+    "Настройки экрана"
 ];
 
 const DESC_MAIN =
@@ -28,6 +29,7 @@ const DESC_MAIN =
     "Regola le impostazioni dell'uscita video.",
     "Pas de instellingen voor video-uitvoer aan.",
     "Ajuste as configurações de saída de vídeo.",
+    "Изменяет настройки вывода видео."
 ];
 
 const NAME_SET1 =
@@ -39,6 +41,7 @@ const NAME_SET1 =
     "Impostazioni video",
     "Instellingen video-uitvoer",
     "Definições de Saída de Vídeo",
+    "Режим вывода видео"
 ];
 
 const DESC_SET1 =
@@ -50,6 +53,7 @@ const DESC_SET1 =
     "Seleziona la modalità dell'uscita video.",
     "Stel de video-uitvoermodus in.",
     "Definir o modo de exibição de saída de vídeo.",
+    "Изменение настроек вывода для этой системы."
 ];
 
 const NAME_SET2 =
@@ -61,6 +65,7 @@ const NAME_SET2 =
     "Tipo di TV",
     "TV-type",
     "Tipo de TV",
+    "Тип телевизора"
 ];
 
 const DESC_SET2 =
@@ -72,6 +77,7 @@ const DESC_SET2 =
     "Seleziona il tipo di TV utilizzata.",
     "Selecteer het type TV dat wordt gebruikt.",
     "Seleccione o tipo de TV utilizada.",
+    "Изменяет тип используемого ТВ"
 ];
 
 //////////////////////////////////////////////////////////////////////////
