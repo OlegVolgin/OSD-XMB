@@ -16,7 +16,7 @@ const CAT_NAMES = [];
 CAT_NAMES.push([ "User", "Utilisateur", "Usuario", "Benutzer", "Utente", "Gebruiker", "Usuário", "Пользователь" ]);
 CAT_NAMES.push([ "Settings", "Paramètres", "Opciones", "Optionen", "Opzioni", "Opties", "Opções", "Настройки"]);
 CAT_NAMES.push([ "Photo", "Photo", "Foto", "Foto", "Foto", "Foto", "Fotografia", "Фото" ]);
-CAT_NAMES.push([ "Music", "Musique", "Música", "Musik", "Musica", "Muziek", "Música", "Фото" ]);
+CAT_NAMES.push([ "Music", "Musique", "Música", "Musik", "Musica", "Muziek", "Música", "Музыка" ]);
 CAT_NAMES.push([ "Video", "Video", "Video", "Video", "Video", "Video", "Video", "Видео" ]);
 CAT_NAMES.push([ "Game", "Jeu", "Juego", "Spiel", "Giochi", "Spel", "Jogo", "Игра" ]);
 CAT_NAMES.push([ "Network", "Réseau", "Red", "Netzwerk", "Rete", "Netwerk", "Rede", "Сеть" ]);
